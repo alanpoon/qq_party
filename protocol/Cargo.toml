@@ -1,0 +1,20 @@
+[package]
+name = "qqparty-protocol"
+version = "0.0.11"
+authors = ["Kevin Hoffman <alothien@gmail.com>"]
+edition = "2018"
+homepage = "https://wasmdome.dev"
+description = "Shared Communication Protocol for the 'Assembly Mechs: Beyond WasmDome' Game"
+license = "Apache-2.0"
+documentation = "https://wasmdome.dev"
+readme = "README.md"
+keywords = ["webassembly", "wasm", "wasmdome", "wascc"]
+categories = ["wasm", "games"]
+
+
+[dependencies]
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+wasmdome-domain = "0.0.7"
+chrono = { version = "0.4.13", features = ["serde"] }
