@@ -3,7 +3,7 @@ use std::error::Error;
 fn check_schedule(nc: nats::Connection){
   let res = nc.request_timeout(
       "wasmdome.public.arena.schedule",
-      "",
+      "hello",
       std::time::Duration::from_millis(2500),
   );
   match res {

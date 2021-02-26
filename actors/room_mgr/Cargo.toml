@@ -9,8 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wapc-guest = "0.4.0"
-actor-core = { path = "../../../actor-interfaces/rust/actor-core" }
+actor-core = { path = "../../../actor-interfaces/rust/actor-core" ,features=["guest"]}
 actor-messaging = { path = "../../../actor-interfaces/rust/messaging" }
+actor-logging = { path = "../../../actor-interfaces/rust/logging",features=["guest"] }
 log = "0.4.8"
 qqparty-protocol = { path = "../../protocol"}
 serde = { version = "1.0.114", features = ["derive"]}
