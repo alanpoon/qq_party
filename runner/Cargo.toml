@@ -11,6 +11,6 @@ env_logger = "0.8.2"
 structopt = "0.3.21"
 wasmcloud-host = {path="../../wasmCloud/crates/wasmcloud-host"}
 nats = "0.8.6"
-provider-archive = "0.3.1"
-actix-rt = "1.1.1"
+provider-archive = "0.4.0"
+actix-rt = "2.1.0"
 log = "0.4.11"

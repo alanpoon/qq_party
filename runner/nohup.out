@@ -1,0 +1,45 @@
+RUST_LOG=crane=trace,info,debug cargo run --bin with_nats
+   Compiling macos_host v0.1.0 (/Users/alan.poon/Documents/rust/wascc/qq_party/runner)
+warning: unused `#[macro_use]` import
+ --> src/bin/with_nats.rs:2:1
+  |
+2 | #[macro_use]
+  | ^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `provider_archive::ProviderArchive`
+ --> src/bin/with_nats.rs:5:5
+  |
+5 | use provider_archive::ProviderArchive;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Host`
+ --> src/bin/with_nats.rs:9:22
+  |
+9 | use wasmcloud_host::{Host, Result};
+  |                      ^^^^
+
+warning: variable does not need to be mutable
+  --> src/bin/with_nats.rs:57:9
+   |
+57 |     let mut webvalues2: HashMap<String, String> = HashMap::new();
+   |         ----^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+warning: 4 warnings emitted
+
+    Finished dev [unoptimized + debuginfo] target(s) in 11.80s
+     Running `target/debug/with_nats`
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::control_interface::ctlactor] Control Interface started
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::capability::native_host] Native Capability Provider 'wasmbus://wasmcloud/extras/default/VDHPKGFKDI34Y4RN4PWWZHRYZ6373HYRSNNEM4UTDLLOGO5B37TSVREP' ready
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::capability::native_host] Native Capability Provider 'wasmbus://wasmcloud/keyvalue/__wasmcloud_lattice_cache/VAHNM37G4ARHZ3CYHB3L34M6TYQWQR6IZ4QVYC4NYZWTJCJ2LWP7S6Z2' ready
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::host_controller::hc_actor] Initialized lattice cache provider
+[2021-05-21T06:56:41Z INFO  wasmcloud_nats_kvcache] No NATS URL present, falling back to standalone/isolated KV cache
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::host_controller::hc_actor] Cache provider successfully configured
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::host_controller::hc_actor] Host controller initialized - NB2KBDDWTMBFMHIRNJQMZLNGR2DCDHDXKXGJNGYBXPKAK4OGQ2AYK65E (Hot Updating - false)
+[2021-05-21T06:56:41Z INFO  wasmcloud_host::control_interface::ctlactor] Initializing control interface - Disabled
+make: *** [run] Interrupt: 2

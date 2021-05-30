@@ -24,7 +24,8 @@ bench:
 
 build:
 	@$(CARGO) build
-	wash claims sign target/wasm32-unknown-unknown/debug/room_mgr.wasm -o target/wasm32-unknown-unknown/debug/room_mgr_signed.wasm -g -l --name "room_mgr"
+#wash claims sign target/wasm32-unknown-unknown/debug/room_mgr.wasm -d target/wasm32-unknown-unknown/debug/room_mgr_signed.wasm -g -l --name "room_mgr" -c wasmcloud:telnet
+	wash claims sign target/wasm32-unknown-unknown/debug/room_mgr.wasm -d target/wasm32-unknown-unknown/debug/room_mgr_signed.wasm --name "room_mgr"
 
 check:
 	@$(CARGO) check
@@ -43,5 +44,5 @@ update:
 
 release:
 	@$(CARGO) build --release
-	wash claims sign target/wasm32-unknown-unknown/release/room_mgr.wasm -o target/wasm32-unknown-unknown/release/room_mgr_signed.wasm -c wasm:messaging --name "room_mgr"
+	wash claims sign target/wasm32-unknown-unknown/release/room_mgr.wasm -o target/wasm32-unknown-unknown/release/room_mgr_signed.wasm -c wasmcloud:messaging --name "room_mgr"
 	
