@@ -1,5 +1,5 @@
 [package]
-name = "ws_server"
+name = "wasm_ws_user"
 version = "0.1.0"
 authors = ["alanpoon"]
 edition = "2018"
@@ -16,8 +16,7 @@ wasmcloud-actor-core = { version = "0.2.2", features = ["guest"] }
 wasmcloud-actor-logging = { version = "0.1.1", features = ["guest"] }
 wasmcloud-actor-keyvalue = { version = "0.2.1", features = ["guest"]}
 wasm_user_interface = { path = "../../interfaces/wasm_user_interface"}
-wasmcloud-actor-http-server = { version = "0.1.0", features = ["guest"]}
-gateway_interface = { path = "../../interfaces/gateway"}
+wasmcloud-actor-messaging = { version = "0.1.1", features = ["guest"] }
 
 [dependencies.wasmcloud-actor-telnet]
 version = "0.1.2"

@@ -19,19 +19,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "gateway_interface"
-version = "0.1.0"
-dependencies = [
- "lazy_static",
- "log",
- "rmp-serde",
- "serde",
- "serde_bytes",
- "serde_json",
- "wapc-guest",
-]
-
-[[package]]
 name = "itoa"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -174,6 +161,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasm_user"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "wapc-guest",
+ "wasm_user_interface",
+ "wasmcloud-actor-core",
+ "wasmcloud-actor-keyvalue",
+ "wasmcloud-actor-logging",
+ "wasmcloud-actor-telnet",
+]
+
+[[package]]
 name = "wasm_user_interface"
 version = "0.1.0"
 dependencies = [
@@ -211,20 +213,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "wasmcloud-actor-http-server"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3475f57d2e71bc35c61081062794906bb328da6420d7d42ecfb2da926db0dd9"
-dependencies = [
- "lazy_static",
- "rmp-serde",
- "serde",
- "serde_bytes",
- "serde_json",
- "wapc-guest",
 ]
 
 [[package]]
@@ -266,21 +254,4 @@ dependencies = [
  "rmp-serde",
  "serde",
  "wapc-guest",
-]
-
-[[package]]
-name = "ws_server"
-version = "0.1.0"
-dependencies = [
- "gateway_interface",
- "log",
- "serde",
- "serde_json",
- "wapc-guest",
- "wasm_user_interface",
- "wasmcloud-actor-core",
- "wasmcloud-actor-http-server",
- "wasmcloud-actor-keyvalue",
- "wasmcloud-actor-logging",
- "wasmcloud-actor-telnet",
 ]

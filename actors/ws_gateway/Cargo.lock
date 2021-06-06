@@ -257,6 +257,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasmcloud-actor-messaging"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73c87e5676acc49fac46f47e6ceb838c1a97495fff98228dac024c79323b777e"
+dependencies = [
+ "lazy_static",
+ "rmp-serde",
+ "serde",
+ "serde_bytes",
+ "wapc-guest",
+]
+
+[[package]]
 name = "wasmcloud-actor-telnet"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -269,7 +282,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ws_server"
+name = "ws_gateway"
 version = "0.1.0"
 dependencies = [
  "gateway_interface",
@@ -282,5 +295,6 @@ dependencies = [
  "wasmcloud-actor-http-server",
  "wasmcloud-actor-keyvalue",
  "wasmcloud-actor-logging",
+ "wasmcloud-actor-messaging",
  "wasmcloud-actor-telnet",
 ]

@@ -1,0 +1,11 @@
+namespace "qq:gateway"
+
+interface {
+  GatewayPublish{request: BrokerMessage}: void
+}
+
+type BrokerMessage {
+    subject: string
+    replyTo: string
+    body: bytes
+}

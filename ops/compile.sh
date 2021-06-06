@@ -15,9 +15,12 @@ split_on_commas "$actors" | while read item; do
   then
     sed "s/!$item/$IMAGE_HOST_PKEY/g" ops/manifest-template.yaml > ops/manifest-temp.yaml
   else
-    sed "s/!$item/$IMAGE_HOST_PKEY/g" ops/manifest-temp.yaml > ops/manifest.yaml
+    sed "s/!$item/$IMAGE_HOST_PKEY/g" ops/manifest-temp.yaml2 > ops/manifest-temp.yaml
   fi
+  cp ops/manifest-temp.yaml ops/manifest-temp.yaml2
   echo Item: ${item}
   echo IMAGE_HOST_PKEY: ${IMAGE_HOST_PKEY}
   i=$((i+1))
 done
+rm ops/manifest-temp.yaml2
+mv ops/manifest-temp.yaml ops/manifest.yaml
