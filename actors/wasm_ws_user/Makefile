@@ -24,7 +24,7 @@ bench:
 
 build:
 	@$(CARGO) build --target wasm32-unknown-unknown --release
-	wash claims sign target/wasm32-unknown-unknown/release/wasm_ws_user.wasm -d target/wasm32-unknown-unknown/release/wasm_ws_user_s.wasm --name "wasm_ws_user" -a "wasm_user"
+	wash claims sign target/wasm32-unknown-unknown/release/wasm_ws_user.wasm -d target/wasm32-unknown-unknown/release/wasm_ws_user_s.wasm -g --name "wasm_ws_user" -a "wasm_ws_user"
 
 check:
 	@$(CARGO) check

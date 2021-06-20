@@ -2,15 +2,27 @@
 labels:
     sample: "qq_party"
 actors:
+    - ./actors/web_server/target/wasm32-unknown-unknown/release/web_server_s.wasm
     - ./actors/ws_gateway/target/wasm32-unknown-unknown/release/ws_gateway_s.wasm
     - ./actors/ws_server/target/wasm32-unknown-unknown/release/ws_server_s.wasm
     - ./actors/wasm_user/target/wasm32-unknown-unknown/release/wasm_user_s.wasm
+    - ./actors/wasm_ws_user/target/wasm32-unknown-unknown/release/wasm_ws_user_s.wasm
+    - ./actors/room_gift/target/wasm32-unknown-unknown/release/room_gift_s.wasm
+    - ./actors/room_message/target/wasm32-unknown-unknown/release/room_message_s.wasm
     
 capabilities:
     - image_ref: wasmcloud.azurecr.io/nats:0.10.2
     - image_ref: wasmcloud.azurecr.io/logging:0.9.1
     - image_ref: wasmcloud.azurecr.io/httpserver:0.12.1
 links:
+  - actor: MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
+    contract_id: "wasmcloud:httpserver"
+    provider_id: "VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M"  
+    values:
+        PORT: 8082
   - actor: MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
     contract_id: "wasmcloud:logging"
     provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
@@ -34,3 +46,16 @@ links:
     provider_id: "VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M"  
     values:
         PORT: 8081
+  - actor: MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+    contract_id: "wasmcloud:messaging"
+    provider_id: "VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7"
+    values:
+      SUBSCRIPTION: ws_gateway.>
+      CLIENT_SEED: SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
+      CLIENT_JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA
+  - actor: MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"

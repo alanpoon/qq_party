@@ -45,6 +45,7 @@ fn handle_req_to_gateway(msg: gateway::BrokerMessage) -> HandlerResult<()> {
 }
 
 fn handle_request(req: http::Request) -> HandlerResult<http::Response> {
+  logging::default().write_log("LOGGING_ACTORINFO", "info", "Coercing Rust String to str")?;
   let p = json!({
     "name": "hll",
     "birth_year": "j"

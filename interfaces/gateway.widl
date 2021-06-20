@@ -1,7 +1,7 @@
 namespace "qq:gateway"
 
 interface {
-  GatewayPublish{request: BrokerMessage}: void
+  GatewayPublish{request: BrokerMessage}: bytes
 }
 
 type BrokerMessage {

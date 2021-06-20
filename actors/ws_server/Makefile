@@ -23,8 +23,8 @@ bench:
 	@$(CARGO) bench
 
 build:
-	@$(CARGO) build --target wasm32-unknown-unknown --release
-	wash claims sign target/wasm32-unknown-unknown/release/ws_server.wasm -d target/wasm32-unknown-unknown/release/ws_server_s.wasm -c wasmcloud:httpserver --name "ws_server" -a "ws_server"
+	cargo build --target wasm32-unknown-unknown --release
+	wash claims sign target/wasm32-unknown-unknown/release/ws_server.wasm -d target/wasm32-unknown-unknown/release/ws_server_s.wasm -c wasmcloud:httpserver -l --name "ws_server" -a "ws_server"
 
 check:
 	@$(CARGO) check

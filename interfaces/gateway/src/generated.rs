@@ -35,14 +35,17 @@ pub fn default() -> Host {
 }
 
 impl Host {
-    pub fn gateway_publish(&self, request: BrokerMessage) -> HandlerResult<()> {
+    pub fn gateway_publish(&self, request: BrokerMessage) -> HandlerResult<Vec<u8>> {
         host_call(
             &self.binding,
             "qq:gateway",
             "GatewayPublish",
             &serialize(request)?,
         )
-        .map(|_vec| ())
+        .map(|vec| {
+            let resp = deserialize::<Vec<u8>>(vec.as_ref()).unwrap();
+            resp
+        })
         .map_err(|e| e.into())
     }
 }
@@ -50,14 +53,14 @@ impl Host {
 pub struct Handlers {}
 
 impl Handlers {
-    pub fn register_gateway_publish(f: fn(BrokerMessage) -> HandlerResult<()>) {
+    pub fn register_gateway_publish(f: fn(BrokerMessage) -> HandlerResult<Vec<u8>>) {
         *GATEWAY_PUBLISH.write().unwrap() = Some(f);
         register_function(&"GatewayPublish", gateway_publish_wrapper);
     }
 }
 
 lazy_static! {
-    static ref GATEWAY_PUBLISH: RwLock<Option<fn(BrokerMessage) -> HandlerResult<()>>> =
+    static ref GATEWAY_PUBLISH: RwLock<Option<fn(BrokerMessage) -> HandlerResult<Vec<u8>>>> =
         RwLock::new(None);
 }
 

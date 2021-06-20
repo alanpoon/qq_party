@@ -10,7 +10,7 @@ fn check_schedule(nc: nats::Connection){
     //let rply = msg.reply.unwrap();
     println!("reply {:?}",msg);
     //client.publish_with_reply_or_headers(&rply, None, None, &msg.data);
-  } 
+  }
 }
 fn main(){
   let seed = "SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ";

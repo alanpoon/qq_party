@@ -161,21 +161,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "wasm_user"
-version = "0.1.0"
-dependencies = [
- "log",
- "serde",
- "serde_json",
- "wapc-guest",
- "wasm_user_interface",
- "wasmcloud-actor-core",
- "wasmcloud-actor-keyvalue",
- "wasmcloud-actor-logging",
- "wasmcloud-actor-telnet",
-]
-
-[[package]]
 name = "wasm_user_interface"
 version = "0.1.0"
 dependencies = [
@@ -186,6 +171,22 @@ dependencies = [
  "serde_bytes",
  "serde_json",
  "wapc-guest",
+]
+
+[[package]]
+name = "wasm_ws_user"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "wapc-guest",
+ "wasm_user_interface",
+ "wasmcloud-actor-core",
+ "wasmcloud-actor-keyvalue",
+ "wasmcloud-actor-logging",
+ "wasmcloud-actor-messaging",
+ "wasmcloud-actor-telnet",
 ]
 
 [[package]]
@@ -238,6 +239,19 @@ checksum = "220d368da04838697fc7e4239273c99aa2c41a5cd6586973df9ca9965f14db01"
 dependencies = [
  "lazy_static",
  "log",
+ "rmp-serde",
+ "serde",
+ "serde_bytes",
+ "wapc-guest",
+]
+
+[[package]]
+name = "wasmcloud-actor-messaging"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73c87e5676acc49fac46f47e6ceb838c1a97495fff98228dac024c79323b777e"
+dependencies = [
+ "lazy_static",
  "rmp-serde",
  "serde",
  "serde_bytes",

@@ -24,7 +24,7 @@ bench:
 
 build:
 	@$(CARGO) build --target wasm32-unknown-unknown --release
-	wash claims sign target/wasm32-unknown-unknown/release/ws_gateway.wasm -d target/wasm32-unknown-unknown/release/ws_gateway_s.wasm -g -c wasmcloud:httpserver --name "ws_gateway" -a "ws_gateway"
+	wash claims sign target/wasm32-unknown-unknown/release/ws_gateway.wasm -d target/wasm32-unknown-unknown/release/ws_gateway_s.wasm -g -l -c wasmcloud:httpserver --name "ws_gateway" -a "ws_gateway"
 
 check:
 	@$(CARGO) check

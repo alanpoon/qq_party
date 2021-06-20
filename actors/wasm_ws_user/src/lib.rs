@@ -1,30 +1,28 @@
 extern crate wapc_guest as guest;
 
 use serde::{Deserialize, Serialize};
+use log::{debug, error, info};
 use wasmcloud_actor_core as actor;
+use wasmcloud_actor_messaging as messaging;
+use wasmcloud_actor_logging as logging;
 use wasm_user_interface as user;
 use guest::prelude::*;
-const WS_SERVER_ACTOR_CALL_ALIAS: &str = "ws_server";
+const WASM_USER_ACTOR_CALL_ALIAS: &str = "wasm_user";
 
 #[actor::init]
 fn init() {
     // Register your message handlers here
-    user::Handlers::register_ping(handle_ping);
+    logging::enable_macros();
+    messaging::Handlers::register_handle_message(handle_message);
 }
 
-fn handle_ping(ping: user::Ping) -> HandlerResult<user::Pong> {
-  Ok(user::Pong {
-      value: ping.value + 42,
-  })
-}
+
 fn handle_message(msg: messaging::BrokerMessage) -> HandlerResult<()> {
-  // TODO: handle request to obtain access token
-
-  if msg.subject == INBOUND_SUBJECT {
-      handle_inbound_message(msg)
-  } else if msg.subject.starts_with(BACKEND_SUBJECT_PREFIX) {
-      handle_outbound_message(msg)
-  } else {
-      Err(format!("Unrecognized subject {}", msg.subject).into())
+  if msg.subject.contains("ws_gateway.room_message."){
+    debug!(
+      "command {} received from user",
+      msg.subject
+    );
   }
+  Ok(())
 }

@@ -2,4 +2,8 @@
 ws_gateway : Publish Message
 ws_gateway --> ws_server
 ws_server : process user
+ws_server --> ingame_bean
+ingame_bean : room_gift
+ws_server --> room_message
+ws_server --> room_streaming
 @enduml
