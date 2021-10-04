@@ -1,0 +1,25 @@
+[package]
+name = "room_mgr2"
+version = "0.1.0"
+authors = ["alanpoon"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wapc-guest = "0.4.0"
+serde = { version = "1.0.123", features = ["derive"]}
+serde_json = "1.0.64"
+log = "0.4.14"
+wasmcloud-actor-core = { version = "0.2.2", features = ["guest"] }
+wasmcloud-actor-logging = { version = "0.1.1", features = ["guest"] }
+wasmcloud-actor-keyvalue = { version = "0.2.1", features = ["guest"]}
+wasmcloud-actor-http-server = { version = "0.1.0", features = ["guest"]}
+wasmcloud-actor-messaging = { version = "0.1.1", features = ["guest"] }
+room_interface = { path ="../../interfaces/room2"}
+
+[profile.release]
+# Optimize for small code size
+opt-level = "s"
+lto = true

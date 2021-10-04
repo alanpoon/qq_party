@@ -1127,6 +1127,8 @@ dependencies = [
  "nats 0.8.6",
  "nkeys 0.1.0",
  "provider-archive",
+ "serde",
+ "serde_bytes",
  "structopt",
  "wasmcloud-host",
 ]

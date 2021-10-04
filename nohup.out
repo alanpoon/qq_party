@@ -1,0 +1,157 @@
+[2021-08-09T13:03:49Z INFO ] jwt_file "eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA"
+[2021-08-09T13:03:49Z INFO ] seed_val "SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ"
+[2021-08-09T13:03:50Z INFO ] nonce [85, 77, 113, 69, 86, 55, 71, 109, 49, 56, 109, 86, 86, 120, 85] kpKeyPair (User)
+[2021-08-09T13:03:52Z WARN ] Starting host without a control connection, error: unexpected line while connecting: Err("Authorization Violation")
+[2021-08-09T13:03:52Z INFO ] Message Bus started
+[2021-08-09T13:03:52Z INFO ] Messagebus initialized
+[2021-08-09T13:03:52Z INFO ] Messagebus initializing with lattice RPC support
+[2021-08-09T13:03:52Z INFO ] Initializing lattice RPC client
+[2021-08-09T13:03:52Z INFO ] Host Controller started
+[2021-08-09T13:03:52Z INFO ] Native provider host started
+[2021-08-09T13:03:52Z INFO ] Host controller initialized - NA37MT3LY4ALDK7CFER7O7YFL333UOWAJXXGNICX3DOXU7BBEUYB3MD6 (Hot Updating - false)
+[2021-08-09T13:03:52Z INFO ] Native provider host started
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://wasmcloud/keyvalue/__wasmcloud_lattice_cache/VAHNM37G4ARHZ3CYHB3L34M6TYQWQR6IZ4QVYC4NYZWTJCJ2LWP7S6Z2
+[2021-08-09T13:03:52Z INFO ] Native Capability Provider 'wasmbus://wasmcloud/extras/default/VDHPKGFKDI34Y4RN4PWWZHRYZ6373HYRSNNEM4UTDLLOGO5B37TSVREP' ready
+[2021-08-09T13:03:52Z INFO ] Native Capability Provider 'wasmbus://wasmcloud/keyvalue/__wasmcloud_lattice_cache/VAHNM37G4ARHZ3CYHB3L34M6TYQWQR6IZ4QVYC4NYZWTJCJ2LWP7S6Z2' ready
+[2021-08-09T13:03:52Z INFO ] Control Interface started
+[2021-08-09T13:03:52Z INFO ] Initialized lattice cache provider
+[2021-08-09T13:03:52Z INFO ] No NATS URL present, falling back to standalone/isolated KV cache
+[2021-08-09T13:03:52Z INFO ] Cache provider successfully configured
+[2021-08-09T13:03:52Z INFO ] Host controller initialized - NA37MT3LY4ALDK7CFER7O7YFL333UOWAJXXGNICX3DOXU7BBEUYB3MD6 (Hot Updating - false)
+[2021-08-09T13:03:52Z INFO ] Initializing control interface - Disabled
+[2021-08-09T13:03:52Z INFO ] Starting actor MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
+[2021-08-09T13:03:52Z INFO ] Actor MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG has claimed call alias 'web_server'
+[2021-08-09T13:03:52Z INFO ] Actor MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+[2021-08-09T13:03:52Z INFO ] Actor MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA has claimed call alias 'ws_gateway'
+[2021-08-09T13:03:52Z INFO ] Actor MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:03:52Z INFO ] Actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL has claimed call alias 'ws_server'
+[2021-08-09T13:03:52Z INFO ] Actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MCJTMRY252TORMJVVBGT4XWJRJNFCVGJPOLXBY6A7GSCMVY6KVLA6CLB
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Guest module did not import __host_call - functionality may be limited
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z WARN ] Module did not import __host_response
+[2021-08-09T13:03:52Z WARN ] Module did not import __host_response_len
+[2021-08-09T13:03:52Z WARN ] Module did not import __host_error
+[2021-08-09T13:03:52Z WARN ] Module did not import __host_error_len
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MCJTMRY252TORMJVVBGT4XWJRJNFCVGJPOLXBY6A7GSCMVY6KVLA6CLB
+[2021-08-09T13:03:52Z INFO ] Actor MCJTMRY252TORMJVVBGT4XWJRJNFCVGJPOLXBY6A7GSCMVY6KVLA6CLB has claimed call alias 'wasm_user'
+[2021-08-09T13:03:52Z INFO ] Actor MCJTMRY252TORMJVVBGT4XWJRJNFCVGJPOLXBY6A7GSCMVY6KVLA6CLB initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+[2021-08-09T13:03:52Z INFO ] Actor MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH has claimed call alias 'wasm_ws_user'
+[2021-08-09T13:03:52Z INFO ] Actor MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD
+[2021-08-09T13:03:52Z INFO ] Actor MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD has claimed call alias 'room_gift'
+[2021-08-09T13:03:52Z INFO ] Actor MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MD5YEBASNUPWUAZHL3HCCMMXZKXGY2KFJZHEKSQHNYSVPGHE23LM6PNY
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MD5YEBASNUPWUAZHL3HCCMMXZKXGY2KFJZHEKSQHNYSVPGHE23LM6PNY
+[2021-08-09T13:03:52Z INFO ] Actor MD5YEBASNUPWUAZHL3HCCMMXZKXGY2KFJZHEKSQHNYSVPGHE23LM6PNY initialized
+[2021-08-09T13:03:52Z INFO ] Starting actor MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE
+[2021-08-09T13:03:52Z INFO ] Actor started
+[2021-08-09T13:03:52Z INFO ] Initializing Wasm3 Engine
+[2021-08-09T13:03:52Z WARN ] Module did not import __console_log
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE
+[2021-08-09T13:03:52Z INFO ] Actor MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE has claimed call alias 'room_mgr2'
+[2021-08-09T13:03:52Z INFO ] Actor MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE initialized
+[2021-08-09T13:03:52Z INFO ] Starting provider VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+[2021-08-09T13:03:52Z INFO ] Native provider host started
+[2021-08-09T13:03:52Z DEBUG] Using cache at /var/folders/hh/xpp41f010bx90k4cv4h_ndnc23ptrh/T/wasmcloudcache/VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7/16/x86_64-macos
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://wasmcloud/messaging/default/VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+[2021-08-09T13:03:52Z INFO ] Native Capability Provider 'wasmbus://wasmcloud/messaging/default/VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7' ready
+[2021-08-09T13:03:52Z INFO ] Starting provider VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z INFO ] Native provider host started
+[2021-08-09T13:03:52Z DEBUG] Using cache at /var/folders/hh/xpp41f010bx90k4cv4h_ndnc23ptrh/T/wasmcloudcache/VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ/3/x86_64-macos
+[2021-08-09T13:03:52Z INFO  wasmcloud_logging] Dispatcher configured.
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://wasmcloud/logging/default/VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z INFO ] Native Capability Provider 'wasmbus://wasmcloud/logging/default/VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ' ready
+[2021-08-09T13:03:52Z INFO ] Starting provider VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M
+[2021-08-09T13:03:52Z INFO ] Native provider host started
+[2021-08-09T13:03:52Z DEBUG] Using cache at /var/folders/hh/xpp41f010bx90k4cv4h_ndnc23ptrh/T/wasmcloudcache/VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M/7/x86_64-macos
+[2021-08-09T13:03:52Z INFO  wasmcloud_httpserver] Dispatcher configured.
+[2021-08-09T13:03:52Z INFO ] Creating lattice subscription for wasmbus://wasmcloud/httpserver/default/VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M
+[2021-08-09T13:03:52Z INFO ] Native Capability Provider 'wasmbus://wasmcloud/httpserver/default/VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M' ready
+[2021-08-09T13:03:52Z DEBUG] Advertising MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z DEBUG] Advertising MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG:default:VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M
+[2021-08-09T13:03:52Z DEBUG] Advertising MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z DEBUG] Advertising MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL:default:VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M
+[2021-08-09T13:03:52Z INFO  wasmcloud_httpserver] Received HTTP Server configuration for MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
+[2021-08-09T13:03:52Z DEBUG wasmcloud_httpserver] HttpServer configured for 0.0.0.0:8082
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting 12 workers
+[2021-08-09T13:03:52Z DEBUG] Advertising MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA:default:VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+[2021-08-09T13:03:52Z INFO  wasmcloud_httpserver] Received HTTP Server configuration for MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:03:52Z DEBUG wasmcloud_httpserver] HttpServer configured for 0.0.0.0:8080
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting 12 workers
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting "actix-web-service-0.0.0.0:8082" service on 0.0.0.0:8082
+[2021-08-09T13:03:52Z DEBUG] Advertising MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting "actix-web-service-0.0.0.0:8080" service on 0.0.0.0:8080
+[2021-08-09T13:03:52Z DEBUG] Advertising MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA:default:VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M
+[2021-08-09T13:03:52Z INFO  wasmcloud_nats::natsprov] NATS provider host: nats://0.0.0.0:4222
+[2021-08-09T13:03:52Z DEBUG] Advertising MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH:default:VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+[2021-08-09T13:03:52Z INFO  wasmcloud_httpserver] Received HTTP Server configuration for MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+[2021-08-09T13:03:52Z DEBUG wasmcloud_httpserver] HttpServer configured for 0.0.0.0:8081
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting 12 workers
+[2021-08-09T13:03:52Z DEBUG] Advertising MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z DEBUG] Advertising MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z INFO  actix_server::builder] Starting "actix-web-service-0.0.0.0:8081" service on 0.0.0.0:8081
+[2021-08-09T13:03:52Z DEBUG] Advertising MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE:default:VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ
+[2021-08-09T13:03:52Z DEBUG] Advertising MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE:default:VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+[2021-08-09T13:03:53Z INFO  wasmcloud_nats::natsprov] NATS provider host: nats://0.0.0.0:4222
+[2021-08-09T13:03:54Z INFO  wasmcloud_nats::natsprov] NATS provider host: nats://0.0.0.0:4222
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.room_mgr2.join_room
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] JoinRoom
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.room_mgr2.join_room
+[2021-08-09T13:05:00Z ERROR] Error invoking actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE/JoinRoom)
+[2021-08-09T13:05:00Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL/GatewayPublish)
+[2021-08-09T13:05:00Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA/HandleMessage)
+[2021-08-09T13:05:00Z ERROR] Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom"
+[2021-08-09T13:05:00Z ERROR wasmcloud_nats::natsprov] Dispatch failed: Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom"
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.user-connected.23
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] 23
+[2021-08-09T13:05:00Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.user-connected.23
+[2021-08-09T13:05:00Z ERROR] The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:05:00Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL (from wasmbus://MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL/GatewayPublish)
+[2021-08-09T13:05:00Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL (from wasmbus://MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA/HandleMessage)
+[2021-08-09T13:05:00Z ERROR] Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:05:00Z ERROR wasmcloud_nats::natsprov] Dispatch failed: Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.room_mgr2.join_room
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] JoinRoom
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.room_mgr2.join_room
+[2021-08-09T13:38:28Z ERROR] Error invoking actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MCH5WTK2LUDYYSATYLAVDTPRW3H3QUW5YXF5MGSGTTVVQ4ZHKRPQPDXE/JoinRoom)
+[2021-08-09T13:38:28Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL/GatewayPublish)
+[2021-08-09T13:38:28Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom" (from wasmbus://MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA/HandleMessage)
+[2021-08-09T13:38:28Z ERROR] Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom"
+[2021-08-09T13:38:28Z ERROR wasmcloud_nats::natsprov] Dispatch failed: Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: No handler registered for function "JoinRoom"
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.user-connected.23
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] 23
+[2021-08-09T13:38:28Z INFO  wasmcloud_logging] [MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL] ws_gateway.user-connected.23
+[2021-08-09T13:38:28Z ERROR] The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:38:28Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL (from wasmbus://MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL/GatewayPublish)
+[2021-08-09T13:38:28Z ERROR] Error invoking actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL (from wasmbus://MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA/HandleMessage)
+[2021-08-09T13:38:28Z ERROR] Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+[2021-08-09T13:38:28Z ERROR wasmcloud_nats::natsprov] Dispatch failed: Invocation failure: Failed to invoke actor: Guest call failure: Guest call failed: Host error: Failed to invoke actor: Guest call failure: Guest call failed: Host error: The target user-connected was not found as an actor public key, an actor call alias, or as the contract ID in an existing link from source actor MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL

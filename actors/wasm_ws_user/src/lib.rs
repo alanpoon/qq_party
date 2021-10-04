@@ -24,5 +24,11 @@ fn handle_message(msg: messaging::BrokerMessage) -> HandlerResult<()> {
       msg.subject
     );
   }
+  if msg.subject.contains("ws_gateway.join_room."){
+    debug!(
+      "command {} received from user",
+      msg.subject
+    );
+  }
   Ok(())
 }

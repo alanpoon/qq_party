@@ -1,2 +1,3 @@
 **/target
-ui
+ui/build
+ui/node_modules

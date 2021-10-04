@@ -25,6 +25,25 @@ type MessageResponse{
     msg: string
 }
 type JoinRoomRequest{
-    user_id: u32
-    room_number: string
+    user: UserInfo
+    room_number_s: string
+}
+type LeaveRoomRequest{
+    user: UserInfo
+    room_number_s: string
+}
+type UserInfo{
+  user_id_s: string,
+  peer_id: string
+}
+type HostUpdateRoomMembersRequest{
+    room_number_s: string
+    users: [UserInfo]
+}
+type HostPingRequest{
+    room_number_s: string
+}
+type HostCreateRoomRequest{
+    room_number_s: string
+    description: string
 }

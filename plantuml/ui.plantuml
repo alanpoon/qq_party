@@ -1,0 +1,23 @@
+@startuml
+actor       user       as Foo
+participant room_page as Foo1
+entity    singer    as Foo2
+participant     ws_gateway     as Foo3
+participant      ws_server      as Foo4
+participant    room_streaming    as Foo5
+Foo -> Foo1 : http 
+Foo2 -> Foo1 : pick a song\nstart webrtc client
+Foo1 -> Foo3 : PUB ws_gateway.room_streaming.\nset_webrtc_addr_request
+Foo3 -> Foo4 : Translate Logic
+Foo4 -> Foo5 : Save webrtc addr\n,room_number Key-Value
+Foo5 -> Foo4 : Ok
+Foo4 -> Foo3 : Ok
+Foo3 -> Foo2 : Ok
+Foo1 -> Foo3 : SUB ws_gateway.room_streaming.\nget_webrtc_addr_request
+Foo3 -> Foo4 : Translate Logic
+Foo4 -> Foo5 : Get webrtc addr\n,room_number Key-Value
+Foo5 -> Foo4 : webrtc addr
+Foo4 -> Foo3 : webrtc addr
+Foo3 -> Foo1 : webrtc addr
+Foo1 -> Foo : Audio
+@enduml

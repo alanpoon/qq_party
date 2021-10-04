@@ -12,6 +12,9 @@ bash ops/compile.sh ws_gateway,ws_server,wasm_user
 nats-account-server -c ops/nas_not.conf
 nohup nats-server -c ops/gateway.conf -V -D nohup.out 2>&1 &
 # nats-server -V -D
+# nats-server -c ops/websocket_leaf2.conf -V -D
+# nats-server -c ops/websocket_leaf3.conf -V -D
+# nats-server -c ops/websocket.conf -V -D
 
 RUST_LOG=crane=trace,info,debug wasmcloud -m ops/manifest.yaml --rpc-jwt ~/.nsc/nats/O/accounts/A/users/admin.jwt --rpc-seed SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
 
