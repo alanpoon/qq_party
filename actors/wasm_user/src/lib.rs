@@ -11,7 +11,7 @@ fn init() {
     // Register your message handlers here
     user::Handlers::register_ping(handle_ping);
 }
-//wash ctl call MCJTMRY252TORMJVVBGT4XWJRJNFCVGJPOLXBY6A7GSCMVY6KVLA6CLB Ping '{"value": 2}'
+//wash ctl call MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH Ping '{"value": 2}'
 fn handle_ping(ping: user::Ping) -> HandlerResult<user::Pong> {
   Ok(user::Pong {
       value: ping.value + 42,

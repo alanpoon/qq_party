@@ -1,0 +1,5 @@
+---
+actors: []
+capabilities:
+    - path: ./target/release/libengine_provider.so
+bindings: []

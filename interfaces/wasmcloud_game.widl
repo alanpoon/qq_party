@@ -1,0 +1,9 @@
+namespace "wasmcloud:game"
+
+interface {
+  StartThread{request: StartThreadRequest}: bytes
+}
+
+type StartThreadRequest {
+    game_id: string
+}

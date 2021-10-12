@@ -2,51 +2,78 @@
 labels:
     sample: "qq_party"
 actors:
+    - ./actors/web_server/target/wasm32-unknown-unknown/release/web_server_s.wasm
     - ./actors/ws_gateway/target/wasm32-unknown-unknown/release/ws_gateway_s.wasm
     - ./actors/ws_server/target/wasm32-unknown-unknown/release/ws_server_s.wasm
     - ./actors/wasm_user/target/wasm32-unknown-unknown/release/wasm_user_s.wasm
     - ./actors/wasm_ws_user/target/wasm32-unknown-unknown/release/wasm_ws_user_s.wasm
     - ./actors/room_gift/target/wasm32-unknown-unknown/release/room_gift_s.wasm
     - ./actors/room_message/target/wasm32-unknown-unknown/release/room_message_s.wasm
-    
+    - ./actors/room_mgr2/target/wasm32-unknown-unknown/release/room_mgr2_s.wasm
 capabilities:
     - image_ref: wasmcloud.azurecr.io/nats:0.10.2
     - image_ref: wasmcloud.azurecr.io/logging:0.9.1
     - image_ref: wasmcloud.azurecr.io/httpserver:0.12.1
+    - image_ref: wasmcloud.azurecr.io/redis:0.11.2
+    - path: ./capability_providers/game-provider/lib
 links:
-  - actor: MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+  - actor: !web_server
     contract_id: "wasmcloud:logging"
     provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
-  - actor: MAZLL727FH5HDKM6UWP7R2N2RPV5Z4WL5M7ECTF6E2Z635Q3DBVGZBIL
+  - actor: !web_server
+    contract_id: "wasmcloud:httpserver"
+    provider_id: "VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M"  
+    values:
+        PORT: 8082
+  - actor: !ws_server
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: !ws_server
     contract_id: "wasmcloud:httpserver"
     provider_id: "VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M"  
     values:
         PORT: 8080
-  - actor: MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+  - actor: !ws_gateway
     contract_id: "wasmcloud:messaging"
     provider_id: "VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7"
     values:
-      SUBSCRIPTION: ws_gateway.>
+      SUBSCRIPTION: ws_gatewayz.>
       CLIENT_SEED: SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
       CLIENT_JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA
-  - actor: MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+  - actor: !ws_gateway
     contract_id: "wasmcloud:logging"
     provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
-  - actor: MCSYADSEYARGJ3KVWIMIMLLOOPTA7NJN7IUM7WZXFWJ3GXIWJMXDKRXA
+  - actor: !ws_gateway
     contract_id: "wasmcloud:httpserver"
     provider_id: "VAG3QITQQ2ODAOWB5TTQSDJ53XK3SHBEIFNK4AYJ5RKAX2UNSCAPHA5M"  
     values:
         PORT: 8081
-  - actor: MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+  - actor: !wasm_ws_user
     contract_id: "wasmcloud:messaging"
     provider_id: "VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7"
     values:
-      SUBSCRIPTION: ws_gateway.>
+      SUBSCRIPTION: ws_gatewayz.>
       CLIENT_SEED: SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
       CLIENT_JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA
-  - actor: MCXF2PXO54H4TPUZLCTLIAYHV2XL4UX6O7MK2FORICIAKDPIRONFFKVH
+  - actor: !wasm_ws_user
     contract_id: "wasmcloud:logging"
     provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
-  - actor: MBNUI3DZMXPHUP6XQHUCMNXRHMZDHFM3MSEIZIHUDQT2OX3THWSAVTMD
+  - actor: !room_gift
     contract_id: "wasmcloud:logging"
     provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: !room_mgr2
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: !room_mgr2
+    contract_id: "wasmcloud:messaging"
+    provider_id: "VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7"
+    values:
+      SUBSCRIPTION: ws_gateway.room_mgr2.>
+      CLIENT_SEED: SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
+      CLIENT_JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA
+  - actor: !room_mgr2
+    contract_id: "wasmcloud:keyvalue"
+    provider_id: "VAZVC4RX54J2NVCMCW7BPCAHGGG5XZXDBXFUMDUXGESTMQEJLC3YVZWB"    
+    link_name: default
+    values:
+      URL: redis://0.0.0.0:6379/ 

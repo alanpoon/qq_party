@@ -1,0 +1,35 @@
+CONST_FILE := src/lib.rs
+define readvar
+$(or $(shell sed -nE 's/^.*$(1).*"(.*)";$$/\1/p' $(CONST_FILE)),$(error "Cannot find variable $(1)"))
+endef
+
+CAPABILITY_ID := wasmcloud:game
+NAME          := $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[].name')
+VERSION       := $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[].version')
+LIBNAME       := $(shell echo $(NAME) | tr '-' '_')
+VENDOR        := wasmCloud
+REVISION      ?= 0
+DESTINATION   ?= libgame.par.gz
+
+TARGETS := x86_64-apple-darwin
+
+# not currently supported
+MIPS_TARGETS := mips-unknown-linux-gnu \
+	mipsel-unknown-linux-gnu \
+	mips64-unknown-linux-gnuabi64 \
+	mips64el-unknown-linux-gnuabi64
+
+$(TARGETS):
+	cross build --target $@ --release
+
+par:
+	wash par create \
+		--arch x86_64-macos \
+		--binary target/release/lib$(LIBNAME).dylib \
+		--capid $(CAPABILITY_ID) \
+		--name $(NAME) \
+		--vendor $(VENDOR) \
+		--version $(VERSION) \
+		--revision $(REVISION) \
+		--destination $(DESTINATION) \
+		--compress

@@ -1,0 +1,29 @@
+[package]
+name = "wasmcloud-game"
+version = "0.0.1"
+description = "wasmcloud-game"
+authors = [""]
+edition = "2018"
+license = "Apache-2.0"
+
+[features]
+guest = ["wapc-guest"]
+
+[dependencies]
+wapc-guest = { version = "0.4.0", optional = true}
+serde = { version = "1.0.115" , features = ["derive"] }
+serde_json = "1.0.57"
+serde_derive = "1.0.115"
+serde_bytes = "0.11.5"
+rmp-serde = "0.14.4"
+lazy_static = "1.4.0"
+
+[dev-dependencies]
+structopt = "0.3.17"
+serde_json = "1.0.57"
+base64 = "0.12.3"
+
+[profile.release]
+# Optimize for small code size
+opt-level = "s"
+lto = true

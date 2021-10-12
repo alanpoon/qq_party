@@ -10,11 +10,13 @@ actors:
     - ./actors/room_gift/target/wasm32-unknown-unknown/release/room_gift_s.wasm
     - ./actors/room_message/target/wasm32-unknown-unknown/release/room_message_s.wasm
     - ./actors/room_mgr2/target/wasm32-unknown-unknown/release/room_mgr2_s.wasm
+    - ./actors/game_logic/target/wasm32-unknown-unknown/release/game_logic_s.wasm
 capabilities:
     - image_ref: wasmcloud.azurecr.io/nats:0.10.2
     - image_ref: wasmcloud.azurecr.io/logging:0.9.1
     - image_ref: wasmcloud.azurecr.io/httpserver:0.12.1
     - image_ref: wasmcloud.azurecr.io/redis:0.11.2
+    - image_ref: ./capability_providers/wasmcloud-game/libgame.par.gz
 links:
   - actor: MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
     contract_id: "wasmcloud:logging"
@@ -76,3 +78,18 @@ links:
     link_name: default
     values:
       URL: redis://0.0.0.0:6379/ 
+  - actor: MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2
+    contract_id: "wasmcloud:logging"
+    provider_id: "VCCANMDC7KONJK435W6T7JFEEL7S3ZG6GUZMZ3FHTBZ32OZHJQR5MJWZ"
+  - actor: MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2
+    contract_id: "wasmcloud:messaging"
+    provider_id: "VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7"
+    values:
+      SUBSCRIPTION: ws_gateway.game_logic.>
+      CLIENT_SEED: SUAL3RJ5MZK7X3XENQ2A573JFCUAMI45KBSOAFRIBWUP6I4VSJOUVP7LGQ
+      CLIENT_JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJETzNRQ01WS1VXSUpGUFE2WVBRUlpYNldWS1hQQjJFT1hXT0hWWlE2RE5DNUZMQk1ZVldBIiwiaWF0IjoxNjIyMjk1MzQ0LCJpc3MiOiJBQVA3VVpQTkVFM0xEVFdTSVBBRDZESFZJWDRIS0JUREdQTjU2NVRXWUdDUlZERlJJUVZOWERBQiIsIm5hbWUiOiJhZG1pbiIsInN1YiI6IlVCQkRFT1laNkRUSzY1VjZYWkVGNVlPMkNWWVVCWldCTzJJMkZUQTRCNTJKRlRGMlBBU0czS1lMIiwibmF0cyI6eyJwdWIiOnt9LCJzdWIiOnt9LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.w_evRL2p3u-McwjntNTGuP_-0UPQgr4ZdGVBUZyz-nAU7MhNQAQ8Qh2gf6UBvmKioAnL4B_lQtOQOT0GpGowCA
+  - actor: MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2
+    contract_id: "wasmcloud:game"
+    provider_id: "VB4RKGH3TX7A2H2BXZFY32SRJAYITADXN2TOP4XR4UVWDILSBU3FIGIV"
+    values:
+      SUBSCRIPTION: "s"
