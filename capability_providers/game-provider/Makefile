@@ -32,4 +32,5 @@ par:
 		--version $(VERSION) \
 		--revision $(REVISION) \
 		--destination $(DESTINATION) \
-		--compress
+		--compress \
+		--disable-keygen

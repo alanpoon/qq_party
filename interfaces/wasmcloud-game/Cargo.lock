@@ -305,7 +305,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "wasmcloud_game"
+name = "wasmcloud-game"
 version = "0.0.1"
 dependencies = [
  "base64",

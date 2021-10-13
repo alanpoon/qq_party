@@ -38,7 +38,7 @@ pub fn default() -> Host {
 
 #[cfg(feature = "guest")]
 impl Host {
-    pub fn start_thread(&self, request: StartThreadRequest) -> HandlerResult<Vec<u8>> {
+    pub fn start_thread(&self, request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
         host_call(
             &self.binding,
             "wasmcloud:game",
@@ -46,7 +46,23 @@ impl Host {
             &serialize(request)?,
         )
         .map(|vec| {
-            let resp = deserialize::<Vec<u8>>(vec.as_ref()).unwrap();
+            let resp = deserialize::<StartThreadResponse>(vec.as_ref()).unwrap();
+            resp
+        })
+        .map_err(|e| e.into())
+    }
+    pub fn start_thread_request(
+        &self,
+        request: StartThreadRequest,
+    ) -> HandlerResult<StartThreadResponse> {
+        host_call(
+            &self.binding,
+            "wasmcloud:game",
+            "StartThreadRequest",
+            &serialize(request)?,
+        )
+        .map(|vec| {
+            let resp = deserialize::<StartThreadResponse>(vec.as_ref()).unwrap();
             resp
         })
         .map_err(|e| e.into())
@@ -58,15 +74,22 @@ pub struct Handlers {}
 
 #[cfg(feature = "guest")]
 impl Handlers {
-    pub fn register_start_thread(f: fn(StartThreadRequest) -> HandlerResult<Vec<u8>>) {
+    pub fn register_start_thread(f: fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>) {
         *START_THREAD.write().unwrap() = Some(f);
         register_function(&"StartThread", start_thread_wrapper);
+    }
+    pub fn register_start_thread_request(
+        f: fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>,
+    ) {
+        *START_THREAD_REQUEST.write().unwrap() = Some(f);
+        register_function(&"StartThreadRequest", start_thread_request_wrapper);
     }
 }
 
 #[cfg(feature = "guest")]
 lazy_static::lazy_static! {
-static ref START_THREAD: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<Vec<u8>>>> = std::sync::RwLock::new(None);
+static ref START_THREAD: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
+static ref START_THREAD_REQUEST: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
 }
 
 #[cfg(feature = "guest")]
@@ -77,11 +100,22 @@ fn start_thread_wrapper(input_payload: &[u8]) -> CallResult {
     serialize(result)
 }
 
+#[cfg(feature = "guest")]
+fn start_thread_request_wrapper(input_payload: &[u8]) -> CallResult {
+    let input = deserialize::<StartThreadRequest>(input_payload)?;
+    let lock = START_THREAD_REQUEST.read().unwrap().unwrap();
+    let result = lock(input)?;
+    serialize(result)
+}
+
 #[derive(Debug, PartialEq, Deserialize, Serialize, Default, Clone)]
 pub struct StartThreadRequest {
     #[serde(rename = "game_id")]
     pub game_id: String,
 }
+
+#[derive(Debug, PartialEq, Deserialize, Serialize, Default, Clone)]
+pub struct StartThreadResponse {}
 
 /// The standard function for serializing codec structs into a format that can be
 /// used for message exchange between actor and host. Use of any other function to

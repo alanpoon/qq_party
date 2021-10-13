@@ -1,9 +1,13 @@
 namespace "wasmcloud:game"
 
 interface {
-  StartThread{request: StartThreadRequest}: bytes
+  StartThread{request: StartThreadRequest}: StartThreadResponse
+  StartThreadRequest{request: StartThreadRequest}: StartThreadResponse
 }
 
 type StartThreadRequest {
     game_id: string
+}
+type StartThreadResponse {
+    
 }

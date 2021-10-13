@@ -19,9 +19,9 @@ const TURN_DELAY_MILLIS_DEFAULT: u64 = 2000;
 capability_provider!(GameProvider, GameProvider::new);
 use lazy_static::lazy_static; // 1.4.0
 
-lazy_static! {
-  static ref MAP: Arc<Mutex<HashMap<String,bool>>> = Arc::new(Mutex::new(HashMap::new()));
-}
+// lazy_static! {
+//   static ref MAP: Arc<Mutex<HashMap<String,bool>>> = Arc::new(Mutex::new(HashMap::new()));
+// }
 
 #[derive(Clone)]
 pub struct GameProvider {
@@ -29,9 +29,10 @@ pub struct GameProvider {
 }
 
 impl GameProvider{
-  fn spawn_server(&self,start_thread_request:wasmcloud_game::StartThreadRequest) {
+  fn spawn_server(&self,start_thread_request:wasmcloud_game::StartThreadRequest)->Result<Vec<u8>, Box<dyn Error + Sync + Send>> {
     let start = Instant::now();
     info!("start thread");
+    let MAP = Arc::new(Mutex::new(HashMap::new()));
     std::thread::spawn(move || {
       // some work here
       let mut map = MAP.clone();
@@ -57,6 +58,8 @@ impl GameProvider{
         }
       }
     });
+    let m = wasmcloud_game::StartThreadResponse{};
+    serialize(m)
   }
   pub fn new() -> Self {
     Self::default()
@@ -76,7 +79,7 @@ impl CapabilityProvider for GameProvider {
       &self,
       dispatcher: Box<dyn Dispatcher>,
   ) -> Result<(), Box<dyn Error + Sync + Send>> {
-      info!("zzDispatcher configured.");
+      info!("2zzDispatcher configured.");
 
       let mut lock = self.dispatcher.write().unwrap();
       *lock = dispatcher;
@@ -108,9 +111,9 @@ impl CapabilityProvider for GameProvider {
               message: "".to_string(),
           })?),
           OP_START_THREAD =>{
+              info!("OP_START_THREAD  {:?}", msg);
               let start_thread_req = deserialize::<wasmcloud_game::StartThreadRequest>(msg)?;
-              self.spawn_server(start_thread_req);
-              Ok(vec![])
+              self.spawn_server(start_thread_req)
           },
           _ => Err("bad dispatch".into()),
       }

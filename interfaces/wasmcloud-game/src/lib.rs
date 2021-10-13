@@ -6,8 +6,6 @@ pub use generated::*;
 use guest::prelude::*;
 
 #[cfg(feature = "guest")]
-pub fn start_thread(request: StartThreadRequest) -> HandlerResult<Vec<u8>> {
-  let host = default();
-  host.start_thread(request);
-  Ok(Vec::new()) // TODO: Provide implementation.
+pub fn start_thread(request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
+    Host::default().start_thread(request)
 }

@@ -16,7 +16,7 @@ wasmcloud-actor-core = "0.2.0"
 log = "0.4.8"
 env_logger = "0.8.3"
 lazy_static = "1.4.0"
-wasmcloud-game = { path = "../../interfaces/wasmcloud-game",features = []}
+wasmcloud-game = { path = "../../interfaces/wasmcloud-game"}
 
 [dependencies.wasmcloud-provider-core]
 version = "0.1.0"
