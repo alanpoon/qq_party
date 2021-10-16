@@ -51,6 +51,19 @@ impl Host {
         })
         .map_err(|e| e.into())
     }
+    pub fn stop_thread(&self, request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
+        host_call(
+            &self.binding,
+            "wasmcloud:game",
+            "StopThread",
+            &serialize(request)?,
+        )
+        .map(|vec| {
+            let resp = deserialize::<StartThreadResponse>(vec.as_ref()).unwrap();
+            resp
+        })
+        .map_err(|e| e.into())
+    }
     pub fn start_thread_request(
         &self,
         request: StartThreadRequest,
@@ -59,6 +72,19 @@ impl Host {
             &self.binding,
             "wasmcloud:game",
             "StartThreadRequest",
+            &serialize(request)?,
+        )
+        .map(|vec| {
+            let resp = deserialize::<StartThreadResponse>(vec.as_ref()).unwrap();
+            resp
+        })
+        .map_err(|e| e.into())
+    }
+    pub fn handle_thread(&self, request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
+        host_call(
+            &self.binding,
+            "wasmcloud:game",
+            "HandleThread",
             &serialize(request)?,
         )
         .map(|vec| {
@@ -78,24 +104,42 @@ impl Handlers {
         *START_THREAD.write().unwrap() = Some(f);
         register_function(&"StartThread", start_thread_wrapper);
     }
+    pub fn register_stop_thread(f: fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>) {
+        *STOP_THREAD.write().unwrap() = Some(f);
+        register_function(&"StopThread", stop_thread_wrapper);
+    }
     pub fn register_start_thread_request(
         f: fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>,
     ) {
         *START_THREAD_REQUEST.write().unwrap() = Some(f);
         register_function(&"StartThreadRequest", start_thread_request_wrapper);
     }
+    pub fn register_handle_thread(f: fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>) {
+        *HANDLE_THREAD.write().unwrap() = Some(f);
+        register_function(&"HandleThread", handle_thread_wrapper);
+    }
 }
 
 #[cfg(feature = "guest")]
 lazy_static::lazy_static! {
 static ref START_THREAD: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
+static ref STOP_THREAD: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
 static ref START_THREAD_REQUEST: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
+static ref HANDLE_THREAD: std::sync::RwLock<Option<fn(StartThreadRequest) -> HandlerResult<StartThreadResponse>>> = std::sync::RwLock::new(None);
 }
 
 #[cfg(feature = "guest")]
 fn start_thread_wrapper(input_payload: &[u8]) -> CallResult {
     let input = deserialize::<StartThreadRequest>(input_payload)?;
     let lock = START_THREAD.read().unwrap().unwrap();
+    let result = lock(input)?;
+    serialize(result)
+}
+
+#[cfg(feature = "guest")]
+fn stop_thread_wrapper(input_payload: &[u8]) -> CallResult {
+    let input = deserialize::<StartThreadRequest>(input_payload)?;
+    let lock = STOP_THREAD.read().unwrap().unwrap();
     let result = lock(input)?;
     serialize(result)
 }
@@ -108,10 +152,22 @@ fn start_thread_request_wrapper(input_payload: &[u8]) -> CallResult {
     serialize(result)
 }
 
+#[cfg(feature = "guest")]
+fn handle_thread_wrapper(input_payload: &[u8]) -> CallResult {
+    let input = deserialize::<StartThreadRequest>(input_payload)?;
+    let lock = HANDLE_THREAD.read().unwrap().unwrap();
+    let result = lock(input)?;
+    serialize(result)
+}
+
 #[derive(Debug, PartialEq, Deserialize, Serialize, Default, Clone)]
 pub struct StartThreadRequest {
     #[serde(rename = "game_id")]
     pub game_id: String,
+    #[serde(rename = "timestamp")]
+    pub timestamp: Option<i64>,
+    #[serde(rename = "elapsed")]
+    pub elapsed: Option<f32>,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Default, Clone)]

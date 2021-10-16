@@ -16,7 +16,7 @@ capabilities:
     - image_ref: wasmcloud.azurecr.io/logging:0.9.1
     - image_ref: wasmcloud.azurecr.io/httpserver:0.12.1
     - image_ref: wasmcloud.azurecr.io/redis:0.11.2
-    - image_ref: ./capability_providers/wasmcloud-game/libgame.par.gz
+    - image_ref: ./capability_providers/game-provider/libgame.par.gz
 links:
   - actor: MBN57D74YESCZYBBZXSQRGQBVYJJXIQ6Y5MGFDYOOT6SD3CJRHC65QPG
     contract_id: "wasmcloud:logging"

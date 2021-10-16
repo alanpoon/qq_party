@@ -18,6 +18,12 @@ wasmcloud-actor-keyvalue = { version = "0.2.1", features = ["guest"]}
 wasmcloud-game = { path = "../../interfaces/wasmcloud-game", features = ["guest"]}
 serde_bytes = "0.11.5"
 convert_case = "0.1.0"
+#bevy_ecs = {path = "../../../../bevy_stuffs/bevy/crates/bevy_ecs"}
+bevy_ecs = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_ecs", features = ["trace"]}
+arugio_shared = {path = "../../../../bevy_stuffs/nat-example/crates/plugins/arugio_shared"}
+#bevy_ecs = "0.5.0"
+lazy_static = "1.4.0"
+bevy_core = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_core"}
 
 [profile.release]
 # Optimize for small code size

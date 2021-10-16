@@ -2,12 +2,16 @@ namespace "wasmcloud:game"
 
 interface {
   StartThread{request: StartThreadRequest}: StartThreadResponse
+  StopThread{request: StartThreadRequest}: StartThreadResponse
   StartThreadRequest{request: StartThreadRequest}: StartThreadResponse
+  HandleThread{request: StartThreadRequest}: StartThreadResponse
 }
 
 type StartThreadRequest {
     game_id: string
+    timestamp: i64?
+    elapsed: f32?
 }
 type StartThreadResponse {
-    
+
 }

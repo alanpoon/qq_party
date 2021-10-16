@@ -9,3 +9,7 @@ use guest::prelude::*;
 pub fn start_thread(request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
     Host::default().start_thread(request)
 }
+#[cfg(feature = "guest")]
+pub fn stop_thread(request: StartThreadRequest) -> HandlerResult<StartThreadResponse> {
+    Host::default().stop_thread(request)
+}
