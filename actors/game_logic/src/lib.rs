@@ -7,13 +7,12 @@ use wasmcloud_actor_logging as logging;
 use wasmcloud_game as game_engine;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_ecs::prelude::*;
-use bevy_ecs::schedule::IntoSystemDescriptor;
 //use bevy_ecs::archetype::Archetype;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use arugio_shared::update_velocity_system;
+//use arugio_shared::update_velocity_system;
 lazy_static! {
-  static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World,Entity)>>> = Arc::new(Mutex::new(HashMap::new()));
+  static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[actor::init]
 fn init() {
@@ -40,27 +39,13 @@ fn start_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engi
   logging::default().write_log("LOGGING_ACTORINFO", "info", "Start Thread")?;
   let mut world = World::default();
   world.spawn().insert(A(0));
-  let time_entity = world.spawn().insert(Time{elapsed:0.0}).id();
   let mut map = MAP.clone();
   let mut m = map.lock().unwrap();
   let mut schedule = Schedule::default();
   let mut update = SystemStage::single_threaded();
-  // // let mut set = SystemSet::new().with_system(update_velocity_system);
-
-  // // update.add_system_set(set);
   update.add_system(sys.system());
   schedule.add_stage("update", update);
-  m.insert(req.game_id.clone(),(schedule,world,time_entity));
-  // m.insert(String::from("hi"),(schedule,world));
-  // let mut system = update_velocity_system.system();
-  // let mut world = World::new();
-
-  // system.initialize(&mut world);
-  // for archetype in world.archetypes.iter() {
-  //     system.new_archetype(archetype);
-  // }
-  // m.insert(String::from("hi"),world);
-  //system.run((), &mut world);
+  m.insert(req.game_id.clone(),(schedule,world));
   game_engine::start_thread(req)
 }
 fn stop_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engine::StartThreadResponse> {
@@ -72,30 +57,36 @@ fn poll_from_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_
   logging::default().write_log("LOGGING_ACTORINFO", "info", &b)?;
   let mut map = MAP.clone();
   let mut m = map.lock().unwrap();
-  if let Some((ref mut s, ref mut w,time_id))= m.get_mut(&req.game_id){
-    // let mut system = sys.system();
-    // //w.spawn().insert(A);
-    // system.initialize(w);
-    // system.run((), w);
-    if let (Some(ref mut t),Some(e)) = (w.get_mut::<Time>(time_id.clone()),req.elapsed){
-      t.elapsed = e;
+  if let Some((ref mut s, ref mut w))= m.get_mut(&req.game_id){
+    if let Some(e) = req.elapsed{
+      if let Some(mut t) = w.get_resource_mut::<Time>(){
+        t.update(e);
+      }else{
+        w.insert_resource(Time{elapsed:e});
+      }
+    }else{
+      w.insert_resource(Time{elapsed:100.0});
     }
-    logging::default().write_log("LOGGING_ACTORINFO", "info", "run")?;
+    // /w.spawn().insert_bundle(arugio_shared::BallBundle);
     s.run_once(w);
   }else{
     logging::default().write_log("LOGGING_ACTORINFO", "info", "cannot find")?;
   }
   Ok(game_engine::StartThreadResponse{})
 }
-#[derive(Component, Debug, Eq, PartialEq, Default)]
+#[derive(Component,Debug, Eq, PartialEq, Default)]
 struct A(i32);
-#[derive(Component, Debug, PartialEq, Default)]
-struct Time{elapsed:f32}
-
-fn sys(mut query: Query<(&mut A,&Time)>) {  
+#[derive(Component,Debug, PartialEq, Default)]
+struct Time{pub elapsed:f32}
+impl Time{
+  pub fn update(&mut self,t:f32){
+    self.elapsed = t;
+  }
+}
+fn sys(mut query: Query<&mut A>,time: Res<Time>) {
   logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
-  for (mut a,t) in query.iter_mut() {
-      let n = format!("sys a >{:?}, t >{:?}",a,t);
+  for mut a in query.iter_mut() {
+      let n = format!("sys a >{:?}, t >{:?}",a,2);
       logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
       a.0 = a.0 + 1;
   }

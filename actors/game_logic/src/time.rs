@@ -4,31 +4,20 @@ use bevy_utils::{Duration, Instant};
 /// Tracks elapsed time since the last update and since the App has started
 #[derive(Debug, Clone)]
 pub struct Time {
-    delta: Duration,
-    last_update: Option<Instant>,
-    delta_seconds_f64: f64,
-    delta_seconds: f32,
-    seconds_since_startup: f64,
-    startup: Instant,
+    elapsed: f32,
 }
 
 impl Default for Time {
     fn default() -> Time {
         Time {
-            delta: Duration::from_secs(0),
-            last_update: None,
-            startup: Instant::now(),
-            delta_seconds_f64: 0.0,
-            seconds_since_startup: 0.0,
-            delta_seconds: 0.0,
+            elapsed: f32,
         }
     }
 }
 
 impl Time {
     pub fn update(&mut self) {
-        let now = Instant::now();
-        self.update_with_instant(now);
+        
     }
 
     pub(crate) fn update_with_instant(&mut self, instant: Instant) {
