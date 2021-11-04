@@ -1,4 +1,5 @@
 extern crate wapc_guest as guest;
+extern crate wasmcloud_actor_messaging as messaging;
 use guest::prelude::*;
 use log::{debug, error, info};
 use wasmcloud_actor_core as actor;
@@ -10,6 +11,9 @@ use bevy_ecs::prelude::*;
 //use bevy_ecs::archetype::Archetype;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use serde::{Serialize,Deserialize};
+const INIT_SUBJECT: &str = "";
+const MSG_LINK: &str = "default";
 //use arugio_shared::update_velocity_system;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
@@ -21,7 +25,8 @@ fn init() {
     game_engine::Handlers::register_stop_thread(stop_thread);
     game_engine::Handlers::register_handle_thread(poll_from_thread);
 }
-
+//wash call MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2 StartThreadRequest -c SCAPC7DM3PB4DLLYJGLZEZP3GJVLLZWYM6Y7NX6NR47RMK6KPX7XT5ODUU '{"game_id": "hi"}'
+//wash call MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2 StartThreadRequest -c SCAPC7DM3PB4DLLYJGLZEZP3GJVLLZWYM6Y7NX6NR47RMK6KPX7XT5ODUU -d t.json --test
 //wash ctl call MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2 StartThreadRequest '{"game_id": "hi"}'
 //wash ctl call MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2 StopThread '{"game_id": "hi"}'
 //wash ctl call VB4RKGH3TX7A2H2BXZFY32SRJAYITADXN2TOP4XR4UVWDILSBU3FIGIV.default StartThread '{"game_id": "hi"}'
@@ -38,7 +43,7 @@ fn init() {
 fn start_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engine::StartThreadResponse> {
   logging::default().write_log("LOGGING_ACTORINFO", "info", "Start Thread")?;
   let mut world = World::default();
-  world.spawn().insert(A(0));
+  world.spawn().insert(A{position:0});
   let mut map = MAP.clone();
   let mut m = map.lock().unwrap();
   let mut schedule = Schedule::default();
@@ -69,13 +74,16 @@ fn poll_from_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_
     }
     // /w.spawn().insert_bundle(arugio_shared::BallBundle);
     s.run_once(w);
+    
   }else{
     logging::default().write_log("LOGGING_ACTORINFO", "info", "cannot find")?;
   }
   Ok(game_engine::StartThreadResponse{})
 }
-#[derive(Component,Debug, Eq, PartialEq, Default)]
-struct A(i32);
+#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+struct A{
+  position: i32,
+}
 #[derive(Component,Debug, PartialEq, Default)]
 struct Time{pub elapsed:f32}
 impl Time{
@@ -84,11 +92,19 @@ impl Time{
   }
 }
 fn sys(mut query: Query<&mut A>,time: Res<Time>) {
-  logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
+  //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
   for mut a in query.iter_mut() {
       let n = format!("sys a >{:?}, t >{:?}",a,2);
-      logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
-      a.0 = a.0 + 1;
+      //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
+      a.position = a.position + 1;
+      let _ = messaging::host(MSG_LINK)
+      .publish(
+          INIT_SUBJECT.to_string(),
+          "game_logic".to_string(),
+          serde_json::to_vec(&a.clone())
+          .unwrap(),
+      )
+      .map(|_| true);
   }
 }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {

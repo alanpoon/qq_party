@@ -1,3 +1,4 @@
 **/target
 ui/build
 ui/node_modules
+cluster_seed.txt

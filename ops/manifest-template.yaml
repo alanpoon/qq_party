@@ -91,5 +91,3 @@ links:
   - actor: !game_logic
     contract_id: "wasmcloud:game"
     provider_id: "VB4RKGH3TX7A2H2BXZFY32SRJAYITADXN2TOP4XR4UVWDILSBU3FIGIV"
-    values:
-      SUBSCRIPTION: "s"

@@ -16,6 +16,7 @@ wasmcloud-actor-core = { version = "0.2.2", features = ["guest"] }
 wasmcloud-actor-logging = { version = "0.1.1", features = ["guest"] }
 wasmcloud-actor-keyvalue = { version = "0.2.1", features = ["guest"]}
 wasmcloud-game = { path = "../../interfaces/wasmcloud-game", features = ["guest"]}
+wasmcloud-actor-messaging = { version = "0.1.1", features = ["guest"] }
 serde_bytes = "0.11.5"
 convert_case = "0.1.0"
 #bevy_ecs = {path = "../../../../bevy_stuffs/bevy/crates/bevy_ecs"}

@@ -43,4 +43,4 @@ update:
 
 release:
 	@$(CARGO) build --target wasm32-unknown-unknown --release
-	wash claims sign target/wasm32-unknown-unknown/release/game_logic.wasm -d target/wasm32-unknown-unknown/release/game_logic_s.wasm -c wasmcloud:game -l --name "game_logic" -a "game_logic"
+	wash claims sign target/wasm32-unknown-unknown/release/game_logic.wasm -d target/wasm32-unknown-unknown/release/game_logic_s.wasm -c wasmcloud:game -c wasmcloud:messaging -l --name "game_logic" -a "game_logic"
