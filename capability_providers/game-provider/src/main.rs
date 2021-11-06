@@ -140,10 +140,15 @@ impl Thread for ThreadProvider {
       //let MAP = Arc::new(Mutex::new(HashMap::new()));
       let mut actors = self.actors.clone();
       let ctxr = ctx.clone();
+      let start_thread_request_c = start_thread_request.clone();
       std::thread::spawn( move || async move {
         // some work here
         let thread_actor = actors.read().await;
-        
+        let thread_pool = (*thread_actor).get(&ctxr.actor.unwrap()).unwrap();
+        let ld = thread_pool.linkdefs.clone();
+        if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
+
+        }
       });
       Ok(StartThreadResponse{})
     }
