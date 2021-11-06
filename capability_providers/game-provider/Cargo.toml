@@ -4,19 +4,18 @@ version = "0.0.1"
 authors = ["Alan Poon <brightshadowx@gmail.com>"]
 edition = "2018"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
 [features]
 # Enable if the provider will be statically compiled into a host
 static_plugin = []
 
 [dependencies]
-wasmcloud-actor-core = "0.2.0"
+wasmbus-rpc = "0.5.2"
+async-trait = "0.1"
+futures = "0.3"
 log = "0.4.8"
 env_logger = "0.8.3"
 lazy_static = "1.4.0"
-wasmcloud-game = { path = "../../interfaces/wasmcloud-game"}
+wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 chrono = "0.4.19"
 
 [dependencies.wasmcloud-provider-core]

@@ -2,27 +2,23 @@
 name = "game_logic"
 version = "0.1.0"
 authors = ["alanpoon"]
-edition = "2018"
+edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wapc-guest = "0.4.0"
+wasmbus-rpc = "0.5.2"
+async-trait = "0.1"
+futures = "0.3"
+serde_bytes = "0.11"
 serde = { version = "1.0.123", features = ["derive"]}
 serde_json = "1.0.64"
-log = "0.4.14"
-wasmcloud-actor-core = { version = "0.2.2", features = ["guest"] }
-wasmcloud-actor-logging = { version = "0.1.1", features = ["guest"] }
-wasmcloud-actor-keyvalue = { version = "0.2.1", features = ["guest"]}
-wasmcloud-game = { path = "../../interfaces/wasmcloud-game", features = ["guest"]}
-wasmcloud-actor-messaging = { version = "0.1.1", features = ["guest"] }
-serde_bytes = "0.11.5"
+wasmcloud-interface-logging = "0.1"
+wasmcloud-interface-messaging = "0.2.0"
+wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 convert_case = "0.1.0"
-#bevy_ecs = {path = "../../../../bevy_stuffs/bevy/crates/bevy_ecs"}
 bevy_ecs = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_ecs", features = ["trace"]}
-#arugio_shared = {path = "../../../../bevy_stuffs/nat-example/crates/plugins/arugio_shared"}
-#bevy_ecs = "0.5.0"
 lazy_static = "1.4.0"
 bevy_core = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_core"}
 

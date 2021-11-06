@@ -54,3 +54,4 @@ codesign -fs gdb_codesign "$(which gdb)"
 
 
 RUST_BACKTRACE=1 RUST_LOG=info,debug ../wasmcloud/target/debug/wasmcloud -m ops/manifest.yaml
+
