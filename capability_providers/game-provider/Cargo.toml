@@ -17,6 +17,7 @@ env_logger = "0.8.3"
 lazy_static = "1.4.0"
 wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 chrono = "0.4.19"
+tokio = { version = "1", features = ["full"] }
 
 [dependencies.wasmcloud-provider-core]
 version = "0.1.0"

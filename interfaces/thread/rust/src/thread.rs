@@ -45,6 +45,11 @@ pub trait Thread {
         ctx: &Context,
         arg: &StartThreadRequest,
     ) -> RpcResult<StartThreadResponse>;
+    async fn handle_request(
+        &self,
+        ctx: &Context,
+        arg: &StartThreadRequest,
+    ) -> RpcResult<StartThreadResponse>;
 }
 
 /// ThreadReceiver receives messages defined in the Thread service trait
@@ -60,6 +65,16 @@ pub trait ThreadReceiver: MessageDispatch + Thread {
                 let buf = serialize(&resp)?;
                 Ok(Message {
                     method: "Thread.StartThread",
+                    arg: Cow::Owned(buf),
+                })
+            }
+            "HandleRequest" => {
+                let value: StartThreadRequest = deserialize(message.arg.as_ref())
+                    .map_err(|e| RpcError::Deser(format!("message '{}': {}", message.method, e)))?;
+                let resp = Thread::handle_request(self, ctx, &value).await?;
+                let buf = serialize(&resp)?;
+                Ok(Message {
+                    method: "Thread.HandleRequest",
                     arg: Cow::Owned(buf),
                 })
             }
@@ -138,6 +153,28 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Thread for ThreadSend
             .await?;
         let value = deserialize(&resp)
             .map_err(|e| RpcError::Deser(format!("response to {}: {}", "StartThread", e)))?;
+        Ok(value)
+    }
+    #[allow(unused)]
+    async fn handle_request(
+        &self,
+        ctx: &Context,
+        arg: &StartThreadRequest,
+    ) -> RpcResult<StartThreadResponse> {
+        let buf = serialize(arg)?;
+        let resp = self
+            .transport
+            .send(
+                ctx,
+                Message {
+                    method: "Thread.HandleRequest",
+                    arg: Cow::Borrowed(&buf),
+                },
+                None,
+            )
+            .await?;
+        let value = deserialize(&resp)
+            .map_err(|e| RpcError::Deser(format!("response to {}: {}", "HandleRequest", e)))?;
         Ok(value)
     }
 }

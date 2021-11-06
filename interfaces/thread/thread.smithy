@@ -21,7 +21,7 @@ use org.wasmcloud.model#U64
     providerReceive: true )
 service Thread {
   version: "0.1",
-  operations: [ StartThread ]
+  operations: [ StartThread,HandleRequest ]
 }
 
 /// AuthorizePayment - Validates that a potential payment transaction
@@ -32,7 +32,10 @@ operation StartThread {
     input: StartThreadRequest,
     output: StartThreadResponse,
 }
-
+operation HandleRequest{
+    input: StartThreadRequest,
+    output: StartThreadResponse,
+}
 /// Parameters sent for AuthorizePayment
 structure StartThreadRequest {
     /// Amount of transaction, in cents.
