@@ -2,6 +2,7 @@ extern crate wasmcloud_interface_messaging as messaging;
 use wasmbus_rpc::actor::prelude::*;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_game as game_engine;
+use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use lazy_static::lazy_static; // 1.4.0
 use bevy_ecs::prelude::*;
 //use bevy_ecs::archetype::Archetype;
@@ -23,8 +24,14 @@ impl Runner for GameLogicActor {
     Ok(Vec::default())
   }
 }
+#[async_trait]
 impl Thread for GameLogicActor{
-  
+  async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+    Ok(StartThreadResponse{})
+  }
+  async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+    Ok(StartThreadResponse{})
+  }
 }
 
 // fn start_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engine::StartThreadResponse> {
@@ -78,9 +85,6 @@ impl Time{
     self.elapsed = t;
   }
 }
-#[derive(Component)]
-struct ContextWrapper(pub Context);
-
 // fn sys(mut query: Query<(&mut A,ContextWrapper)>,time: Res<Time>) {
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
 //   for mut (a,ctx) in query.iter_mut() {

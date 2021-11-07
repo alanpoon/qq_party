@@ -23,7 +23,7 @@ $(TARGETS):
 	cross build --target $@ --release
 
 par:
-	wash par create \
+	./../../wash par create \
 		--arch x86_64-macos \
 		--binary target/release/lib$(LIBNAME).dylib \
 		--capid $(CAPABILITY_ID) \

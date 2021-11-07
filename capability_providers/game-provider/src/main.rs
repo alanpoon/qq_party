@@ -64,75 +64,7 @@ impl ThreadPool{
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,bool>>> = Arc::new(Mutex::new(HashMap::new()));
 }
-// async fn start(actors:Arc<RwLock<HashMap<String, ThreadPool>>>,inner:Arc<RwLock<Inner>>,ctx:Context){
-//   let thread_actor = actors.get_mut(ctx.actor.unwrap());
-//   *thread_actor.insert(start_thread_request.game_id.clone(),true);
-//   drop(thread_actor);
-//   loop{
-//     let thread_actor = actors.get_mut(ctx.actor.unwrap());
-//     info!("elapsed {:?}",start.elapsed().as_secs());
-//     let ld = thread_actor.linkdefs.clone();
-//     if let Some(v) = thread_actor.threads.get(&start_thread_request.game_id.clone()){
-//       if *v{
-//         drop(thread_actor);
-//         sleep(Duration::from_millis(TURN_DELAY_MILLIS_DEFAULT));
-//         let local: DateTime<Local> = Local::now();
-//         let m = StartThreadRequest{
-//           game_id: start_thread_request.game_id.clone(),
-//           elapsed: Some(TURN_DELAY_MILLIS_DEFAULT as f32),
-//           timestamp: Some(local.timestamp_millis()),
-//         };
-//         // if let Ok(buf) = serialize(m){
-//         //   let module_lock = (*module).read().unwrap();
-//         //   lock.dispatch(
-//         //     &module_lock,
-//         //     OP_HANDLE_THREAD,
-//         //     &buf,
-//         //   );
-//         // }
-        
-//         let read_guard = inner.read().await;
-//         let bridge = read_guard.bridge;
-//         let tx = ProviderTransport::new(&ld, Some(bridge));
-//         let ctx = wasmbus_rpc::Context::default();
-//         let actor = ThreadSender::via(tx);
-//         match actor.handle_request(&ctx, &m).await {
-//           Err(RpcError::Timeout(_)) => {
-//               error!(
-//                   "actor {} req  timed out: returning 503",
-//                   &ld.actor_id,
-//               );
-//               Ok(StartThreadResponse{})
-//           }
-//           Ok(resp) => {
-//               trace!(
-//                   "http response received from actor {}",
-//                   &ld.actor_id
-//               );
-//               Ok(resp)
-//           }
-//           Err(e) => {
-//               warn!(
-//                   "actor {} responded with error {}",
-//                   &ld.actor_id,
-//                   e.to_string()
-//               );
-//               Err(e)
-//           }
-//         }
-//       }else{
-//         drop(thread_actor);
-//         break;
-//       }
-//       }else{
-//         drop(thread_actor);
-//         break;
-//       }
-//     }
-//   });
-//   let m = StartThreadResponse{};
-//   Ok(m)
-// }
+
 #[async_trait]
 impl Thread for ThreadProvider {
     async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
@@ -141,13 +73,60 @@ impl Thread for ThreadProvider {
       let mut actors = self.actors.clone();
       let ctxr = ctx.clone();
       let start_thread_request_c = start_thread_request.clone();
+      let mut inner = self.inner.clone();
       std::thread::spawn( move || async move {
         // some work here
-        let thread_actor = actors.read().await;
-        let thread_pool = (*thread_actor).get(&ctxr.actor.unwrap()).unwrap();
+        let mut thread_actor = actors.write().await;
+        let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
+        thread_pool.threads.insert(start_thread_request_c.game_id.clone(),true);
         let ld = thread_pool.linkdefs.clone();
-        if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
-
+        drop(thread_actor);
+        loop{
+          let mut thread_actor = actors.read().await;
+          let mut thread_pool = (*thread_actor).get(&ctxr.actor.clone().unwrap()).unwrap();
+          if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
+            if *v{
+              drop(thread_pool);
+              sleep(Duration::from_millis(TURN_DELAY_MILLIS_DEFAULT));
+              let local: DateTime<Local> = Local::now();
+              let m = StartThreadRequest{
+                game_id: start_thread_request_c.game_id.clone(),
+                elapsed: TURN_DELAY_MILLIS_DEFAULT as u32,
+                timestamp: local.timestamp_millis() as u64,
+              };
+              let read_guard = inner.read().await;
+              let bridge = read_guard.bridge;
+              let tx = ProviderTransport::new(&ld, Some(bridge));
+              let ctx = wasmbus_rpc::Context::default();
+              let actor = ThreadSender::via(tx);
+              match actor.handle_request(&ctx, &m).await {
+                Err(RpcError::Timeout(_)) => {
+                    error!(
+                        "actor {} req  timed out: returning 503",
+                        &ld.actor_id,
+                    );
+                }
+                Ok(resp) => {
+                    trace!(
+                        "http response received from actor {}",
+                        &ld.actor_id
+                    );
+                }
+                Err(e) => {
+                    warn!(
+                        "actor {} responded with error {}",
+                        &ld.actor_id,
+                        e.to_string()
+                    );
+                }
+              }
+            }else{
+              drop(thread_actor);
+              break;
+            }
+          }else{
+            break;
+          }
         }
       });
       Ok(StartThreadResponse{})
