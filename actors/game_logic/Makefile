@@ -1,46 +1,35 @@
-# Copyright 2015-2019 Capital One Services, LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# examples/actor/echo-messaging
 
-COLOR ?= always # Valid COLOR options: {always, auto, never}
-CARGO = cargo --color $(COLOR)
+PROJECT  = game_logic
+VERSION  = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] .version' | head -1)
+REVISION = 0
+# list of all contract claims for actor signing (space-separated)
+CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread
+#CLAIMS   = wasmcloud:thread wasmcloud:messaging
+# registry url for our actor
+REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
+# command to upload to registry (without last wasm parameter)
+PUSH_REG_CMD = wash reg push --insecure $(REG_URL)
 
-.PHONY: all bench build check clean doc test update
+include ../../build/makefiles/actor.mk
 
-all: build
+ACTOR_ID=$(shell make actor_id 2>/dev/null | tail -1)
+CALL_ALIAS = game_logic
+# messaging provider id from wasmcloud.azurecr.io/nats
+# If you built it from source, get the provider id with `make inspect` in the source folder
+MESSAGING_PROVIDER_ID = VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
+THREAD_PROVIDER_ID = VAEUPY7Y42M5FZSQIABI4FVK5SVNTU2SREZNIUQLGAHMAP4O4WVMZ3KB
+link:
+	# link to messaging provider
+	wash ctl link put $(shell make actor_id | tail -1) \
+		$(MESSAGING_PROVIDER_ID) wasmcloud:messaging \
+		'URI=nats://localhost:4222' 'SUBSCRIPTION=demo.echo'
+	wash ctl link put $(shell make actor_id | tail -1) \
+		$(THREAD_PROVIDER_ID) wasmcloud:thread
 
-bench:
-	@$(CARGO) bench
-
-build:
-	cargo build --target wasm32-unknown-unknown --release
-	wash claims sign target/wasm32-unknown-unknown/release/game_logic.wasm -d target/wasm32-unknown-unknown/release/game_logic_s.wasm -c wasmcloud:game --name "game_logic" -a "game_logic"
-
-check:
-	@$(CARGO) check
-
-clean:
-	@$(CARGO) clean
-
-doc:
-	@$(CARGO) doc
-
-test: build
-	@$(CARGO) test
-
-update:
-	@$(CARGO) update
-
-release:
-	@$(CARGO) build --target wasm32-unknown-unknown --release
-	./../wash claims sign target/wasm32-unknown-unknown/release/game_logic.wasm -d target/wasm32-unknown-unknown/release/game_logic_s.wasm -c wasmcloud:game -c wasmcloud:messaging -l --name "game_logic" -a "game_logic"
+start-thread:
+	@wash call -o json $(ACTOR_ID) --cluster-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4 Thread.StartThread \
+		'{"game_id":"hello","timestamp":2,"elapsed":0}'
+start-thread2:
+	@wash call -o json $(ACTOR_ID) Thread.StartThread \
+		'{"game_id":"hello","timestamp":2,"elapsed":0}'

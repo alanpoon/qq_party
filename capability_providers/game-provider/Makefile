@@ -1,36 +1,15 @@
-CONST_FILE := src/lib.rs
-define readvar
-$(or $(shell sed -nE 's/^.*$(1).*"(.*)";$$/\1/p' $(CONST_FILE)),$(error "Cannot find variable $(1)"))
-endef
+# capability-provider/httpserver-rs/Makefile
 
-CAPABILITY_ID := wasmcloud:game
-NAME          := $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[].name')
-VERSION       := $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[].version')
-LIBNAME       := $(shell echo $(NAME) | tr '-' '_')
-VENDOR        := wasmCloud
-REVISION      ?= 0
-DESTINATION   ?= libgame.par.gz
+# short name that will be used for the executable name
+PROJECT  = game-provider
+CAPABILITY_ID = wasmcloud:thread
+VENDOR   = "wasmCloud"
+VERSION  = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] .version' | head -1)
+# During development iterations, REVISION should be incremented each build
+REVISION = 0
+oci_url  = localhost:5000/v2/$(PROJECT):$(VERSION)
 
-TARGETS := x86_64-apple-darwin
+include ../../build/makefiles/provider.mk
 
-# not currently supported
-MIPS_TARGETS := mips-unknown-linux-gnu \
-	mipsel-unknown-linux-gnu \
-	mips64-unknown-linux-gnuabi64 \
-	mips64el-unknown-linux-gnuabi64
-
-$(TARGETS):
-	cross build --target $@ --release
-
-par:
-	./../../wash par create \
-		--arch x86_64-macos \
-		--binary target/release/lib$(LIBNAME).dylib \
-		--capid $(CAPABILITY_ID) \
-		--name $(NAME) \
-		--vendor $(VENDOR) \
-		--version $(VERSION) \
-		--revision $(REVISION) \
-		--destination $(DESTINATION) \
-		--compress \
-		--disable-keygen
+test:
+	cargo test -- --nocapture

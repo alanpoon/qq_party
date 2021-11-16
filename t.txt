@@ -1,1 +1,1 @@
-cargo run '{"room_number":"23","gift_id":32,"user_id":32}'
+AAVAKB4PJ7OLGVOSWFTSO3YQUIVLYSHGY6SWXC5OE4I2AIDJBDAHN5ZP

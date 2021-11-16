@@ -28,13 +28,14 @@ pub struct StartThreadRequest {
 #[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
 pub struct StartThreadResponse {}
 
-/// wasmbus.contractId: wasmcloud:example:thread
+/// wasmbus.contractId: wasmcloud:thread
 /// wasmbus.providerReceive
+/// wasmbus.actorReceive
 #[async_trait]
 pub trait Thread {
     /// returns the capability contract id for this interface
     fn contract_id() -> &'static str {
-        "wasmcloud:example:thread"
+        "wasmcloud:thread"
     }
     /// AuthorizePayment - Validates that a potential payment transaction
     /// can go through. If this succeeds then we should assume it is safe
@@ -104,26 +105,43 @@ impl<T: Transport> ThreadSender<T> {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+impl<'send> ThreadSender<wasmbus_rpc::provider::ProviderTransport<'send>> {
+    /// Constructs a Sender using an actor's LinkDefinition,
+    /// Uses the provider's HostBridge for rpc
+    pub fn for_actor(ld: &'send wasmbus_rpc::core::LinkDefinition) -> Self {
+        Self {
+            transport: wasmbus_rpc::provider::ProviderTransport::new(ld, None),
+        }
+    }
+}
+#[cfg(target_arch = "wasm32")]
+impl ThreadSender<wasmbus_rpc::actor::prelude::WasmHost> {
+    /// Constructs a client for actor-to-actor messaging
+    /// using the recipient actor's public key
+    pub fn to_actor(actor_id: &str) -> Self {
+        let transport =
+            wasmbus_rpc::actor::prelude::WasmHost::to_actor(actor_id.to_string()).unwrap();
+        Self { transport }
+    }
+}
+
 #[cfg(target_arch = "wasm32")]
 impl ThreadSender<wasmbus_rpc::actor::prelude::WasmHost> {
     /// Constructs a client for sending to a Thread provider
-    /// implementing the 'wasmcloud:example:thread' capability contract, with the "default" link
+    /// implementing the 'wasmcloud:thread' capability contract, with the "default" link
     pub fn new() -> Self {
-        let transport = wasmbus_rpc::actor::prelude::WasmHost::to_provider(
-            "wasmcloud:example:thread",
-            "default",
-        )
-        .unwrap();
+        let transport =
+            wasmbus_rpc::actor::prelude::WasmHost::to_provider("wasmcloud:thread", "default")
+                .unwrap();
         Self { transport }
     }
 
     /// Constructs a client for sending to a Thread provider
-    /// implementing the 'wasmcloud:example:thread' capability contract, with the specified link name
+    /// implementing the 'wasmcloud:thread' capability contract, with the specified link name
     pub fn new_with_link(link_name: &str) -> wasmbus_rpc::RpcResult<Self> {
-        let transport = wasmbus_rpc::actor::prelude::WasmHost::to_provider(
-            "wasmcloud:example:thread",
-            link_name,
-        )?;
+        let transport =
+            wasmbus_rpc::actor::prelude::WasmHost::to_provider("wasmcloud:thread", link_name)?;
         Ok(Self { transport })
     }
 }

@@ -13,26 +13,20 @@ use tokio::sync::RwLock;
 use lazy_static::lazy_static; // 1.4.0
 const TURN_DELAY_MILLIS_DEFAULT: u64 = 2000;
 #[allow(unused)]
-const CAPABILITY_ID: &str = "wasmcloud:game";
+const CAPABILITY_ID: &str = "wasmcloud:thread";
 
 const OP_START_THREAD: &str = "StartThread";
 const OP_STOP_THREAD: &str = "StopThread";
 const OP_HANDLE_THREAD: &str = "HandleThread";
-struct Inner {
-  bridge: &'static HostBridge,
-}
+
 #[derive(Clone, Provider)]
 #[services(Thread)]
 pub struct ThreadProvider {
-  inner: Arc<RwLock<Inner>>,
   actors: Arc<RwLock<HashMap<String, ThreadPool>>>,
 }
 impl Default for ThreadProvider{
   fn default()->Self{
     ThreadProvider{
-      inner:Arc::new(RwLock::new(Inner{
-        bridge:get_host_bridge(),
-      })),
       actors:Arc::new(RwLock::new(HashMap::new())),
     }
   }
@@ -43,21 +37,26 @@ impl ProviderDispatch for ThreadProvider {}
 #[async_trait]
 impl ProviderHandler for ThreadProvider {
   async fn put_link(&self, ld: &LinkDefinition) -> Result<bool, RpcError> {
-    let thread_pool = ThreadPool::new(ld.clone());
+    let thread_pool = ThreadPool::new(ld.clone(),get_host_bridge());
     let mut update_map = self.actors.write().await;
     update_map.insert(ld.actor_id.to_string(), thread_pool);
     Ok(true)
   }
 }
+struct Inner {
+  bridge: &'static HostBridge,
+}
 struct ThreadPool{
   linkdefs: LinkDefinition,
   threads: HashMap<String,bool>,
+  inner: Arc<RwLock<Inner>>,
 }
 impl ThreadPool{
-  pub fn new(ld:LinkDefinition)->Self{
+  pub fn new(ld:LinkDefinition,bridge:&'static HostBridge)->Self{
     ThreadPool{
       linkdefs:ld,
       threads: HashMap::new(),
+      inner:Arc::new(RwLock::new(Inner{bridge})),
     }
   }
 }
@@ -73,13 +72,13 @@ impl Thread for ThreadProvider {
       let mut actors = self.actors.clone();
       let ctxr = ctx.clone();
       let start_thread_request_c = start_thread_request.clone();
-      let mut inner = self.inner.clone();
       std::thread::spawn( move || async move {
         // some work here
         let mut thread_actor = actors.write().await;
         let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
         thread_pool.threads.insert(start_thread_request_c.game_id.clone(),true);
         let ld = thread_pool.linkdefs.clone();
+        let inner = thread_pool.inner.clone();
         drop(thread_actor);
         loop{
           let mut thread_actor = actors.read().await;

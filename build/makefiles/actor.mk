@@ -82,7 +82,11 @@ push: $(DIST_WASM)
 
 # tell host to start an instance of the actor
 start:
-	$(WASH) ctl start actor $(REG_URL) --timeout 3
+	$(WASH) ctl start actor $(REG_URL) --timeout 3 --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
+
+stop:
+	$(WASH) ctl stop actor $(REG_URL) --timeout 3 --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
+
 
 # NOT WORKING - live actor updates not working yet
 # update it (should update revision before doing this)

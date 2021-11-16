@@ -1,32 +1,38 @@
 extern crate wasmcloud_interface_messaging as messaging;
 use wasmbus_rpc::actor::prelude::*;
-use wasmbus_rpc::actor::prelude::*;
-use wasmcloud_game as game_engine;
+use wasmcloud_interface_logging::{info,error,debug};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs::prelude::*;
-//use bevy_ecs::archetype::Archetype;
+//use bevy_ecs::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
-const INIT_SUBJECT: &str = "";
-const MSG_LINK: &str = "default";
+// mod generated;
+// pub use generated::*;
+// use crayon::prelude::*;
+
 //use arugio_shared::update_velocity_system;
-lazy_static! {
-  static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
-}
+// lazy_static! {
+//   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
+// }
 #[derive(Debug, Default, Actor, HealthResponder)]
-#[services(Actor, Runner)]
+#[services(Actor,Thread)]
 struct GameLogicActor {}
-#[async_trait]
-impl Runner for GameLogicActor {
-  async fn run(&self, _ctx: &Context, _args: &Vec<String>) -> RpcResult<Vec<String>> {
-    Ok(Vec::default())
-  }
-}
+
 #[async_trait]
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+    debug!("start_thread----");
+    let provider = ThreadSender::new();
+    if let Err(e) = provider
+        .start_thread(
+            ctx,
+            start_thread_request,
+        )
+        .await
+    {
+        error!("sending reply: {}",e.to_string());
+    }
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
@@ -74,17 +80,17 @@ impl Thread for GameLogicActor{
 //   }
 //   Ok(game_engine::StartThreadResponse{})
 // }
-#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
-struct A{
-  position: i32,
-}
-#[derive(Component,Debug, PartialEq, Default)]
-struct Time{pub elapsed:f32}
-impl Time{
-  pub fn update(&mut self,t:f32){
-    self.elapsed = t;
-  }
-}
+// #[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+// struct A{
+//   position: i32,
+// }
+// #[derive(Component,Debug, PartialEq, Default)]
+// struct Time{pub elapsed:f32}
+// impl Time{
+//   pub fn update(&mut self,t:f32){
+//     self.elapsed = t;
+//   }
+// }
 // fn sys(mut query: Query<(&mut A,ContextWrapper)>,time: Res<Time>) {
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
 //   for mut (a,ctx) in query.iter_mut() {

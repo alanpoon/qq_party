@@ -17,7 +17,8 @@ use org.wasmcloud.model#U32
 use org.wasmcloud.model#U64
 
 @wasmbus(
-    contractId: "wasmcloud:example:thread",
+    contractId: "wasmcloud:thread",
+    actorReceive: true,
     providerReceive: true )
 service Thread {
   version: "0.1",
