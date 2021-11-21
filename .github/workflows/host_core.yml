@@ -26,6 +26,8 @@ jobs:
         uses: wasmcloud/common-actions/install-wash@main
       - name: make
         run: make build
+      - name: wash
+        run: wash ctl get hosts
       # - name: download_wasmcloud_host
       #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       # - name: ls
