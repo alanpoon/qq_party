@@ -10,18 +10,12 @@ jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
-    services:
-      nats:
-        image: nats
-        ports:
-          - 4222:4222
-        command: "-js"
-      registry:
-        image: registry:2.7
-        ports:
-          - "5000:5000"
     steps:
       - name: download_wasmcloud_host
         run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       - name: ls
         run: ls
+      - id: run-nats
+        uses: wasmcloud/common-actions/run-nats@main
+        with:
+          options: '-js'
