@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and test
-    runs-on: registry
+    runs-on: ubuntu-latest
     steps:
       # - id: run-nats
       #   uses: wasmcloud/common-actions/run-nats@main
