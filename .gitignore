@@ -4,3 +4,4 @@ ui/node_modules
 cluster_seed.txt
 **/build
 **.gz
+newReadme2.md
