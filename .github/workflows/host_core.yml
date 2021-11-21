@@ -9,13 +9,23 @@ on:
 jobs:
   build:
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: registry
     steps:
-      - name: download_wasmcloud_host
-        run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
-      - name: ls
-        run: ls
-      - id: run-nats
-        uses: wasmcloud/common-actions/run-nats@main
-        with:
-          options: '-js'
+      # - id: run-nats
+      #   uses: wasmcloud/common-actions/run-nats@main
+      #   with:
+      #     options: '-js'
+      # - name: aa
+      #   run: curl -fsSL https://get.docker.com -o get-docker.sh
+      # - name: a
+      #   run: sh get-docker.sh
+      - uses: actions/checkout@v2
+      - name: Build the stack
+      - name: compose
+        run: docker-compose up -d
+      # - name: download_wasmcloud_host
+      #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
+      # - name: ls
+      #   run: ls bin
+      # - name: run
+      #   run: WASMCLOUD_CLUSTER_SEED=SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4 WASMCLOUD_CLUSTER_ISSUERS=CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./bin/wasmcloud_host
