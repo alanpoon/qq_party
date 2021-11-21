@@ -9,7 +9,8 @@ on:
 jobs:
   build:
     name: Build and test
-    runs-on: rustropy/rust-wasm-ci
+    runs-on: ubuntu-latest
+    container: rustropy/rust-wasm-ci
     steps:
       # - id: run-nats
       #   uses: wasmcloud/common-actions/run-nats@main
