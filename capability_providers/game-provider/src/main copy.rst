@@ -76,7 +76,9 @@ impl Thread for ThreadProvider {
       let ctxr = ctx.clone();
       let start_thread_request_c = start_thread_request.clone();
 
-      tokio::spawn(async move{
+      std::thread::spawn( move || {
+        // some work here
+        block_on(async{
           info!("inside thread2");
           let mut thread_actor = actors.write().await;
           let v = ctxr.actor.clone();
@@ -98,7 +100,7 @@ impl Thread for ThreadProvider {
             if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
               info!("v {:?}",v);
               if *v{
-                //drop(thread_pool);
+                drop(thread_pool);
                 info!("after drop");
                 sleep(Duration::from_millis(TURN_DELAY_MILLIS_DEFAULT));
                 let local: DateTime<Local> = Local::now();
@@ -145,6 +147,7 @@ impl Thread for ThreadProvider {
               break;
             }
           }
+        });
       });
       Ok(StartThreadResponse{})
     }

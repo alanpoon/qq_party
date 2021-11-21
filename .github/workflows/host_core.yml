@@ -1,0 +1,14 @@
+name: qq_party
+
+on:
+  push:
+    branches: [0.5]
+  pull_request:
+    branches: [main]
+
+jobs:
+  download_wasmcloud_host:
+    runs-on: ubuntu-latest
+    steps:
+      - name: download_wasmcloud_host
+        run: wget https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz

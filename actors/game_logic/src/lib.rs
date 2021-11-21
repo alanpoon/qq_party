@@ -36,6 +36,7 @@ impl Thread for GameLogicActor{
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+    debug!("handle_request----");
     Ok(StartThreadResponse{})
   }
 }
