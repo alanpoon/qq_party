@@ -21,9 +21,7 @@ jobs:
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
       - name: a
-        run: ls
-      - name: users
-        run: id -un
+        run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
       - name: Build the stack
         run: docker-compose up -d
