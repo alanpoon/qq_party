@@ -18,8 +18,10 @@ jobs:
       #     options: '-js'
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
-      # - name: a
-      #   run: sh get-docker.sh
+      - name: a
+        run: ls
+      - name: users
+        run: id -un
       - uses: actions/checkout@v2
       - name: Build the stack
         run: docker-compose up -d
