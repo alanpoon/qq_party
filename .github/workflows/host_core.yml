@@ -23,8 +23,10 @@ jobs:
       - name: a
         run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
+      - name: a
+        run: usermod -aG docker $USER
       - name: Build the stack
-        run: sudo docker-compose up -d
+        run: docker-compose up -d
       - id: install-wash
         uses: wasmcloud/common-actions/install-wash@main
       - name: make
