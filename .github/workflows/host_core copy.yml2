@@ -1,0 +1,53 @@
+name: qq_party
+
+on:
+  push:
+    branches: [0.5]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    container: 
+      image: rustropy/rust-wasm-ci
+      options: --user root
+    services:
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
+
+    steps:
+      # - id: run-nats
+      #   uses: wasmcloud/common-actions/run-nats@main
+      #   with:
+      #     options: '-js'
+      # - name: aa
+      #   run: curl -fsSL https://get.docker.com -o get-docker.sh
+      - name: a
+        run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
+      - uses: actions/checkout@v2
+      - name: listen
+        run: apt-get install -y lsof
+      # - name: a
+      #   run:  && 
+      - name: create-bridge
+        run: docker network create -d bridge my-network
+      - name: Build the stack
+        run: docker-compose up -d
+      # - name: listen
+      #   run: lsof -i -P -n | grep LISTEN            
+      - name: install-wash
+        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
+      - name: make
+        run: make build
+      - name: wash
+        run: wash ctl get hosts
+      # - name: download_wasmcloud_host
+      #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
+      # - name: ls
+      #   run: ls bin
+      # - name: run
+      #   run: WASMCLOUD_CLUSTER_SEED=SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4 WASMCLOUD_CLUSTER_ISSUERS=CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./bin/wasmcloud_host
