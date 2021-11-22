@@ -44,8 +44,6 @@ jobs:
       - name: a
         run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
-      - name: listen
-        run: apt-get install -y lsof
       # - name: a
       #   run:  && 
       # - name: create-bridge
@@ -56,8 +54,8 @@ jobs:
       #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
-      - name: echo
-        run: echo ${{ job.services.registry.ports['5000'] }}
+      - name: ping
+        run: wash reg ping localhost:5000
       - name: make
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
       - name: wash
