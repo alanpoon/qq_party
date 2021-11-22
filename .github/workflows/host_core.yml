@@ -50,8 +50,8 @@ jobs:
       #   run: docker network create -d bridge my-network
       # - name: Build the stack
       #   run: docker-compose up -d
-      # - name: listen
-      #   run: lsof -i -P -n | grep LISTEN            
+      - name: install curl
+        run: apt install curl         
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
       - name: make
