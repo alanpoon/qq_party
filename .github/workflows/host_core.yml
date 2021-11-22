@@ -48,13 +48,13 @@ jobs:
       #   run:  && 
       # - name: create-bridge
       #   run: docker network create -d bridge my-network
-      # - name: Build the stack
-      #   run: docker-compose up -d
+      - name: Build the stack
+        run: sudo apt update && sudo apt upgrade
       - name: install curl
         run: sudo apt install curl         
       - name: install-wash
-        #run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && sudo apt install wasmcloud wash
-        run: sudo apt install wasmcloud wash
+        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && sudo apt install wasmcloud wash
+        #run: sudo apt install wasmcloud wash
       - name: make
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
       - name: wash
