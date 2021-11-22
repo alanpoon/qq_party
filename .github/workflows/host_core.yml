@@ -23,16 +23,16 @@ jobs:
       - name: a
         run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
-      # - name: a
-      #   run: groupadd docker
+      - name: listen
+        run: lsof -i -P -n | grep LISTEN
       # - name: a
       #   run: gpasswd -a $USER docker
       # - name: a
       #   run: usermod -aG docker $USER
       - name: Build the stack
         run: docker-compose up -d
-      - id: install-wash
-        uses: wasmcloud/common-actions/install-wash@main
+      - name: install-wash
+        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
       - name: make
         run: make build
       - name: wash
