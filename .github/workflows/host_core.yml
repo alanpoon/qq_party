@@ -51,7 +51,7 @@ jobs:
       # - name: Build the stack
       #   run: docker-compose up -d
       - name: install curl
-        run: apt install curl         
+        run: sudo apt install curl         
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
       - name: make
