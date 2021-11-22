@@ -56,8 +56,10 @@ jobs:
       #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
+      - name: echo
+        run: echo ${{ job.services.registry.ports['5000'] }}
       - name: make
-        run: make build
+        run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
       - name: wash
         run: wash ctl get hosts
       # - name: download_wasmcloud_host
