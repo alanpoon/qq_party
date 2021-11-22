@@ -30,7 +30,7 @@ jobs:
       # - name: a
       #   run: usermod -aG docker $USER
       - name: Build the stack
-        run: docker-compose up
+        run: docker-compose up -d
       # - name: listen
       #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash

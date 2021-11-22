@@ -17,6 +17,8 @@ services:
     image: registry:2.7
     ports:
       - "5000:5000"
+    networks:
+      - my-network
   wasmcloud:
     image: wasmcloud/wasmcloud_host:latest
     environment:
@@ -29,3 +31,8 @@ services:
     ports:
       - "4000:4000"
       - "8080-8083:8080-8083" # Allows exposing examples on ports 8080-8089
+    networks:
+      - my-network
+networks:
+  my-network:
+    external: true
