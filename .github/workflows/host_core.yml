@@ -18,6 +18,7 @@ jobs:
         image: nats
         ports:
           - 4222:4222
+        command: [ "-js" ]
       registry:
         image: registry:2.7
         ports:
