@@ -49,9 +49,7 @@ jobs:
       # - name: create-bridge
       #   run: docker network create -d bridge my-network
       - name: Build the stack
-        run: sudo apt update && sudo apt upgrade
-      - name: install curl
-        run: sudo apt install curl         
+        run: sudo apt-get install libcurl4-openssl-dev      
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && sudo apt install wasmcloud wash
         #run: sudo apt install wasmcloud wash
