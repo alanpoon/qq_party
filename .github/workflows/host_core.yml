@@ -24,7 +24,7 @@ jobs:
         run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
       - name: listen
-        run: lsof -i -P -n | grep LISTEN
+        run: apt-get install -y lsof && lsof -i -P -n | grep LISTEN
       # - name: a
       #   run: gpasswd -a $USER docker
       # - name: a
