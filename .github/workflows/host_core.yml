@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: rustropy/rust-wasm-ci
-      options: --user 1001
+      options: --user docker
     steps:
       # - id: run-nats
       #   uses: wasmcloud/common-actions/run-nats@main
@@ -23,10 +23,10 @@ jobs:
       - name: a
         run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
-      - name: a
-        run: groupadd docker
-      - name: a
-        run: gpasswd -a $USER docker
+      # - name: a
+      #   run: groupadd docker
+      # - name: a
+      #   run: gpasswd -a $USER docker
       # - name: a
       #   run: usermod -aG docker $USER
       - name: Build the stack
