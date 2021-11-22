@@ -30,9 +30,9 @@ jobs:
       # - name: a
       #   run: usermod -aG docker $USER
       - name: Build the stack
-        run: docker-compose up -d
-      - name: listen
-        run: lsof -i -P -n | grep LISTEN            
+        run: docker-compose up
+      # - name: listen
+      #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
       - name: make
