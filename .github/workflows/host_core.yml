@@ -21,7 +21,7 @@ jobs:
       registry:
         image: registry:2.7
         ports:
-          - "5000:5000"
+          - 5000:5000
       wasmcloud:
         image: wasmcloud/wasmcloud_host:latest
         env:
@@ -54,8 +54,6 @@ jobs:
       #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
-      - name: ping
-        run: wash reg ping localhost:5000
       - name: make
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
       - name: wash

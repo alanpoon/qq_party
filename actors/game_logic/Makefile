@@ -7,7 +7,7 @@ REVISION = 0
 CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread
 #CLAIMS   = wasmcloud:thread wasmcloud:messaging
 # registry url for our actor
-REG_URL  = localhost:$(reg_host)/v2/$(PROJECT):$(VERSION)
+REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
 #REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
 # command to upload to registry (without last wasm parameter)
 PUSH_REG_CMD = wash reg push --insecure $(REG_URL)
@@ -34,3 +34,5 @@ start-thread:
 start-thread2:
 	@wash call -o json $(ACTOR_ID) Thread.StartThread \
 		'{"game_id":"hello","timestamp":2,"elapsed":0}'
+push2:
+	$(PUSH_REG_CMD) game_logic_s.wasm
