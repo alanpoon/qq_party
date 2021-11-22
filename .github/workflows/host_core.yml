@@ -27,8 +27,8 @@ jobs:
         run: apt-get install -y lsof
       # - name: a
       #   run:  && 
-      # - name: a
-      #   run: usermod -aG docker $USER
+      - name: create-bridge
+        run: docker network create -d bridge my-network
       - name: Build the stack
         run: docker-compose up -d
       # - name: listen
