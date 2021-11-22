@@ -13,6 +13,27 @@ jobs:
     container: 
       image: rustropy/rust-wasm-ci
       options: --user root
+    services:
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
+      registry:
+        image: registry:2.7
+        ports:
+          - "5000:5000"
+      wasmcloud:
+        image: wasmcloud/wasmcloud_host:latest
+        environment:
+          WASMCLOUD_RPC_HOST: nats
+          WASMCLOUD_CTL_HOST: nats
+          WASMCLOUD_PROV_RPC_HOST: nats
+          WASMCLOUD_CLUSTER_SEED: SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
+          WASMCLOUD_CLUSTER_ISSUERS: CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP
+          WASMCLOUD_OCI_ALLOWED_INSECURE: localhost:5000
+        ports:
+          - "4000:4000"
+          - "8080-8083:8080-8083" # Allows exposing examples on ports 8080-8089
     steps:
       # - id: run-nats
       #   uses: wasmcloud/common-actions/run-nats@main
@@ -27,10 +48,10 @@ jobs:
         run: apt-get install -y lsof
       # - name: a
       #   run:  && 
-      - name: create-bridge
-        run: docker network create -d bridge my-network
-      - name: Build the stack
-        run: docker-compose up -d
+      # - name: create-bridge
+      #   run: docker network create -d bridge my-network
+      # - name: Build the stack
+      #   run: docker-compose up -d
       # - name: listen
       #   run: lsof -i -P -n | grep LISTEN            
       - name: install-wash
