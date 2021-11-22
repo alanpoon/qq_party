@@ -53,7 +53,7 @@ jobs:
       - name: install curl
         run: sudo apt install curl         
       - name: install-wash
-        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
+        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && sudo apt install wasmcloud wash
       - name: make
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
       - name: wash
