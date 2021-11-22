@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: rustropy/rust-wasm-ci
+      options: --user root
     steps:
       # - id: run-nats
       #   uses: wasmcloud/common-actions/run-nats@main
