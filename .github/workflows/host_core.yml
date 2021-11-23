@@ -61,6 +61,8 @@ jobs:
         run: sudo apt-get install libcurl4-openssl-dev      
       - name: install-wash
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wasmcloud wash
+      - name: install-wasm32
+        run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
       - name: make
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build2 
