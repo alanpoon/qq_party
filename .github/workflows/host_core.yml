@@ -58,19 +58,22 @@ jobs:
         with:
           path: |
             ~/.cargo/bin/
+            /usr/local/bin/wash
           key: ${{ runner.os }}-cargo }}
       # - name: a
       #   run:  && 
       # - name: create-bridge
       #   run: docker network create -d bridge my-network
-      - name: Build the stack
+      - name: Install neccessary tool
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
         run: |
-          sudo apt-get install libcurl4-openssl-dev
-          curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
-          which wash
-          ls ~
+          if [[ "$CACHE_HIT" == 'true' ]]; then
+            sudo apt-get install libcurl4-openssl-dev
+            curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
+            which wash
+            ls ~
+          fi
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
