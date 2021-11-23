@@ -67,10 +67,10 @@ jobs:
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
         run: |
-          if [[ "$CACHE_HIT" != 'true' ]]; then
-            sudo apt-get install libcurl4-openssl-dev
-            curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wasmcloud wash
-          fi
+          sudo apt-get install libcurl4-openssl-dev
+          curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
+          which wash
+          ls ~
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
