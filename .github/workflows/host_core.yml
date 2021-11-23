@@ -48,7 +48,6 @@ jobs:
         id: cargo-cache
         with:
           path: |
-            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
