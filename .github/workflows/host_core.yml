@@ -54,13 +54,19 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions/cache@v2
+        id: cargo-bin-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+          key: ${{ runner.os }}-cargo }}
       # - name: a
       #   run:  && 
       # - name: create-bridge
       #   run: docker network create -d bridge my-network
       - name: Build the stack
         env:
-          CACHE_HIT: ${{steps.cargo-cache.outputs.cache-hit}}
+          CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
         run: |
           if [[ "$CACHE_HIT" != 'true' ]]; then
             sudo apt-get install libcurl4-openssl-dev
