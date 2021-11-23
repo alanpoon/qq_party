@@ -1,0 +1,11 @@
+[workspace]
+
+members = [
+  "actors/*",
+  "interfaces/*/rust",
+]
+
+default-members = [
+  "actors/*",
+  "interfaces/*/rust",
+]
