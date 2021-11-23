@@ -41,9 +41,18 @@ jobs:
       #     options: '-js'
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
-      - name: a
-        run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
+      # - name: a
+      #   run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       # - name: a
       #   run:  && 
       # - name: create-bridge
@@ -54,7 +63,7 @@ jobs:
         run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wasmcloud wash
         #run: sudo apt install wasmcloud wash
       - name: make
-        run: make reg_host=${{ job.services.registry.ports['5000'] }} build 
+        run: make reg_host=${{ job.services.registry.ports['5000'] }} build2 
       - name: wash
         run: wash ctl get hosts
       # - name: download_wasmcloud_host
