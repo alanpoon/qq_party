@@ -34,7 +34,7 @@ CARGO     ?= cargo
 WASH      ?= wash
 RUST_DEPS ?= Cargo.toml Makefile $(wildcard src/*.rs) .cargo/config.toml
 # location of cargo output files
-TARGET_DIR ?= target
+TARGET_DIR ?= ../../target
 # location of wasm file after build and signing
 DIST_WASM ?= build/$(PROJECT)_s.wasm
 WASM_TARGET ?= wasm32-unknown-unknown

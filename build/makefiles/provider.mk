@@ -71,7 +71,7 @@ endif
 # the target of the current platform, as defined by cross
 cross_target0=target/$(par_target0)/release/$(bin_name)
 # bin_target0=$(cross_target0)
-bin_target0=target/release/$(bin_name)
+bin_target0=../../target/release/$(bin_name)
 
 # traverse subdirs
 .ONESHELL:

@@ -904,6 +904,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "game-provider"
+version = "0.0.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "env_logger 0.8.4",
+ "futures 0.3.17",
+ "lazy_static",
+ "log",
+ "tokio",
+ "wasmbus-rpc",
+ "wasmcloud-interface-thread",
+ "wasmcloud-provider-core",
+]
+
+[[package]]
 name = "game_logic"
 version = "0.1.0"
 dependencies = [
@@ -2964,6 +2980,17 @@ dependencies = [
  "serde_json",
  "wasmbus-rpc",
  "weld-codegen",
+]
+
+[[package]]
+name = "wasmcloud-provider-core"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d0b8685026259ab32e67bd1aed0c8eb04f15717e9da8b2b262d8bf460cfc2dbc"
+dependencies = [
+ "rmp-serde",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]

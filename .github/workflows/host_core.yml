@@ -45,6 +45,7 @@ jobs:
       #   run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: cargo-cache
         with:
           path: |
             ~/.cargo/bin/
@@ -58,14 +59,18 @@ jobs:
       # - name: create-bridge
       #   run: docker network create -d bridge my-network
       - name: Build the stack
-        run: sudo apt-get install libcurl4-openssl-dev      
-      - name: install-wash
-        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wasmcloud wash
+        env:
+          CACHE_HIT: ${{steps.cargo-cache.outputs.cache-hit}}
+        run: |
+          if [[ "$CACHE_HIT" != 'true' ]]; then
+            sudo apt-get install libcurl4-openssl-dev
+            curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wasmcloud wash
+          fi
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
       - name: make
-        run: make reg_host=${{ job.services.registry.ports['5000'] }} build2 
+        run: make reg_host=${{ job.services.registry.ports['5000'] }} build
       - name: wash
         run: wash ctl get hosts
       # - name: download_wasmcloud_host

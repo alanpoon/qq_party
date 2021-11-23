@@ -3,9 +3,11 @@
 members = [
   "actors/*",
   "interfaces/*/rust",
+  "capability_providers/*",
 ]
 
 default-members = [
   "actors/*",
   "interfaces/*/rust",
+  "capability_providers/*",
 ]
