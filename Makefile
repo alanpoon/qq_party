@@ -2,7 +2,7 @@
 build:
 	(cd capability_providers/game-provider && make push)
 	(cd actors/game_logic && make push)
-	wash ctl apply $(shell wash ctl get hosts -o json | jq -r ".hosts[0].id") ops2/manifest.yaml
+	wash ctl apply NAXNT4ASSO4ENYZGKYU5DMIKCTPM72O5Q7RJCRUYKF2YGALBHVEU3PET ops2/manifest.yaml --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
 	(cd actors/game_logic && make start-thread)
 build2:
 	cargo build --target wasm32-unknown-unknown

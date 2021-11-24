@@ -61,6 +61,7 @@ $(DIST_WASM): $(UNSIGNED_WASM) Makefile
 		$(foreach claim,$(CLAIMS), -c $(claim) ) \
 		--name $(ACTOR_NAME) --ver $(VERSION) --rev $(REVISION) \
 		$(if $(ACTOR_ALIAS),--call-alias $(ACTOR_ALIAS)) \
+		--directory ../../keys \
 		--destination $@
 
 # rules to print file name and path of build target
@@ -82,8 +83,7 @@ push: $(DIST_WASM)
 
 # tell host to start an instance of the actor
 start:
-	$(WASH) ctl start actor $(REG_URL) --timeout 3 --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
-
+	$(WASH) ctl start actor $(REG_URL) --timeout 3 -h NA4DBD4GATXEAOIMJ3WMKQEVB7RFPS6Q26C5QB6GVIKPR5JQFPAZYQHE
 stop:
 	$(WASH) ctl stop actor $(REG_URL) --timeout 3 --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
 

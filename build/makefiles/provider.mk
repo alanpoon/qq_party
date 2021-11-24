@@ -98,6 +98,7 @@ $(dest_par): $(bin_target0) Makefile Cargo.toml
 		--vendor $(VENDOR) \
 		--version $(VERSION) \
 		--revision $(REVISION) \
+		--directory ../../keys \
 		--destination $@ \
 		--compress
 	@echo Created $@

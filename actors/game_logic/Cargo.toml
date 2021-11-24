@@ -22,8 +22,3 @@ convert_case = "0.1.0"
 lazy_static = "1.4.0"
 #bevy_core = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_core"}
 #crayon = "0.7.1"
-
-[profile.release]
-# Optimize for small code size
-opt-level = "s"
-lto = true

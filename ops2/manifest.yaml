@@ -4,9 +4,8 @@ labels:
 actors:
     - localhost:5000/v2/game_logic:0.1.0
 capabilities:
-    - image_ref: wasmcloud.azurecr.io/wasmcloud-provider-nats:0.11.5
-    - image_ref: wasmcloud.azurecr.io/httpserver:0.14.4
-    - image_ref: localhost:5000/v2/game-provider:0.0.1
+    - image_ref: localhost:5000/v2/game-provider:0.1.0
+
 links:
   - actor: MDN3AIPQ62QAFZJCSULSCR5D2NQYARPDYK763YLG4EYZLMPKECEWIFY2
     contract_id: "wasmcloud:messaging"

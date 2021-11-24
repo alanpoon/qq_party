@@ -1,5 +1,5 @@
 # examples/actor/echo-messaging
-
+.PHONY: start-thread 
 PROJECT  = game_logic
 VERSION  = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] .version' | head -1)
 REVISION = 0
