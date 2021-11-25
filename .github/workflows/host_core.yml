@@ -87,7 +87,7 @@ jobs:
         run: wash ctl get hosts
       - name: serve_ui
         run: make serve_ui
-      - uses: apogiatzis/ngrok-tunneling-action@v2
+      - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
         with:
           timeout: 30s
           port: 4000
