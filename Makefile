@@ -4,5 +4,5 @@ build:
 	(cd actors/game_logic && make push)
 	wash ctl apply NAXNT4ASSO4ENYZGKYU5DMIKCTPM72O5Q7RJCRUYKF2YGALBHVEU3PET ops2/manifest.yaml --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
 	(cd actors/game_logic && make start-thread)
-build2:
-	cargo build --target wasm32-unknown-unknown
+serve_ui:
+	(cd nat-example && cargo make wasm-serve)

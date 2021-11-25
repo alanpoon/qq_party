@@ -53,6 +53,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
+            nat-example/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/cache@v2
         id: cargo-bin-cache
@@ -74,7 +75,9 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
             which wash
             ls ~
+            cargo install -f wasm-bindgen-cli --vers 0.2.78
           fi
+          cargo install -f wasm-bindgen-cli --vers 0.2.78
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
@@ -82,6 +85,8 @@ jobs:
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build
       - name: wash
         run: wash ctl get hosts
+      - name: serve_ui
+        run: make serve_ui
       - uses: apogiatzis/ngrok-tunneling-action@<VERSION>
         with:
           timeout: 30s
