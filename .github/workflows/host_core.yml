@@ -75,9 +75,9 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
             which wash
             ls ~
-            cargo install -f wasm-bindgen-cli --vers 0.2.78
           fi
-          cargo install -f wasm-bindgen-cli --vers 0.2.78
+          wasm-bindgen || { cargo install -f wasm-bindgen-cli --vers 0.2.78;}
+          cargo make --version || { cargo install cargo-make;}
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
