@@ -64,8 +64,8 @@ jobs:
           key: ${{ runner.os }}-cargo }}
       # - name: a
       #   run:  && 
-      # - name: create-bridge
-      #   run: docker network create -d bridge my-network
+      - name: cargo/bin
+        run: ls ~/.cargo/bin/
       - name: Install neccessary tool
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
@@ -78,6 +78,7 @@ jobs:
           fi
           wasm-bindgen || { cargo install -f wasm-bindgen-cli --vers 0.2.78;}
           cargo make --version || { cargo install cargo-make;}
+          basic-http-server || { cargo install basic-http-server;}
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
