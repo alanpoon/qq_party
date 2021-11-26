@@ -70,6 +70,9 @@ jobs:
         run: ls ~/.cargo/bin/
       - name: ls
         run: ls nat-example
+       - name: source profile
+         run: cat ~/.profile && cat ~/.bash_profile
+         
       - name: Install neccessary tool
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
