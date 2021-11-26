@@ -88,11 +88,11 @@ jobs:
         run: wash ctl get hosts
       # - name: serve_ui
       #   run: make serve_ui
-      - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
-        with:
-          timeout: 30s
-          port: 4000
-          ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+      # - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
+      #   with:
+      #     timeout: 30s
+      #     port: 4000
+      #     ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
       # - name: download_wasmcloud_host
       #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       # - name: ls
