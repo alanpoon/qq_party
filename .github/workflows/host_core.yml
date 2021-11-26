@@ -45,6 +45,8 @@ jobs:
       # - name: a
       #   run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: actions/cache@v2
         id: cargo-cache
         with:
