@@ -92,7 +92,7 @@ jobs:
         with:
           command: make
           args: wasm-serve
-s      # - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
+      # - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
       #   with:
       #     timeout: 30s
       #     port: 4000
