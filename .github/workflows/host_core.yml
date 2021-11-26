@@ -63,7 +63,7 @@ jobs:
           path: |
             ~/.cargo/bin/
             /usr/local/bin/wash
-          key: ${{ runner.os }}-cargo }}
+          key: ${{ runner.os }}-cargo1 }}
       # - name: a
       #   run:  && 
       - name: cargo/bin
