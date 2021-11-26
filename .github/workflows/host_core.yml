@@ -90,14 +90,12 @@ jobs:
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build
       - name: wash
         run: wash ctl get hosts
-      - name: mk public
-        run: mkdir nat-example/public
-      - name: serve_ui
-        uses: marcopolo/cargo@master
-        with:
-          command: make
-          args: wasm-serve
-          working-directory: ./nat-example
+      # - name: serve_ui
+      #   uses: marcopolo/cargo@master
+      #   with:
+      #     command: make
+      #     args: wasm-serve
+      #     working-directory: ./nat-example
       # - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
       #   with:
       #     timeout: 30s
