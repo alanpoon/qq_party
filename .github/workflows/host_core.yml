@@ -66,6 +66,8 @@ jobs:
       #   run:  && 
       - name: cargo/bin
         run: ls ~/.cargo/bin/
+      - name: ls
+        run: ls nat-example
       - name: Install neccessary tool
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
@@ -86,6 +88,7 @@ jobs:
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build
       - name: wash
         run: wash ctl get hosts
+
       - name: serve_ui
         uses: marcopolo/cargo@master
         with:
