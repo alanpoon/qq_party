@@ -86,8 +86,8 @@ jobs:
         run: make reg_host=${{ job.services.registry.ports['5000'] }} build
       - name: wash
         run: wash ctl get hosts
-      - name: serve_ui
-        run: make serve_ui
+      # - name: serve_ui
+      #   run: make serve_ui
       - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
         with:
           timeout: 30s
