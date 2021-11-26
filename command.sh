@@ -1,1 +1,0 @@
- cargo make --version || { echo "j";}
