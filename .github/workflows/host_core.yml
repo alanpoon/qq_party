@@ -94,7 +94,7 @@ jobs:
       - name: wash
         run: wash ctl get hosts
       - name: kill
-        run: netstat -ltnup | grep ':4000'
+        run: sudo netstat -ltnup | grep ':4000'
       - name: serve_ui
         uses: marcopolo/cargo@master
         with:
