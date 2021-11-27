@@ -94,7 +94,7 @@ jobs:
       - name: wash
         run: wash ctl get hosts
       - name: kill
-        run: kill -9 $(lsof -t -i:4000)
+        run: lsof -t -i:4000
       - name: serve_ui
         uses: marcopolo/cargo@master
         with:
