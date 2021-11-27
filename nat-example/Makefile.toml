@@ -17,7 +17,7 @@ dependencies = ["build-wasm"]
 
 [tasks.wasm-serve]
 command = "nohup"
-args = ["basic-http-server", "public","-a","4001"]
+args = ["basic-http-server", "public","-a",4001]
 dependencies = ["wasm-bindgen"]
 
 [tasks.check]
