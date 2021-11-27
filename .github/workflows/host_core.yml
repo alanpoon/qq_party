@@ -71,7 +71,7 @@ jobs:
       - name: ls
         run: ls nat-example
       - name: source profile
-        run: cat ~/.profile && cat ~/.bash_profile
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
          
       - name: Install neccessary tool
         env:
