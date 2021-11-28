@@ -114,12 +114,12 @@ jobs:
           ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
       - name: start ngrok
         run: |
-          nohup ngrok http 4001 >> nohup_ngrok.out 2>&1 &
+          ngrok http 4001 --log=stdout > ngrok.log &
       - name: sleep
         run: |
           bash sleep.sh 10s
       - name: ngrok
-        run: cat nohup_ngrok.out
+        run: cat ngrok.log
       - name: sleep
         run: |
           bash sleep.sh 20m
