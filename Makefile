@@ -6,3 +6,4 @@ build:
 	(cd actors/game_logic && make start-thread)
 serve_ui:
 	(cd nat-example && cargo make wasm-bindgen)
+	(cd nat-example && nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &)
