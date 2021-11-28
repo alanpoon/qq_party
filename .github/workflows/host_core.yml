@@ -106,7 +106,7 @@ jobs:
         run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &
       - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
         with: 
-          timeout: 30s
+          timeout: 1h
           port: 4001
           ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
       # - name: download_wasmcloud_host
