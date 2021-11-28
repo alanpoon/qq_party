@@ -104,11 +104,17 @@ jobs:
       - name: serve_ui
         working-directory: ./nat-example
         run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &
-      - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
-        with: 
-          timeout: 1h
-          port: 4001
-          ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+      - name: ngrok install
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null &&
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list &&
+          sudo apt update && sudo apt install ngrok   
+      - name: save authtoken
+        run: |
+          ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
+      - name: start ngrok
+        run: |
+          timeout 1h ngrok http 4001
       # - name: download_wasmcloud_host
       #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       # - name: ls

@@ -11,5 +11,5 @@ archive_interfaces
 archive_cap
 nat-example/target
 nat-example/public/*
-nat-example/!public/index.html
+!nat-example/public/index.html
 nat-example/nohup.out
