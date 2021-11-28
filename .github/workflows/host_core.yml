@@ -101,9 +101,9 @@ jobs:
           command: make
           args: wasm-bindgen
           working-directory: ./nat-example
-      - name: serve_ui
-        working-directory: ./nat-example
-        run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &
+      # - name: serve_ui
+      #   working-directory: ./nat-example
+      #   run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &
       # - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
       #   with:
       #     timeout: 30s
