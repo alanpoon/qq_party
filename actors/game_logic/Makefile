@@ -19,7 +19,7 @@ CALL_ALIAS = game_logic
 # messaging provider id from wasmcloud.azurecr.io/nats
 # If you built it from source, get the provider id with `make inspect` in the source folder
 MESSAGING_PROVIDER_ID = VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7
-THREAD_PROVIDER_ID = VAEUPY7Y42M5FZSQIABI4FVK5SVNTU2SREZNIUQLGAHMAP4O4WVMZ3KB
+THREAD_PROVIDER_ID = VBYISBTQPDQOMMEWQN3Q6HMYNAIEBF6HAJQOTTCV5IU4KAQRXDVLTJFZ
 link:
 	# link to messaging provider
 	wash ctl link put $(shell make actor_id | tail -1) \
