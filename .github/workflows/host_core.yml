@@ -99,7 +99,7 @@ jobs:
         uses: marcopolo/cargo@master
         with:
           command: make
-          args: wasm-serve
+          args: wasm-bindgen
           working-directory: ./nat-example
       - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
         with:
