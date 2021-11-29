@@ -15,9 +15,10 @@ jobs:
     #   options: --user root
     services:
       nats:
-        image: nats
+        image: bitnami/nats
         ports:
           - 4222:4222
+        options: -js
       registry:
         image: registry:2.7
         ports:
