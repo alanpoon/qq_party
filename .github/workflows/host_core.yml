@@ -14,31 +14,31 @@ jobs:
     #   image: rustropy/rust-wasm-ci
     #   options: --user root
     services:
-      nats:
-        image: synadia/jsm
-        ports:
-          - 4222:4222
       registry:
         image: registry:2.7
         ports:
           - 5000:5000
-      wasmcloud:
-        image: wasmcloud/wasmcloud_host:latest
-        env:
-          WASMCLOUD_RPC_HOST: nats
-          WASMCLOUD_CTL_HOST: nats
-          WASMCLOUD_PROV_RPC_HOST: nats
-          WASMCLOUD_CLUSTER_ISSUERS: CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP
-          WASMCLOUD_OCI_ALLOWED_INSECURE: localhost:5000
-          WASMCLOUD_HOST_SEED: SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
-        ports:
-          - "4000:4000"
-          - "8080-8083:8080-8083" # Allows exposing examples on ports 8080-8089
+      # wasmcloud:
+      #   image: wasmcloud/wasmcloud_host:latest
+      #   env:
+      #     WASMCLOUD_RPC_HOST: nats
+      #     WASMCLOUD_CTL_HOST: nats
+      #     WASMCLOUD_PROV_RPC_HOST: nats
+      #     WASMCLOUD_CLUSTER_ISSUERS: CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP
+      #     WASMCLOUD_OCI_ALLOWED_INSECURE: localhost:5000
+      #     WASMCLOUD_HOST_SEED: SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y
+      #   ports:
+      #     - "4000:4000"
+      #     - "8080-8083:8080-8083" # Allows exposing examples on ports 8080-8089
     steps:
-      # - id: run-nats
-      #   uses: wasmcloud/common-actions/run-nats@main
-      #   with:
-      #     options: '-js'
+      - id: run-nats
+        uses: wasmcloud/common-actions/run-nats@main
+        with:
+          options: '-js'
+      - name: install wasm-cloud
+        run: |
+        wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.2/x86_64-linux.tar.gz -O - | tar -xz
+        WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./x86_64-linux/bin/wasmcloud_host
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
       # - name: a
