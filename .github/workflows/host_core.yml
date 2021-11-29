@@ -42,7 +42,7 @@ jobs:
         run: |
           bash install_wasmcloud.sh
           ls
-          WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./x86_64-linux/bin/wasmcloud_host start
+          WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./bin/wasmcloud_host start
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
       # - name: a
