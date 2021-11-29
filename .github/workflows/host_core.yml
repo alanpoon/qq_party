@@ -37,7 +37,7 @@ jobs:
           options: '-js'
       - name: install wasm-cloud
         run: |
-          ./x86_64-linux/bin/wasmcloud_host --version || { wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.2/x86_64-linux.tar.gz -O - | tar -xz; }
+          bash install_wasmcloud.sh
           WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./x86_64-linux/bin/wasmcloud_host start
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
