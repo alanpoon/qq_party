@@ -2,7 +2,7 @@
 build:
 	(cd capability_providers/game-provider && make push)
 	(cd actors/game_logic && make push)
-	wash ctl apply NAXNT4ASSO4ENYZGKYU5DMIKCTPM72O5Q7RJCRUYKF2YGALBHVEU3PET ops2/manifest.yaml
+	wash ctl apply CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP ops2/manifest.yaml
 	sleep 30
 	(cd actors/game_logic && make start-thread)
 serve_ui:
