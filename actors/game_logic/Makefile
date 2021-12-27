@@ -29,7 +29,7 @@ link:
 		$(THREAD_PROVIDER_ID) wasmcloud:thread
 
 start-thread:
-	@wash call -o json $(ACTOR_ID) --cluster-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4 Thread.StartThread \
+	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
 		'{"game_id":"hello","timestamp":2,"elapsed":0}'
 start-thread2:
 	@wash call -o json $(ACTOR_ID) Thread.StartThread \
