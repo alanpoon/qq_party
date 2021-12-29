@@ -83,7 +83,9 @@ push: $(DIST_WASM)
 
 # tell host to start an instance of the actor
 start:
-	$(WASH) ctl start actor $(REG_URL) --timeout 3 -h NA4DBD4GATXEAOIMJ3WMKQEVB7RFPS6Q26C5QB6GVIKPR5JQFPAZYQHE
+	$(WASH) ctl start actor $(REG_URL) --timeout 3 -h NDP4B6DPQICPNEA3UJ7FOG4KR66Y56JCKNASH6UXWZECNNYFTVYJ4ROS
+start2:
+	$(WASH) ctl start actor $(REG_URL) -ctl-seed
 stop:
 	$(WASH) ctl stop actor $(REG_URL) --timeout 3 --ctl-seed SCABKLLO4OZAT4WERZ2BC4NDFHNUJO6WOGHVG4JLKPFUVJLHAP4WQWWSJ4
 
