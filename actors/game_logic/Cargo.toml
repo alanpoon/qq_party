@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wasmbus-rpc = "0.5.2"
+wasmbus-rpc = "=0.5.2"
 async-trait = "0.1"
 futures = "0.3"
 serde_bytes = "0.11"
@@ -18,7 +18,7 @@ wasmcloud-interface-logging = "0.2.0"
 wasmcloud-interface-messaging = "0.2.0"
 wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 convert_case = "0.1.0"
-bevy_ecs = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_ecs", features = ["trace"]}
+bevy_ecs_lite = {path = "../../../../bevy_stuffs/bevy/crates/bevy_ecs_lite"}
 lazy_static = "1.4.0"
 #bevy_core = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_core"}
 #crayon = "0.7.1"

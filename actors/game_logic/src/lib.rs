@@ -4,7 +4,7 @@ use wasmcloud_interface_logging::{info,error,debug};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs::prelude::{Schedule,World,Component,Query,SystemStage,IntoSystem,Res};
+use bevy_ecs_lite::prelude::{Schedule,World,Component,Query,SystemStage,IntoSystem,Res};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
@@ -94,11 +94,11 @@ impl Thread for GameLogicActor{
 //   }
 //   Ok(game_engine::StartThreadResponse{})
 // }
-#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+#[derive(Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
 struct A{
   position: i32,
 }
-#[derive(Component,Debug, PartialEq, Default)]
+#[derive(Debug, PartialEq, Default)]
 struct Time{pub elapsed:f32}
 impl Time{
   pub fn update(&mut self,t:f32){
@@ -106,8 +106,6 @@ impl Time{
   }
 }
 
-#[derive(Component)]
-struct ContextWrapper(pub Context);
 
 //fn sys(mut query: Query<(&mut A,ContextWrapper)>,time: Res<Time>) {
 fn sys(mut query: Query<&mut A>,time: Res<Time>) {
