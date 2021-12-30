@@ -18,7 +18,5 @@ wasmcloud-interface-logging = "0.2.0"
 wasmcloud-interface-messaging = "0.2.0"
 wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 convert_case = "0.1.0"
-bevy_ecs_lite = {path = "../../../../bevy_stuffs/bevy/crates/bevy_ecs_lite"}
+bevy_ecs_wasm = {git = "https://github.com/UnlimitedHugs/bevy-ecs-wasm"}
 lazy_static = "1.4.0"
-#bevy_core = {path = "../../../../bevy_stuffs/bevy2/crates/bevy_core"}
-#crayon = "0.7.1"

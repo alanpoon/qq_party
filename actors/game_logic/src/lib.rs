@@ -4,13 +4,10 @@ use wasmcloud_interface_logging::{info,error,debug};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs_lite::prelude::{Schedule,World,Component,Query,SystemStage,IntoSystem,Res};
+use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
-// mod generated;
-// pub use generated::*;
-// use crayon::prelude::*;
 
 //use arugio_shared::update_velocity_system;
 lazy_static! {
@@ -107,11 +104,9 @@ impl Time{
 }
 
 
-//fn sys(mut query: Query<(&mut A,ContextWrapper)>,time: Res<Time>) {
 fn sys(mut query: Query<&mut A>,time: Res<Time>) {
   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
   for mut a in query.iter_mut() {
-  //for mut (a,ctx) in query.iter_mut() {
       let n = format!("sys a >{:?}, t >{:?}",a,2);
       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
       a.position = a.position + 1;

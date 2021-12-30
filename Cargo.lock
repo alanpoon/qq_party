@@ -217,28 +217,24 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_ecs_lite"
-version = "0.5.0"
-dependencies = [
- "async-channel",
- "bevy_ecs_macros",
- "bitflags",
- "downcast-rs",
- "fixedbitset 0.4.0",
- "fxhash",
- "serde",
- "thiserror",
- "tracing",
-]
-
-[[package]]
 name = "bevy_ecs_macros"
 version = "0.5.0"
+source = "git+https://github.com/UnlimitedHugs/bevy-ecs-wasm#cceb5a1790d39e253e22e3a7aa6b498f39368349"
 dependencies = [
- "find-crate",
  "proc-macro2 1.0.36",
  "quote 1.0.14",
  "syn 1.0.84",
+]
+
+[[package]]
+name = "bevy_ecs_wasm"
+version = "0.5.0"
+source = "git+https://github.com/UnlimitedHugs/bevy-ecs-wasm#cceb5a1790d39e253e22e3a7aa6b498f39368349"
+dependencies = [
+ "bevy_ecs_macros",
+ "downcast-rs",
+ "fixedbitset 0.4.0",
+ "thiserror",
 ]
 
 [[package]]
@@ -762,15 +758,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "find-crate"
-version = "0.6.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59a98bbaacea1c0eb6a0876280051b892eb73594fd90cf3b20e9c817029c57d2"
-dependencies = [
- "toml",
-]
-
-[[package]]
 name = "fixedbitset"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -936,15 +923,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fxhash"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
-dependencies = [
- "byteorder",
-]
-
-[[package]]
 name = "game-provider"
 version = "0.0.1"
 dependencies = [
@@ -965,7 +943,7 @@ name = "game_logic"
 version = "0.1.0"
 dependencies = [
  "async-trait",
- "bevy_ecs_lite",
+ "bevy_ecs_wasm",
  "convert_case",
  "futures 0.3.19",
  "lazy_static",
@@ -2689,19 +2667,7 @@ checksum = "375a639232caf30edfc78e8d89b2d4c375515393e7af7e16f01cd96917fb2105"
 dependencies = [
  "cfg-if 1.0.0",
  "pin-project-lite",
- "tracing-attributes",
  "tracing-core",
-]
-
-[[package]]
-name = "tracing-attributes"
-version = "0.1.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4f480b8f81512e825f337ad51e94c1eb5d3bbdf2b363dcd01e2b19a9ffe3f8e"
-dependencies = [
- "proc-macro2 1.0.36",
- "quote 1.0.14",
- "syn 1.0.84",
 ]
 
 [[package]]
