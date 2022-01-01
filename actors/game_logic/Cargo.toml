@@ -18,5 +18,7 @@ wasmcloud-interface-logging = "0.2.0"
 wasmcloud-interface-messaging = "0.2.0"
 wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 convert_case = "0.1.0"
-bevy_ecs_wasm = {git = "https://github.com/UnlimitedHugs/bevy-ecs-wasm"}
+#bevy_ecs_wasm = {git = "https://github.com/UnlimitedHugs/bevy-ecs-wasm"}
+#bevy_ecs = {version = "0.50"}
 lazy_static = "1.4.0"
+qq_party_shared = {path = "../../shared" , features = ["actor"]}

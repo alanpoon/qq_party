@@ -40,6 +40,7 @@ DIST_WASM ?= build/$(PROJECT)_s.wasm
 WASM_TARGET ?= wasm32-unknown-unknown
 ACTOR_NAME  ?= $(PROJECT)
 UNSIGNED_WASM = $(TARGET_DIR)/$(WASM_TARGET)/release/$(PROJECT).wasm
+UNSIGNED_WASM2 = $(TARGET_DIR)/$(WASM_TARGET)/release/$(PROJECT)2.wasm
 
 # verify all required variables are set
 check-var-defined = $(if $(strip $($1)),,$(error Required variable "$1" is not defined))
@@ -75,7 +76,10 @@ target-file:
 # the wasm should be rebuilt if any source files change
 $(UNSIGNED_WASM): $(RUST_DEPS)
 	$(CARGO) build --release
-
+	echo "snip"
+#	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
+#	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
+#	mv $(UNSIGNED_WASM2) $(UNSIGNED_WASM)
 
 # push signed wasm file to registry
 push: $(DIST_WASM)
@@ -115,6 +119,10 @@ endif
 # generate release build
 release::
 	cargo build --release
+	echo "snip"
+#	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
+#	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
+# mv $(UNSIGNED_WASM2) $(UNSIGNED_WASM)
 
 # standard rust commands
 check clippy doc:

@@ -4,11 +4,15 @@ use wasmcloud_interface_logging::{info,error,debug};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
+//use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
-
+use qq_party_shared::update_velocity_system;
+use std::boxed::Box;
+use std::pin::Pin;
+use futures::Future;
+use pin_utils::pin_mut;
 //use arugio_shared::update_velocity_system;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
@@ -20,7 +24,7 @@ struct GameLogicActor {}
 #[async_trait]
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    debug!("start_thread----");
+    info!("start_thread----");
     let mut world = World::default();
     world.spawn().insert(A{position:0});
     //world.spawn().insert(ContextWrapper(ctx));
@@ -46,7 +50,52 @@ impl Thread for GameLogicActor{
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    debug!("handle_request----");
+    info!("handle_request----");
+    
+    let mut map = MAP.clone();
+    let mut n = String::from("");
+    {
+      let mut guard = match map.lock() {
+        Ok(guard) => guard,
+        Err(poisoned) => {
+          n = format!("{:?}",poisoned);
+          poisoned.into_inner()
+        },
+      };
+      if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id){
+          if let Some(mut t) = w.get_resource_mut::<Time>(){
+            n = String::from("can find time");
+            t.update(start_thread_request.elapsed as f32);
+          }else{
+            w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
+          }
+        
+        // /w.spawn().insert_bundle(arugio_shared::BallBundle);
+        s.run_once(w);
+      }else{
+        n = String::from("can't find");
+      }
+    }
+    info!("{}",n);
+    
+    //info!("lock {:?}",map.lock());
+    //let mut m = map.lock().unwrap();
+    
+    // let mut map = MAP.clone();
+    // let mut m = map.lock().unwrap();
+    // if let Some((ref mut s, ref mut w))= m.get_mut(&start_thread_request.game_id){
+    //     if let Some(mut t) = w.get_resource_mut::<Time>(){
+    //       t.update(start_thread_request.elapsed as f32);
+    //     }else{
+    //       w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
+    //     }
+      
+    //   // /w.spawn().insert_bundle(arugio_shared::BallBundle);
+    //   s.run_once(w);
+      
+    // }else{
+    //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "cannot find")?;
+    // }
     Ok(StartThreadResponse{})
   }
 }
@@ -104,31 +153,45 @@ impl Time{
 }
 
 
-fn sys(mut query: Query<&mut A>,time: Res<Time>) {
+fn sys(mut query: Query<(&mut A,&mut Context)>,time: Res<Time>) {
   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
-  for mut a in query.iter_mut() {
+  for  (mut a,mut ctx) in query.iter_mut() {
       let n = format!("sys a >{:?}, t >{:?}",a,2);
+      
       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
       a.position = a.position + 1;
-      futures::executor::block_on( async move {
-        let provider = MessagingSender::new();
-        if let Err(e) = provider
-          .publish(
-              &Context{actor:Some("".to_string()),span:Some("default".to_string())},
-              &PubMessage {
-                  body: serde_json::to_vec(&a.clone())
-                  .unwrap(),
-                  reply_to: None,
-                  subject: "game_logic".to_owned(),
-              },
-          )
-          .await
-        {
+      let b = serde_json::to_vec(&a.clone())
+                   .unwrap();
+      // let mut pin = Box::pin(internal_info(n));
+      // // let g = Pin::new(&mut pin).get_mut();
+      // pin_mut!(pin);
+      internal_info2(n);
+      // futures::executor::block_on( async move {
+      //   let provider = MessagingSender::new();
+      //   if let Err(e) = provider
+      //     .publish(
+      //         &Context{actor:Some("".to_string()),span:Some("default".to_string())},
+      //         &PubMessage {
+      //             body: serde_json::to_vec(&a.clone())
+      //             .unwrap(),
+      //             reply_to: None,
+      //             subject: "game_logic".to_owned(),
+      //         },
+      //     )
+      //     .await
+      //   {
         
-        }
-      });
+      //   }
+      // });
       
   }
+}
+fn internal_info2(n:String)->impl Future<Output = RpcResult<StartThreadResponse>> {
+  internal_info(n)
+}
+async fn internal_info(n:String)->RpcResult<StartThreadResponse>{
+  info!("sys {}",n);
+  Ok(StartThreadResponse{}) 
 }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {
 //   let mut count = 0;

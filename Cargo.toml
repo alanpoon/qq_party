@@ -13,5 +13,6 @@ default-members = [
 ]
 [profile.release]
 # Optimize for small code size
-opt-level = "s"
-lto = true
+#opt-level = "s"
+#lto = true
+debug = true
