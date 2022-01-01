@@ -77,8 +77,8 @@ target-file:
 $(UNSIGNED_WASM): $(RUST_DEPS)
 	$(CARGO) build --release
 	echo "snip"
-#	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
-#	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
+	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
+	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
 #	mv $(UNSIGNED_WASM2) $(UNSIGNED_WASM)
 
 # push signed wasm file to registry
@@ -120,8 +120,8 @@ endif
 release::
 	cargo build --release
 	echo "snip"
-#	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
-#	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
+	wasm-snip $(UNSIGNED_WASM) -o $(UNSIGNED_WASM2) -p wbg
+	wasm-snip $(UNSIGNED_WASM2) -o $(UNSIGNED_WASM) -p bindgen
 # mv $(UNSIGNED_WASM2) $(UNSIGNED_WASM)
 
 # standard rust commands

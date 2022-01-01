@@ -1277,12 +1277,10 @@ dependencies = [
  "convert_case",
  "futures 0.3.19",
  "lazy_static",
- "pin-utils",
  "qq_party_shared",
  "serde",
  "serde_bytes",
  "serde_json",
- "wasm-rs-async-executor",
  "wasmbus-rpc",
  "wasmcloud-interface-logging",
  "wasmcloud-interface-messaging",
@@ -3464,15 +3462,6 @@ name = "wasm-bindgen-shared"
 version = "0.2.78"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0237232789cf037d5480773fe568aac745bfe2afbc11a863e97901780a6b47cc"
-
-[[package]]
-name = "wasm-rs-async-executor"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fed8e8c10166d28c68859dd5d159d408fa50fdf668ae39461f2ea41148655d52"
-dependencies = [
- "futures 0.3.19",
-]
 
 [[package]]
 name = "wasmbus-macros"

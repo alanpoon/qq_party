@@ -5,6 +5,7 @@ actors:
     - localhost:5000/v2/game_logic:0.1.0
 capabilities:
     - image_ref: localhost:5000/v2/game-provider:0.1.0
+    - image_ref: localhost:5000/v2/nats-messaging:0.11.5
 links:
   - actor: MDPHQE4VEWGT3GZLN753NLQ3YAPO2KPOOSXGNY6YG7Y6UXPN2KA3LBKL
     contract_id: "wasmcloud:messaging"
