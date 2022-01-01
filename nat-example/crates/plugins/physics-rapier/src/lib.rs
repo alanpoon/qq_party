@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_rapier2d::physics::wrapper;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
-use arugio_shared::{Position,Velocity,update_position_system};
+use qq_party_shared::{Position,Velocity,update_position_system};
 pub struct PhysicsPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;

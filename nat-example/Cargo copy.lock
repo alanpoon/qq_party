@@ -146,6 +146,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be4dc07131ffa69b8072d35f5007352af944213cde02545e2103680baed38fcd"
 
 [[package]]
+name = "arugio_shared"
+version = "0.1.0"
+dependencies = [
+ "bevy_ecs",
+ "bevy_math",
+ "serde",
+]
+
+[[package]]
 name = "ascii-canvas"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1631,10 +1640,10 @@ dependencies = [
 name = "desk-plugin-physics-rapier"
 version = "0.1.0"
 dependencies = [
+ "arugio_shared",
  "bevy",
  "bevy_rapier2d",
  "desk-plugin-core",
- "qq_party_shared",
  "rapier2d",
 ]
 
@@ -1642,6 +1651,7 @@ dependencies = [
 name = "desk-plugin-protocol"
 version = "0.1.0"
 dependencies = [
+ "arugio_shared",
  "bevy",
  "desk-client-websocket",
  "desk-plugin-core",
@@ -1652,7 +1662,6 @@ dependencies = [
  "js-sys",
  "lazy_static",
  "log",
- "qq_party_shared",
  "tokio",
  "tracing",
  "wasm-bindgen",
@@ -3793,15 +3802,6 @@ name = "profiling"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87dfd5592a8eed7e74f56ad7b125f8234763b805c30f0c7c95c486920026a6ec"
-
-[[package]]
-name = "qq_party_shared"
-version = "0.1.0"
-dependencies = [
- "bevy_ecs",
- "bevy_math",
- "serde",
-]
 
 [[package]]
 name = "qstring"

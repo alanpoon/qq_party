@@ -16,4 +16,4 @@ test:
 	cargo test -- --nocapture
 
 push:
-	wash reg push --insecure $(oci_url) build/nats_messaging.par.gz
+	wash reg push --insecure $(oci_url) built/nats_messaging.par.gz

@@ -17,7 +17,6 @@ use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use qq_party_shared::update_velocity_system;
 
-//use arugio_shared::update_velocity_system;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }

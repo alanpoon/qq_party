@@ -7,7 +7,7 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 protocol = { package = "desk-protocol", path = "../../components/protocol", version = "0.1.0" }
 core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
-arugio_shared = { path = "../../components/arugio_shared" }
+qq_party_shared = { path = "../../../../qq_party_shared" ,features=["non_actor"]}
 bevy = { git = "https://github.com/bevyengine/bevy", rev = "d65fbd7b9d4e7393acb18ee446b76ed28a549548", default-features = false }
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 client-websocket = { package = "desk-client-websocket", path = "../../adapters/client-websocket", version = "0.1.0" }

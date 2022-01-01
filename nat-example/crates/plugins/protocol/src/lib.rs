@@ -17,7 +17,7 @@ use tracing::error;
 use client_websocket::save_sub;
 use std::borrow::Cow;
 pub struct ProtocolPlugin;
-use arugio_shared::Position;
+use qq_party_shared::Position;
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -25,7 +25,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<protocol::Events>()
             .init_resource::<Option<BoxClient>>()
             .init_resource::<Option<ClientStateDispatcher>>()
-            .init_resource::<arugio_shared::Time>()
+            .init_resource::<qq_party_shared::Time>()
             .add_system(add_client_state.system())
             .add_system(receive_events.system().label(ProtocolSystem::ReceiveEvents))
             .add_system(receive_events.system())
@@ -36,7 +36,7 @@ impl Plugin for ProtocolPlugin {
                     .after(ProtocolSystem::ReceiveEvents)
                     .before(ProtocolSystem::SendCommands),
             )
-            .add_system(arugio_shared::update_position_system.system())
+            .add_system(qq_party_shared::update_position_system.system())
             .add_system(send_commands.system().label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
             //.add_system(send_commands.system());
         app.add_startup_system(connect_websocket.system());
