@@ -1,0 +1,17 @@
+[package]
+name = "desk-plugin-physics-rapier"
+version = "0.1.0"
+authors = ["Ryo Hirayama <ryo12redstone@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "d65fbd7b9d4e7393acb18ee446b76ed28a549548", default-features = false }
+#bevy = { path = ".../../../../../../bevy2", default-features = false }
+#bevy_rapier2d = { path = ".../../../../../../bevy_rapier/bevy_rapier2d" , features = ["wasm-bindgen", "render"] }
+bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier" , branch = "before-wrapper", features = ["wasm-bindgen", "render"] }
+qq_party_shared = { path = "../../../../qq_party_shared",features=["non_actor"] }
+rapier2d = { version = "0.11", default-features = false, features = [ "dim2", "f32" ] }

@@ -1,1 +1,17 @@
 **/target
+ui/build
+ui/node_modules
+cluster_seed.txt
+**/build
+**.gz
+**.log
+**.out
+newReadme2.md
+Readme.md
+archive_actors
+archive_interfaces
+archive_cap
+nat-example/target
+nat-example/public/*
+!nat-example/public/index.html
+nat-example/nohup.out

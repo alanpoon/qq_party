@@ -1,0 +1,17 @@
+[workspace]
+
+members = [
+  "crates/adapters/*",
+  "crates/components/*",
+  "crates/plugins/*",
+  "crates/apps/*",
+  "crates/libs/*",
+  "crates/tests/*",
+]
+
+default-members = [
+  "crates/adapters/*",
+  "crates/components/*",
+  "crates/plugins/*",
+  "crates/apps/*",
+]

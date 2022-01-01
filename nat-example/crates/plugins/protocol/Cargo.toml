@@ -1,0 +1,33 @@
+[package]
+name = "desk-plugin-protocol"
+version = "0.1.0"
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+protocol = { package = "desk-protocol", path = "../../components/protocol", version = "0.1.0" }
+core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
+qq_party_shared = { path = "../../../../qq_party_shared" ,features=["non_actor"]}
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "d65fbd7b9d4e7393acb18ee446b76ed28a549548", default-features = false }
+#bevy = { path = ".../../../../../../bevy2", default-features = false }
+client-websocket = { package = "desk-client-websocket", path = "../../adapters/client-websocket", version = "0.1.0" }
+futures = "0.3.16"
+eyre = "0.6.5"
+futures-lite = "1.12.0"
+tracing = "0.1.26"
+lazy_static = "1.4.0"
+log = "0.4"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4.28"
+js-sys = "0.3.46"
+wasm-bindgen = "0.2.78"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.9.0", features = ["full"] }
+
+[dependencies.web-sys]
+version = "0.3.50"
+features = [
+  'Window',
+]

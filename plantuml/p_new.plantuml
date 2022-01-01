@@ -1,0 +1,21 @@
+@startuml
+Alice -> Bob: StartThread
+note right
+  tick
+  need safe mech to end loop at health fail
+end note
+Bob --> Alice: dispatch Alice'scommand
+note left
+  get gamestate from redis
+end note
+Alice -> sam: call other NPC actors
+note left
+  process_turn_response
+  
+end note
+Alice -->RPC: publish to other nats connects
+note left
+  increment turn
+  then close loop
+end note
+@enduml
