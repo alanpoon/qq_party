@@ -1,7 +1,9 @@
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
 use crate::nats;
 use super::after_normal::AfterNormal;
-
+use crate::userinfo::UserInfo;
+use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,ClientMessage,ServerMessage};
+use rand::Rng;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct Normal {
@@ -20,6 +22,23 @@ impl ClientState for Normal {
                 payload:b"bbb".to_vec(),
               };
               commands.commands.push(Command::Nats(String::from("default"),p));
+              let mut rand_rng = rand::thread_rng();
+              let x = rand_rng.gen_range(10000..99999);
+              let tv = ClientMessage::Welcome{
+                game_id:String::from("hello"),
+                ball_id:BallId(x),
+              };
+              info!("Welcome Welcome");
+              let tv_= serde_json::to_vec(&tv).unwrap();
+              let n = nats::proto::ClientOp::Pub{
+                subject: String::from("client_handler.hello"),
+                reply_to: None,
+                payload: tv_,
+              };
+              commands.commands.push(Command::Nats(String::from("default"),n));
+              commands.commands.push(Command::StoreLocal(UserInfo{
+                ball_id:BallId(x),
+              }));
               info!("normal client_name: {}, {:?}",client_name,s_op);
               match s_op{
                 nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
@@ -36,7 +55,7 @@ impl ClientState for Normal {
                 }
                
                 _=>{}
-              } 
+              }
               } else if &Event::NatPubOk(String::from("hello"))== e{
                 info!("pub going to afternormal");
                 return AfterNormal{

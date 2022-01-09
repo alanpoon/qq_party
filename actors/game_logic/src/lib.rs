@@ -2,26 +2,30 @@ extern crate wasmcloud_interface_messaging as messaging;
 mod host_call;
 mod info_;
 mod messaging_;
+mod spawn_;
+use spawn_::spawn;
 use host_call::host_call;
 use info_::info_;
 use messaging_::publish_;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
-use wasmcloud_interface_messaging::PubMessage;
+use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
+use wasmcloud_interface_numbergen::random_in_range;
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
+use bevy_math::Vec2;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
-use qq_party_shared::update_velocity_system;
+use qq_party_shared::*;
 
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[derive(Debug, Default, Actor, HealthResponder)]
-#[services(Actor,Thread)]
+#[services(Actor,Thread,MessageSubscriber)]
 struct GameLogicActor {}
 
 #[async_trait]
@@ -72,6 +76,7 @@ impl Thread for GameLogicActor{
           }
         
         // /w.spawn().insert_bundle(arugio_shared::BallBundle);
+
         s.run_once(w);
       }else{
         n = String::from("can't find");
@@ -81,7 +86,93 @@ impl Thread for GameLogicActor{
     Ok(StartThreadResponse{})
   }
 }
-
+#[async_trait]
+impl MessageSubscriber for GameLogicActor{
+  async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
+    info!("handle_message {:?}",req);
+    if req.subject.contains("client_handler"){
+      let client_message: Result<ClientMessage,_> = serde_json::from_slice(&req.body);
+      match client_message{
+        Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
+          let mut map = MAP.clone();
+          info!("handle_message map");
+          let mut guard = match map.lock() {
+            Ok(guard) => guard,
+            Err(poisoned) => {
+              poisoned.into_inner()
+            },
+          };
+          if let Some((ref mut s, ref mut w))= guard.get_mut(&game_id){
+            if let Some(mut tv) = w.get_resource_mut::<TargetVelocity>(){
+              *tv = target_velocity;
+            }else{
+              w.insert_resource(target_velocity);
+            }
+          }
+         // let b = serde_json::to_vec(&a.clone())?;
+          let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
+          match serde_json::to_vec(&server_message){
+            Ok(b)=>{
+              let pMsg = PubMessage{
+                body:b,
+                reply_to: None,
+                subject: "game_logic".to_owned()
+                };
+                publish_(pMsg);
+            }
+            _=>{}
+          }
+         
+        }
+        Ok(ClientMessage::Welcome{game_id,ball_id})=>{
+          let mut map = MAP.clone();
+          info!("handle_message map");
+          let x = random_in_range(35,70).await?;
+          let y = random_in_range(35,200).await?;
+          let mut n = String::from("");
+          let ball_bundle = BallBundle{
+            ball_id:ball_id,
+            position:Position(Vec2::new(x as f32,y as f32)),
+            velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
+            target_velocity: TargetVelocity(Vec2::ZERO),
+          };
+          {
+            let mut guard = match map.lock() {
+              Ok(guard) => guard,
+              Err(poisoned) => {
+                poisoned.into_inner()
+              },
+            };
+            
+            if let Some((ref mut s, ref mut w))= guard.get_mut(&game_id){
+              n = String::from("spawning");
+              n.push_str("spawning");
+              n.push_str(&x.to_string());
+              n.push_str("y:");
+              n.push_str(&y.to_string());
+              spawn(w,ball_bundle.clone());
+            }
+          }
+          info!("handle_message {:?}",n);
+          let server_message = ServerMessage::Welcome{ball_bundle};
+          match serde_json::to_vec(&server_message){
+            Ok(b)=>{
+              let pMsg = PubMessage{
+                body:b,
+                reply_to: None,
+                subject: "game_logic".to_owned()
+                };
+                publish_(pMsg);
+            }
+            _=>{}
+          }
+        }
+        _=>{}
+      }
+    }
+    Ok(())
+  }
+}
 // fn stop_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engine::StartThreadResponse> {
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "Stop thread")?;
 //   game_engine::stop_thread(req)
@@ -106,14 +197,8 @@ fn sys(mut query: Query<&mut A>,time: Res<Time>) {
       info_(n);
       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
       a.position = a.position + 1;
-      let b = serde_json::to_vec(&a.clone())
-                   .unwrap();
-      let pMsg = PubMessage{
-        body:b,
-        reply_to: None,
-        subject: "game_logic".to_owned()
-      };
-      publish_(pMsg);
+      
+      
   }
 }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {

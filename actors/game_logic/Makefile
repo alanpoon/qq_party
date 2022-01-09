@@ -4,7 +4,7 @@ PROJECT  = game_logic
 VERSION  = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] .version' | head -1)
 REVISION = 0
 # list of all contract claims for actor signing (space-separated)
-CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread
+CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread wasmcloud:builtin:numbergen
 #CLAIMS   = wasmcloud:thread wasmcloud:messaging
 # registry url for our actor
 REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)

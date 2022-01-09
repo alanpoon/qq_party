@@ -17,6 +17,10 @@ futures-lite = "1.12.0"
 tracing = "0.1.26"
 lazy_static = "1.4.0"
 log = "0.4"
+serde = { version = "1.0.123", features = ["derive"]}
+serde_json = "1.0.66"
+wasmcloud-interface-messaging = "0.2"
+wasmbus-rpc = "=0.5.2"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen-futures = "0.4.28"

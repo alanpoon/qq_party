@@ -15,3 +15,7 @@ bevy = { git = "https://github.com/bevyengine/bevy", rev = "d65fbd7b9d4e7393acb1
 bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier" , branch = "before-wrapper", features = ["wasm-bindgen", "render"] }
 qq_party_shared = { path = "../../../../qq_party_shared",features=["non_actor"] }
 rapier2d = { version = "0.11", default-features = false, features = [ "dim2", "f32" ] }
+wasm-bindgen = "0.2.78"
+rand = "0.8.4"
+log = "0.4"
+getrandom = {version = "0.2.0", features = ["js"]}

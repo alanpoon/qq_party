@@ -3,6 +3,7 @@ mod client_state;
 mod command;
 mod event;
 mod stream_extension;
+pub mod userinfo;
 pub mod nats;
 pub use client::*;
 pub use client_state::*;

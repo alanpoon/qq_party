@@ -1114,6 +1114,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "bevy_ecs_wasm",
+ "bevy_math",
  "convert_case",
  "futures 0.3.19",
  "lazy_static",
@@ -1124,6 +1125,7 @@ dependencies = [
  "wasmbus-rpc",
  "wasmcloud-interface-logging",
  "wasmcloud-interface-messaging",
+ "wasmcloud-interface-numbergen",
  "wasmcloud-interface-thread",
 ]
 
@@ -3186,6 +3188,21 @@ checksum = "868185b48a0345b061bafad33d4e06da44e8a43b79e09fc4112b0fd545d1e46f"
 dependencies = [
  "async-trait",
  "log",
+ "serde",
+ "serde_bytes",
+ "serde_json",
+ "wasmbus-rpc",
+ "weld-codegen",
+]
+
+[[package]]
+name = "wasmcloud-interface-numbergen"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66fbc37422158cfb02bed2f66c454e0fc5cc22b542ffaf5f8c3807f2726da6dc"
+dependencies = [
+ "async-trait",
+ "futures 0.3.19",
  "serde",
  "serde_bytes",
  "serde_json",
