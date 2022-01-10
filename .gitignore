@@ -3,7 +3,6 @@ ui/build
 ui/node_modules
 cluster_seed.txt
 **/build
-**.gz
 **.log
 **.out
 newReadme2.md
