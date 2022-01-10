@@ -136,6 +136,7 @@ impl MessageSubscriber for GameLogicActor{
             velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
             target_velocity: TargetVelocity(Vec2::ZERO),
           };
+          let mut ball_bundles:Vec<BallBundle> = vec![];
           {
             let mut guard = match map.lock() {
               Ok(guard) => guard,
@@ -150,6 +151,12 @@ impl MessageSubscriber for GameLogicActor{
               n.push_str(&x.to_string());
               n.push_str("y:");
               n.push_str(&y.to_string());
+              let mut query = w.query::<(&BallId,&Position, &Velocity,&TargetVelocity)>();
+              for (ball_id,position, velocity,target_velocity) in query.iter(&w){
+                ball_bundles.push(BallBundle{
+                  ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()
+                });
+              }
               spawn(w,ball_bundle.clone());
             }
           }
@@ -162,7 +169,19 @@ impl MessageSubscriber for GameLogicActor{
                 reply_to: None,
                 subject: "game_logic".to_owned()
                 };
-                publish_(pMsg);
+              publish_(pMsg);
+            }
+            _=>{}
+          }
+          let channel_message_back = ServerMessage::GameState{ball_bundles};
+          match serde_json::to_vec(&channel_message_back){
+            Ok(b)=>{
+              let pMsg = PubMessage{
+                body:b,
+                reply_to: None,
+                subject: format!("channel.{:?}",ball_id.0)
+                };
+              publish_(pMsg);
             }
             _=>{}
           }

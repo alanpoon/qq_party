@@ -190,10 +190,10 @@ fn receive_events(mut cmd: Commands,
                         let server_message: ServerMessage = serde_json::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
-                            for (entity, ball_id,mut tv) in query.iter_mut(){
-                              //if ball_id ==&(*user_info).0.ball_id{
+                            for (entity, qball_id,mut tv) in query.iter_mut(){
+                              if &ball_id ==qball_id{
                                 cmd.entity(entity).insert(target_velocity);
-                              //}
+                              }
                             }
                           }
                           ServerMessage::Welcome{ball_bundle}=>{
@@ -201,6 +201,7 @@ fn receive_events(mut cmd: Commands,
                             cmd.spawn_bundle(ball_bundle);
                           }
                           ServerMessage::GameState{ball_bundles}=>{
+                            info!("recv msg!! gamestate {:?}",ball_bundles);
                             let len = ball_bundles.len();
                             let mut founds = vec![];
                             for (entity, ball_id,mut tv) in query.iter_mut(){
@@ -208,8 +209,8 @@ fn receive_events(mut cmd: Commands,
                                 
                                 for i in 0..len{
                                   let ball_bundle = ball_bundles.get(i).unwrap();
-                                  if ball_bundle.ball_id == ball_id{
-                                    cmd.entity(entity).insert(target_velocity);
+                                  if &ball_bundle.ball_id == ball_id{
+                                    cmd.entity(entity).insert(*tv);
                                     founds.push(i);
                                     break;
                                   }
@@ -218,8 +219,8 @@ fn receive_events(mut cmd: Commands,
                               //}
                             }
                             for (i,ball_bundle) in ball_bundles.iter().enumerate(){
-                              if !founds.contains(i){
-                                cmd.spawn_bundle(ball_bundle);
+                              if !founds.contains(&i){
+                                cmd.spawn_bundle(ball_bundle.clone());
                               }
                             }
                           }

@@ -24,6 +24,12 @@ impl ClientState for Normal {
               commands.commands.push(Command::Nats(String::from("default"),p));
               let mut rand_rng = rand::thread_rng();
               let x = rand_rng.gen_range(10000..99999);
+              let n = nats::proto::ClientOp::Sub{
+                subject: format!("channel.{:?}",x),
+                queue_group:None,
+                sid:18,
+              };
+              commands.commands.push(Command::Nats(String::from("default"),n));
               let tv = ClientMessage::Welcome{
                 game_id:String::from("hello"),
                 ball_id:BallId(x),
@@ -39,6 +45,7 @@ impl ClientState for Normal {
               commands.commands.push(Command::StoreLocal(UserInfo{
                 ball_id:BallId(x),
               }));
+              
               info!("normal client_name: {}, {:?}",client_name,s_op);
               match s_op{
                 nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
