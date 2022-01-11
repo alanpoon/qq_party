@@ -1864,6 +1864,7 @@ dependencies = [
  "bevy",
  "console_log",
  "desk-plugin-core",
+ "desk-plugin-gamepad",
  "desk-plugin-physics-rapier",
  "desk-plugin-protocol",
  "desk-plugin-wasm-target",
@@ -1898,6 +1899,19 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "derivative",
+]
+
+[[package]]
+name = "desk-plugin-gamepad"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "desk-plugin-core",
+ "getrandom 0.2.3",
+ "log",
+ "qq_party_shared",
+ "rand 0.8.4",
+ "wasm-bindgen",
 ]
 
 [[package]]
