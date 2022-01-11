@@ -5,9 +5,6 @@ use bevy::{input::gamepad::GamepadButton};
 use qq_party_shared::{Position,Velocity,update_position_system,TargetVelocity,BallId};
 pub struct GamepadPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
-use bevy::math::Vec3;
-use crate::nalgebra::Vector2;
-use std::f32::consts::PI;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use rand::Rng;
@@ -34,10 +31,10 @@ macro_rules! console_log {
   // `bare_bones`
   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
-const RAPIER_SCALE: f32 = 20.0;
+
 impl Plugin for GamepadPlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_plugin(DefaultPlugin)
+        app.add_plugin(DefaultPlugins)
             .add_system(gamepad_system);
     
     }
