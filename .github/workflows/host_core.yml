@@ -88,6 +88,8 @@ jobs:
           cargo make --version || { cargo install -f cargo-make;}
           basic-http-server --version || { cargo install -f basic-http-server;}
           wasm-snip --version || { cargo install -f wasm-snip;}
+      - name: install wasm-snip
+        run: wasm-snip --version || { cargo install -f wasm-snip;}
       - name: install-wasm32
         run: rustup target add wasm32-unknown-unknown
         #run: sudo apt install wasmcloud wash
