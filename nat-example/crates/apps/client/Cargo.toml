@@ -5,27 +5,28 @@ authors = ["Ryo Hirayama <ryo12redstone@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 
-[features]
-default = [
-  "bevy/bevy_audio",
-  "bevy/bevy_winit",
-  "bevy/render",
-  "bevy/x11",
-]
+#[features]
+#default = [
+# "bevy/bevy_audio",
+#  "bevy/bevy_winit",
+#  "bevy/render",
+#  "bevy/x11",
+#]
 
-web = [
-  "plugin-wasm-target"
-]
+#web = [
+#  "plugin-wasm-target"
+#]
+
 
 [dependencies]
 plugin-core = { package = "desk-plugin-core", path = "../../plugins/core", version = "0.1.0" }
 plugin-protocol = { package = "desk-plugin-protocol", path = "../../plugins/protocol", version = "0.1.0" }
-plugin-wasm-target = { package = "desk-plugin-wasm-target", path = "../../plugins/wasm-target", optional = true, version = "0.1.0" }
+#plugin-wasm-target = { package = "desk-plugin-wasm-target", path = "../../plugins/wasm-target", optional = true, version = "0.1.0" }
 plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../plugins/physics-rapier", version = "0.1.0" }
 plugin-gamepad = { package = "desk-plugin-gamepad", path = "../../plugins/gamepad", version = "0.1.0" }
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "458cb7a9e93dab3127bb99ce7bf8cfc3af18851d", default-features = false }
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "458cb7a9e93dab3127bb99ce7bf8cfc3af18851d" ,features =[]}
 tracing-subscriber = "0.2.19"
 console_log = { version = "0.2"}
 log = "0.4"

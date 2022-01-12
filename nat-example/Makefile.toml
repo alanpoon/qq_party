@@ -8,7 +8,7 @@ args = ["run", "--bin", "desk-server"]
 
 [tasks.build-wasm]
 command = "cargo"
-args = ["build", "--bin", "desk-client", "--target", "wasm32-unknown-unknown", "--release", "--features", "web"]
+args = ["build", "--bin", "desk-client", "--target", "wasm32-unknown-unknown", "--release"]
 
 [tasks.wasm-bindgen]
 command = "wasm-bindgen"

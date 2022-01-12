@@ -16,8 +16,8 @@ pub fn main() {
         .add_plugin(PhysicsPlugin)
         .add_plugin(ProtocolPlugin);
 
-    #[cfg(target_arch = "wasm32")]
-    app.add_plugin(plugin_wasm_target::WasmTargetPlugin);
+    // #[cfg(target_arch = "wasm32")]
+    // app.add_plugin(plugin_wasm_target::WasmTargetPlugin);
     #[cfg(target_arch = "wasm32")]
     console_log::init_with_level(Level::Debug);
 
