@@ -5,7 +5,7 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "458cb7a9e93dab3127bb99ce7bf8cfc3af18851d", default-features = false }
+bevy = { version = "0.6.0", default-features = false }
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 bevy_webgl2 = { git = "https://github.com/alanpoon/bevy_webgl2", rev ="0cb7466d42ae240552eb0d976e9134d21840ff73" }
 #bevy_kira_audio = { version = "0.5" }

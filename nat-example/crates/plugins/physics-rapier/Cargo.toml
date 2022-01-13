@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "458cb7a9e93dab3127bb99ce7bf8cfc3af18851d", default-features = false }
+bevy = { version = "0.6.0", default-features = false }
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 #bevy_rapier2d = { path = ".../../../../../../bevy_rapier/bevy_rapier2d" , features = ["wasm-bindgen", "render"] }
 bevy_rapier2d = { git = "https://github.com/dimforge/bevy_rapier" , rev = "bd97b0b219b56f4f1e04535e503fa104e01bfb58", features = ["wasm-bindgen", "render"] }

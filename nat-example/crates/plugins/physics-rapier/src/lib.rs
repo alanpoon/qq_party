@@ -88,32 +88,32 @@ fn walls(mut commands: Commands) {
     commands.spawn_bundle(camera);
     commands
         .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPosition(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShape(ColliderShape::cuboid(0.1, 9.0)),
+            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
+            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
         .insert(ColliderDebugRender::default());
     commands
         .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPosition(Vector::new(10.0, 0.0).into()),
-            shape: wrapper::ColliderShape(ColliderShape::cuboid(0.1, 9.0)),
+            position: wrapper::ColliderPositionComponent(Vector::new(10.0, 0.0).into()),
+            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
         .insert(ColliderDebugRender::default());
     commands
         .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPosition(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShape(ColliderShape::cuboid(12.0, 0.1)),
+            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
+            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
         .insert(ColliderDebugRender::default());
     commands
         .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPosition(Vector::new(0.0, 7.0).into()),
-            shape: wrapper::ColliderShape(ColliderShape::cuboid(12.0, 0.1)),
+            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 7.0).into()),
+            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
@@ -129,9 +129,9 @@ fn add_physics_components(
         commands
             .entity(card)
             .insert_bundle(RigidBodyBundle {
-                position: wrapper::RigidBodyPosition(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
-                mass_properties: wrapper::RigidBodyMassProps(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
-                damping: wrapper::RigidBodyDamping(RigidBodyDamping {
+                position: wrapper::RigidBodyPositionComponent(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
+                mass_properties: wrapper::RigidBodyMassPropsComponent(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
+                damping: wrapper::RigidBodyDampingComponent(RigidBodyDamping {
                     linear_damping: LINEAR_DAMPING,
                     ..Default::default()
                 }),
@@ -140,7 +140,7 @@ fn add_physics_components(
             .insert(RigidBodyPositionSync::Discrete)
             .with_children(|build| {
                 build.spawn_bundle(ColliderBundle {
-                    shape: wrapper::ColliderShape(ColliderShape::cuboid(0.1, 0.1)),
+                    shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 0.1)),
                     ..Default::default()
                 });
             });
@@ -151,32 +151,32 @@ pub fn cube(
   mut materials: ResMut<Assets<ColorMaterial>>
 ) {
   let mut rand_rng = rand::thread_rng();
-  let x = rand_rng.gen_range(35..70);
-  let y = rand_rng.gen_range(0..200);
-  let r = rand_rng.gen_range(0..255);
-  let g = rand_rng.gen_range(0..255);
-  let b = rand_rng.gen_range(0..255);
+  let x:i32 = rand_rng.gen_range(35..70);
+  let y:i32 = rand_rng.gen_range(0..200);
+  let r:i32 = rand_rng.gen_range(0..255);
+  let g:i32 = rand_rng.gen_range(0..255);
+  let b:i32 = rand_rng.gen_range(0..255);
   let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
   commands
     .spawn()
     .insert_bundle(SpriteBundle {
-        material: materials.add(bevy_color.into()),
         transform: Transform::from_translation(Vec3::new(x as f32, y as f32, 1.0)),
-        sprite: Sprite::new(Vec2::new(
-            30.0,
-            30.0,
-        )),
+        sprite: Sprite{
+          color: bevy_color,
+          custom_size: Some(Vec2::new(30.0,30.0)),
+          ..Default::default()
+        },
         ..Default::default()
-    }).insert(wrapper::RigidBodyPosition([x as f32,y as f32].into()))
+    }).insert(wrapper::RigidBodyPositionComponent([x as f32,y as f32].into()))
     .insert(Position(Vec2::new(x as f32, y as f32)))
     .insert(TargetVelocity(Vec2::ZERO));
     // .insert_bundle(RigidBodyBundle {
     //   body_type: wrapper::RigidBodyType(RigidBodyType::Static),
-    //   position: wrapper::RigidBodyPosition([40.0, 0.0].into()),
+    //   position: wrapper::RigidBodyPositionComponent([40.0, 0.0].into()),
     //   ..RigidBodyBundle::default()
     // }).insert(RigidBodyPositionSync::Discrete);
   // let collider = ColliderBundle {
-  //     shape: wrapper::ColliderShape(ColliderShape::cuboid(rad, rad)),
+  //     shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(rad, rad)),
   //     ..Default::default()
   // };
   // commands
@@ -185,15 +185,15 @@ pub fn cube(
   //     .insert(ColliderDebugRender::with_id(color))
   //     .insert(ColliderPositionSync::Discrete);
 }
-fn update_velocity(
-    rapier: Res<RapierConfiguration>,
-    mut query: Query<(&mut wrapper::RigidBodyVelocity, &Velocity), Changed<Velocity>>,
-) {
-    for (mut rapier_velocity, velocity) in query.iter_mut() {
-        rapier_velocity.linvel.x = velocity.0.x / rapier.scale;
-        rapier_velocity.linvel.y = velocity.0.y / rapier.scale;
-    }
-}
+// fn update_velocity(
+//     rapier: Res<RapierConfiguration>,
+//     mut query: Query<(&mut wrapper::RigidBodyVelocityComponent, &Velocity), Changed<Velocity>>,
+// ) {
+//     for (mut rapier_velocity, velocity) in query.iter_mut() {
+//         rapier_velocity.linvel.x = velocity.0.x / rapier.scale;
+//         rapier_velocity.linvel.y = velocity.0.y / rapier.scale;
+//     }
+// }
 fn update_ball_translation_system(keyboard_input: Res<Input<KeyCode>>,mut balls: Query<(&Position, &mut Transform)>) {
   for (position, mut transform) in balls.iter_mut() {
       
@@ -231,13 +231,13 @@ fn add_ball_mesh_system(
     let b = rand_rng.gen_range(0..255);
     let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
       cmd.entity(entity).insert_bundle(SpriteBundle {
-        material: materials.add(bevy_color.into()),
         transform: Transform::from_translation(Vec3::new(position.0.x as f32, position.0.y as f32, 1.0)),
-        sprite: Sprite::new(Vec2::new(
-            30.0,
-            30.0,
-        )),
+        sprite: Sprite{
+          color: bevy_color,
+          custom_size: Some(Vec2::new(30.0,30.0)),
+          ..Default::default()
+        },
         ..Default::default()
-      }).insert(wrapper::RigidBodyPosition([position.0.x as f32,position.0.y as f32].into()));
+      }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
   }
 }

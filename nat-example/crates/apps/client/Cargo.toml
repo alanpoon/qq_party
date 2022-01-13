@@ -26,7 +26,7 @@ plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../
 plugin-gamepad = { package = "desk-plugin-gamepad", path = "../../plugins/gamepad", version = "0.1.0" }
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "458cb7a9e93dab3127bb99ce7bf8cfc3af18851d" ,features =[]}
+bevy = { version = "0.6.0" ,features =[]}
 tracing-subscriber = "0.2.19"
 console_log = { version = "0.2"}
 log = "0.4"

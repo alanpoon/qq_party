@@ -34,7 +34,7 @@ macro_rules! console_log {
 
 impl Plugin for GamepadPlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_plugin(DefaultPlugins)
+        app.add_plugins(DefaultPlugins)
             .add_system(gamepad_system);
     
     }
