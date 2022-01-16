@@ -42,12 +42,13 @@ macro_rules! console_log {
 const RAPIER_SCALE: f32 = 20.0;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
+        info!("build PhysicsPlugin");
         app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(RapierRenderPlugin)
             .add_startup_system(walls.system())
             .add_startup_system(cube.system())
             .add_startup_system(enable_physics_profiling.system())
-            .add_plugin(DebugUiPlugin)
+            //.add_plugin(DebugUiPlugin)
             .insert_resource(RapierConfiguration {
                 scale: 100.0,
                 gravity: Vector2::zeros(),

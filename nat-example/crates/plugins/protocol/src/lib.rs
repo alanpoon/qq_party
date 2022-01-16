@@ -6,6 +6,7 @@ use wasm::*;
 #[cfg(not(target_arch = "wasm32"))]
 mod native;
 mod userinfo;
+mod c_;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
@@ -89,6 +90,8 @@ fn handle_events(
     mut commands: ResMut<protocol::Commands>,
     mut events: ResMut<protocol::Events>,
     keyboard_input: Res<Input<KeyCode>>,
+    gamepads: Res<Gamepads>,
+    button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
     mut balls: Query<&Velocity>,
     
@@ -100,19 +103,6 @@ fn handle_events(
         for event in events.iter() {
           *state = state.handle(&mut context, &ClientInput::Event(event.clone()));
         }
-        // events.retain(|event|{
-        //   if let Event::Nats(client_name,s_op)=event.clone(){
-        //     match s_op{
-        //       nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
-        //         if subject ==String::from("welcome"){
-        //           return true
-        //         }
-        //       }
-        //       _=>{}
-        //     }
-        //   }
-        //   return false
-        // });
         let ref mut e = *events;
         e.clear();
         e.truncate();//added
@@ -120,24 +110,18 @@ fn handle_events(
         let mut target_velocity_x = 0.0;
         let mut target_velocity_y = 1.0;
         if keyboard_input.pressed(KeyCode::Left)||keyboard_input.pressed(KeyCode::Right) {
-          console_log!("keyboard pressed {:?}",keyboard_input);
-          //for ball in balls.iter(){
-            let tv = ClientMessage::TargetVelocity{
-              game_id:String::from("hello"),
-              ball_id:(*local_user_info).0.ball_id,
-              target_velocity:TargetVelocity(Vec2::new(target_velocity_x,target_velocity_y)),
-            };
-            
-            let tv_= serde_json::to_vec(&tv).unwrap();
-            let n = nats::proto::ClientOp::Pub{
-              subject: String::from("client_handler.hello"),
-              reply_to: None,
-              payload: tv_,
-            };
-            (*commands).push(Command::Nats(String::from("default"),n));
-          //}
+          let ball_id = (*local_user_info).0.ball_id;
+          let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
+          (*commands).push(c);
         }
-      
+        for gamepad in gamepads.iter().cloned() {
+          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)) {
+            let ball_id = (*local_user_info).0.ball_id;
+            let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
+            (*commands).push(c);  
+            info!("{:?} just pressed South", gamepad);
+          }
+        }
     }
 }
 use futures::future::ready;

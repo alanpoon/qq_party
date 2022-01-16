@@ -7,10 +7,49 @@
         margin: 0px;
         touch-action: none;
       }
+      p, button {
+        max-width: 50ch;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 1.125rem;
+        line-height: 1.5em;
+      }
+
+      button {
+        color: white;
+        background: #369;
+        border: 0;
+        padding: 0.5rem 1rem;
+      }
+
+      button:hover {
+        background: #136;
+      }
+
+      #amdfc-controller {
+        position: fixed !important;
+        bottom: 1vmin;
+        right: 1vmin;
+        max-width: 350px;
+        width: 40vw;
+      }
     </style>
   </head>
+  <script src="./simulator.js"></script>
+  
   <script type="module">
     import init from './desk-client.js'
     init()
   </script>
+  <body>
+    <p>
+      Use the button below to connect/disconnect the virtual gamepad, then click on the buttons and axes to simulate working with the gamepad. Info messages will be displayed on screen and in the console.
+    </p>
+    <p>
+      <button onclick="handleButtonClick(this)">Connect</button>
+      <button onclick="document.querySelector('#events').innerHTML = '';">Clear log</button>
+    </p>
+    <p id="events">
+    </p>
+  </body>
+  <script src="./controller.js"></script>
 </html>
