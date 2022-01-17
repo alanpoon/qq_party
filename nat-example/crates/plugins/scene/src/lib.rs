@@ -4,7 +4,6 @@ use qq_party_shared::{Position,Velocity,update_position_system,TargetVelocity,Ba
 pub struct QQScenePlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
-use crate::nalgebra::Vector2;
 use std::f32::consts::PI;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
