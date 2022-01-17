@@ -776,6 +776,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_obj"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3cce4edd0aa94f677eff6120b70eacebfbdbf9507ffa52207b0e30e58b5f6c7a"
+dependencies = [
+ "anyhow",
+ "bevy_app",
+ "bevy_asset",
+ "bevy_render",
+ "bevy_utils",
+ "obj-rs",
+ "thiserror",
+]
+
+[[package]]
 name = "bevy_pbr"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1927,6 +1942,7 @@ dependencies = [
  "desk-plugin-core",
  "desk-plugin-physics-rapier",
  "desk-plugin-protocol",
+ "desk-plugin-scene",
  "log",
  "tracing-subscriber 0.2.25",
  "wasm-bindgen",
@@ -1959,6 +1975,10 @@ dependencies = [
  "bevy",
  "derivative",
 ]
+
+[[package]]
+name = "desk-plugin-ma"
+version = "0.1.0"
 
 [[package]]
 name = "desk-plugin-physics-rapier"
@@ -1999,6 +2019,20 @@ dependencies = [
  "wasmbus-rpc",
  "wasmcloud-interface-messaging",
  "web-sys",
+]
+
+[[package]]
+name = "desk-plugin-scene"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_obj",
+ "desk-plugin-core",
+ "getrandom 0.2.4",
+ "log",
+ "qq_party_shared",
+ "rand 0.8.4",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -3945,6 +3979,15 @@ dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
  "syn 1.0.85",
+]
+
+[[package]]
+name = "obj-rs"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c90a2f645433dba5c609451d3fa847282b0f23ee8d8fa75491a946af53cb1db4"
+dependencies = [
+ "num-traits",
 ]
 
 [[package]]

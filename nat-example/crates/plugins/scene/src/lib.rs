@@ -37,9 +37,9 @@ impl Plugin for QQScenePlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build ScenePlugin");
         app.register_type::<ComponentA>()
-        .register_type::<ComponentB>()
-        .add_startup_system(save_scene_system.exclusive_system())
-        .add_startup_system(load_scene_system)
+        //.register_type::<ComponentB>()
+        // .add_startup_system(save_scene_system.exclusive_system())
+        // .add_startup_system(load_scene_system)
         .add_plugin(ObjPlugin)
         .add_startup_system(setup.system());
     }
@@ -111,9 +111,10 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn_bundle(PbrBundle {
-        mesh: asset_server.load(format!("{}/../../../assets/model/Walk1.obj", env!("CARGO_MANIFEST_DIR")).as_str()),
+        //mesh: asset_server.load(format!("{}/../../../assets/model/Walk1.obj", env!("CARGO_MANIFEST_DIR")).as_str()),
+        mesh: asset_server.load("model/Walk1.obj"),
         material: materials.add(StandardMaterial {
-            base_color_texture: Some(asset_server.load(format!("{}/../../../assets/textures/DrumstickTexture.png", env!("CARGO_MANIFEST_DIR")).as_str())),
+            base_color_texture: Some(asset_server.load("textures/DrumstickTexture.png")),
             ..Default::default()
         }),
         ..Default::default()
@@ -122,9 +123,9 @@ fn setup(
         transform: Transform::from_translation(Vec3::new(3.0, 4.0, 3.0)),
         ..Default::default()
     });
-    commands.spawn_bundle(PerspectiveCameraBundle {
-        transform: Transform::from_translation(Vec3::new(1.5, 2.7, 4.0))
-            .looking_at(Vec3::new(0.0, 0.0, 0.0), Vec3::Y),
-        ..Default::default()
-    });
+    // commands.spawn_bundle(PerspectiveCameraBundle {
+    //     transform: Transform::from_translation(Vec3::new(1.5, 2.7, 4.0))
+    //         .looking_at(Vec3::new(0.0, 0.0, 0.0), Vec3::Y),
+    //     ..Default::default()
+    // });
 }
