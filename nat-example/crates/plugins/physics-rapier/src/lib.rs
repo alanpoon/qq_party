@@ -1,16 +1,9 @@
 use core::DeskSystem;
-
-use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-use bevy_rapier2d::physics::wrapper;
-//use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
+use bevy::{prelude::*, reflect::TypeRegistry, utils::Duration};
 use qq_party_shared::{Position,Velocity,update_position_system,TargetVelocity,BallId};
-pub struct PhysicsPlugin;
+pub struct QQScenePlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
-#[path = "../src_debug_ui/mod.rs"]
-mod ui;
-use ui::DebugUiPlugin;
 use crate::nalgebra::Vector2;
 use std::f32::consts::PI;
 use wasm_bindgen::prelude::*;
@@ -40,205 +33,73 @@ macro_rules! console_log {
   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 const RAPIER_SCALE: f32 = 20.0;
-impl Plugin for PhysicsPlugin {
+impl Plugin for QQScenePlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        info!("build PhysicsPlugin");
-        app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-            .add_plugin(RapierRenderPlugin)
-            .add_startup_system(walls.system())
-            .add_startup_system(cube.system())
-            .add_startup_system(enable_physics_profiling.system())
-            //.add_plugin(DebugUiPlugin)
-            .insert_resource(RapierConfiguration {
-                scale: 100.0,
-                gravity: Vector2::zeros(),
-                ..Default::default()
-            })
-            .insert_resource(Msaa::default())
-            // .add_system(
-            //     add_physics_components
-            //         .system()
-            //         .after(DeskSystem::Shell)
-            //         .before(DeskSystem::PrePhysics),
-            // )
-            //.add_system(update_ball_translation_system.system());
-            .add_system(add_ball_mesh_system.system())
-            .add_system(update_position_system1.system());
-            // .add_system_set(
-            //     SystemSet::new()
-            //         .label(DeskSystem::PrePhysics)
-            //         .with_system(update_velocity.system()),
-            // );
+        info!("build ScenePlugin");
+        app.register_type::<ComponentA>()
+        .register_type::<ComponentB>()
+        .add_startup_system(save_scene_system.exclusive_system())
+        .add_startup_system(load_scene_system)
     }
 }
-fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
-  pipeline.counters.enable()
+#[derive(Component, Reflect, Default)]
+#[reflect(Component)] // this tells the reflect derive to also reflect component behaviors
+struct ComponentA {
+    pub x: f32,
+    pub y: f32,
 }
-fn walls(mut commands: Commands) {
-    let mut camera = OrthographicCameraBundle::new_2d();
-    camera.transform.translation.x = 630.0;
-    camera.transform.translation.y = 350.0;
-    commands.spawn_bundle(PointLightBundle {
-        point_light: PointLight {
-            intensity: 100_000.0,
-            range: 6000.0,
-            ..Default::default()
-        },
-        ..Default::default()
-    });
-    commands.spawn_bundle(camera);
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(10.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 7.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+struct ComponentB {
+    pub value: String,
+    #[reflect(ignore)]
+    pub _time_since_startup: Duration,
 }
 
-fn add_physics_components(
-    rapier: Res<RapierConfiguration>,
-    mut commands: Commands,
-    query: Query<(Entity, &GlobalTransform), Added<Position>>,
-) {
-    for (card, transform) in query.iter() {
-        commands
-            .entity(card)
-            .insert_bundle(RigidBodyBundle {
-                position: wrapper::RigidBodyPositionComponent(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
-                mass_properties: wrapper::RigidBodyMassPropsComponent(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
-                damping: wrapper::RigidBodyDampingComponent(RigidBodyDamping {
-                    linear_damping: LINEAR_DAMPING,
-                    ..Default::default()
-                }),
-                ..Default::default()
-            })
-            .insert(RigidBodyPositionSync::Discrete)
-            .with_children(|build| {
-                build.spawn_bundle(ColliderBundle {
-                    shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 0.1)),
-                    ..Default::default()
-                });
-            });
+impl FromWorld for ComponentB {
+    fn from_world(world: &mut World) -> Self {
+        let time = world.get_resource::<Time>().unwrap();
+        ComponentB {
+            _time_since_startup: time.time_since_startup(),
+            value: "Default Value".to_string(),
+        }
     }
 }
-pub fn cube(
-  mut commands: Commands,
-  mut materials: ResMut<Assets<ColorMaterial>>
-) {
-  let mut rand_rng = rand::thread_rng();
-  let x:i32 = rand_rng.gen_range(35..70);
-  let y:i32 = rand_rng.gen_range(0..200);
-  let r:i32 = rand_rng.gen_range(0..255);
-  let g:i32 = rand_rng.gen_range(0..255);
-  let b:i32 = rand_rng.gen_range(0..255);
-  let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
-  commands
-    .spawn()
-    .insert_bundle(SpriteBundle {
-        transform: Transform::from_translation(Vec3::new(x as f32, y as f32, 1.0)),
-        sprite: Sprite{
-          color: bevy_color,
-          custom_size: Some(Vec2::new(30.0,30.0)),
-          ..Default::default()
-        },
-        ..Default::default()
-    }).insert(wrapper::RigidBodyPositionComponent([x as f32,y as f32].into()))
-    .insert(Position(Vec2::new(x as f32, y as f32)))
-    .insert(TargetVelocity(Vec2::ZERO));
-    // .insert_bundle(RigidBodyBundle {
-    //   body_type: wrapper::RigidBodyType(RigidBodyType::Static),
-    //   position: wrapper::RigidBodyPositionComponent([40.0, 0.0].into()),
-    //   ..RigidBodyBundle::default()
-    // }).insert(RigidBodyPositionSync::Discrete);
-  // let collider = ColliderBundle {
-  //     shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(rad, rad)),
-  //     ..Default::default()
-  // };
-  // commands
-  //     .spawn_bundle(body)
-  //     .insert_bundle(collider)
-  //     .insert(ColliderDebugRender::with_id(color))
-  //     .insert(ColliderPositionSync::Discrete);
+fn load_scene_system(asset_server: Res<AssetServer>, mut scene_spawner: ResMut<SceneSpawner>) {
+    // Scenes are loaded just like any other asset.
+    let scene_handle: Handle<DynamicScene> = asset_server.load("scenes/load_scene_example.scn.ron");
+
+    // SceneSpawner can "spawn" scenes. "Spawning" a scene creates a new instance of the scene in
+    // the World with new entity ids. This guarantees that it will not overwrite existing
+    // entities.
+    scene_spawner.spawn_dynamic(scene_handle);
+
+    // This tells the AssetServer to watch for changes to assets.
+    // It enables our scenes to automatically reload in game when we modify their files
+    asset_server.watch_for_changes().unwrap();
 }
-// fn update_velocity(
-//     rapier: Res<RapierConfiguration>,
-//     mut query: Query<(&mut wrapper::RigidBodyVelocityComponent, &Velocity), Changed<Velocity>>,
-// ) {
-//     for (mut rapier_velocity, velocity) in query.iter_mut() {
-//         rapier_velocity.linvel.x = velocity.0.x / rapier.scale;
-//         rapier_velocity.linvel.y = velocity.0.y / rapier.scale;
-//     }
-// }
-fn update_ball_translation_system(keyboard_input: Res<Input<KeyCode>>,mut balls: Query<(&Position, &mut Transform)>) {
-  for (position, mut transform) in balls.iter_mut() {
-      
-      let mut direction = 0.0;
-      if keyboard_input.pressed(KeyCode::Left) {
-         direction -= 5.0;
-      }
-      if keyboard_input.pressed(KeyCode::Right) {
-        direction += 5.0;
-      }
-      transform.translation.x = transform.translation.x+direction;
-      //transform.translation.y = position.0.y;
-      // transform.rotation =
-      //     Quat::from_rotation_ypr(position.0.x * PI / 2.0, -position.0.y * PI / 2.0, 0.0);
-  }
-}
-//pub fn update_position_system1(mut query: Query<(&mut Position, &Velocity)>, time: Res<Time>) {
-pub fn update_position_system1(mut query: Query<(&mut TargetVelocity, &mut Transform)>, time: Res<Time>) {
-   
-  for (mut tv,mut transform) in query.iter_mut() {
-    transform.translation.x += tv.0.x;
-    transform.translation.y += tv.0.y;
-    *tv = TargetVelocity(Vec2::ZERO);
-  }
-}
-fn add_ball_mesh_system(
-  mut cmd: Commands,
-  balls_without_mesh: Query<(Entity, &BallId,&Position), Without<Transform>>,
-  mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-  for (entity, _,position) in balls_without_mesh.iter() {
-    let mut rand_rng = rand::thread_rng();
-    let r = rand_rng.gen_range(0..255);
-    let g = rand_rng.gen_range(0..255);
-    let b = rand_rng.gen_range(0..255);
-    let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
-      cmd.entity(entity).insert_bundle(SpriteBundle {
-        transform: Transform::from_translation(Vec3::new(position.0.x as f32, position.0.y as f32, 1.0)),
-        sprite: Sprite{
-          color: bevy_color,
-          custom_size: Some(Vec2::new(30.0,30.0)),
-          ..Default::default()
-        },
-        ..Default::default()
-      }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
-  }
+fn save_scene_system(world: &mut World) {
+    // Scenes can be created from any ECS World. You can either create a new one for the scene or
+    // use the current World.
+    let mut scene_world = World::new();
+    let mut component_b = ComponentB::from_world(world);
+    component_b.value = "hello".to_string();
+    scene_world.spawn().insert_bundle((
+        component_b,
+        ComponentA { x: 1.0, y: 2.0 },
+        Transform::identity(),
+    ));
+    scene_world
+        .spawn()
+        .insert_bundle((ComponentA { x: 3.0, y: 4.0 },));
+
+    // The TypeRegistry resource contains information about all registered types (including
+    // components). This is used to construct scenes.
+    let type_registry = world.get_resource::<TypeRegistry>().unwrap();
+    let scene = DynamicScene::from_world(&scene_world, type_registry);
+
+    // Scenes can be serialized like this:
+    info!("{}", scene.serialize_ron(type_registry).unwrap());
+
+    // TODO: save scene
 }

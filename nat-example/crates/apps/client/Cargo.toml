@@ -23,6 +23,7 @@ plugin-core = { package = "desk-plugin-core", path = "../../plugins/core", versi
 plugin-protocol = { package = "desk-plugin-protocol", path = "../../plugins/protocol", version = "0.1.0" }
 #plugin-wasm-target = { package = "desk-plugin-wasm-target", path = "../../plugins/wasm-target", optional = true, version = "0.1.0" }
 plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../plugins/physics-rapier", version = "0.1.0" }
+plugin-scene = { package = "desk-plugin-scene", path = "../../plugins/scene", version = "0.1.0" }
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 bevy = { version = "0.6.0" ,features =[]}
