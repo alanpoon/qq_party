@@ -16,3 +16,7 @@ rand = "0.8.4"
 log = "0.4"
 getrandom = {version = "0.2.0", features = ["js"]}
 bevy_obj =  {version = "0.6.0"}
+
+[[example]]
+name = "manifest"
+path = "example/manifest.rs"
