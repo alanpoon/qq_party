@@ -111,9 +111,9 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn_bundle(PbrBundle {
-        mesh: asset_server.load("model/Walk1.obj"),
+        mesh: asset_server.load(format!("{}/../assets/model/Walk1.obj", env!("CARGO_MANIFEST_DIR")).as_str()),
         material: materials.add(StandardMaterial {
-            base_color_texture: Some(asset_server.load("textures/DrumstickTexture.png")),
+            base_color_texture: Some(asset_server.load(format!("{}/../assets/textures/DrumstickTexture.png", env!("CARGO_MANIFEST_DIR")).as_str())),
             ..Default::default()
         }),
         ..Default::default()
