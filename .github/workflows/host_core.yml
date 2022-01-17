@@ -123,6 +123,8 @@ jobs:
           command: make
           args: wasm-bindgen
           working-directory: ./nat-example
+      - name: cp assets
+        run: cp -r nat-example/assets nat-example/public
       - name: serve_ui
         working-directory: ./nat-example
         run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &

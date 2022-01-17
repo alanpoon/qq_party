@@ -24,6 +24,8 @@ plugin-protocol = { package = "desk-plugin-protocol", path = "../../plugins/prot
 #plugin-wasm-target = { package = "desk-plugin-wasm-target", path = "../../plugins/wasm-target", optional = true, version = "0.1.0" }
 plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../plugins/physics-rapier", version = "0.1.0" }
 plugin-scene = { package = "desk-plugin-scene", path = "../../plugins/scene", version = "0.1.0" }
+plugin-flycamera = { package = "desk-plugin-fly-camera", path = "../../plugins/flycamera", version = "0.1.0" }
+
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 bevy = { version = "0.6.0" ,features =[]}

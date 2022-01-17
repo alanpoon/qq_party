@@ -656,6 +656,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_fly_camera"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dd72cc40662337badaafa03cdc4953f759ba836faaf31e587a476bd9b573b42"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
 name = "bevy_gilrs"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1940,6 +1949,7 @@ dependencies = [
  "bevy",
  "console_log",
  "desk-plugin-core",
+ "desk-plugin-fly-camera",
  "desk-plugin-physics-rapier",
  "desk-plugin-protocol",
  "desk-plugin-scene",
@@ -1974,6 +1984,19 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "derivative",
+]
+
+[[package]]
+name = "desk-plugin-fly-camera"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_fly_camera",
+ "desk-plugin-core",
+ "getrandom 0.2.4",
+ "log",
+ "rand 0.8.4",
+ "wasm-bindgen",
 ]
 
 [[package]]

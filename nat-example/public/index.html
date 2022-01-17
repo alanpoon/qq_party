@@ -2,13 +2,20 @@
   <head>
     <meta charset="UTF-8" />
     <style>
+      #events{
+        position: absolute;
+        bottom: 10px;
+        width: 50%;
+        border: 3px solid #8AC007;
+        overflow:auto;
+        height: 30%;
+      }
       html, body {
         padding: 0px;
         margin: 0px;
         touch-action: none;
       }
       p, button {
-        max-width: 50ch;
         font-family: Roboto, Arial, sans-serif;
         font-size: 1.125rem;
         line-height: 1.5em;
@@ -35,15 +42,21 @@
     </style>
   </head>
   <script src="./simulator.js"></script>
-  
+  <script>
+    var console2 = console;
+    var console = {};
+    console.log = function(txt){
+      document.querySelector("#events")
+      .insertAdjacentHTML('afterbegin', '<div><b>'+txt+'</b></div>');
+      console2.log(txt)
+    };
+    
+  </script>
   <script type="module">
     import init from './desk-client.js'
     init()
   </script>
   <body>
-    <p>
-      Use the button below to connect/disconnect the virtual gamepad, then click on the buttons and axes to simulate working with the gamepad. Info messages will be displayed on screen and in the console.
-    </p>
     <p>
       <button onclick="handleButtonClick(this)">Connect</button>
       <button onclick="document.querySelector('#events').innerHTML = '';">Clear log</button>
