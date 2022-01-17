@@ -39,7 +39,7 @@ impl Plugin for QQScenePlugin {
         app.register_type::<ComponentA>()
         .register_type::<ComponentB>()
         .add_startup_system(save_scene_system.exclusive_system())
-        .add_startup_system(load_scene_system)
+        .add_startup_system(load_scene_system);
     }
 }
 #[derive(Component, Reflect, Default)]
