@@ -117,6 +117,7 @@ fn setup(
             base_color_texture: Some(asset_server.load("textures/DrumstickTexture.png")),
             ..Default::default()
         }),
+        transform: Transform::from_scale(Vec3::new(100.0,100.0,100.0)).with_translation(Vec3::new(30.0,30.0,30.0)),
         ..Default::default()
     });
     commands.spawn_bundle(PointLightBundle {

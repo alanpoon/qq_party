@@ -4,6 +4,7 @@ use bevy::app::ScheduleRunnerSettings;
 use plugin_protocol::ProtocolPlugin;
 use plugin_physics_rapier::PhysicsPlugin;
 use plugin_scene::QQScenePlugin;
+use plugin_flycamera::QQFlyCameraPlugin;
 use log::Level;
 #[bevy_main]
 pub fn main() {
@@ -16,6 +17,7 @@ pub fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(PhysicsPlugin)
         .add_plugin(ProtocolPlugin)
+        .add_plugin(QQFlyCameraPlugin)
         .add_plugin(QQScenePlugin);
 
     // #[cfg(target_arch = "wasm32")]
