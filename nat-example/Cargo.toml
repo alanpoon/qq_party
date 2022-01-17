@@ -17,3 +17,7 @@ default-members = [
   "crates/plugins/*",
   "crates/apps/*",
 ]
+
+[[example]]
+name = "manifest"
+path = "example/manifest.rs"

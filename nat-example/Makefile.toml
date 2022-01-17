@@ -6,6 +6,10 @@ args = ["run", "--bin", "desk-client", "--features", "native,bevy/dynamic"]
 command = "cargo"
 args = ["run", "--bin", "desk-server"]
 
+[tasks.manifest]
+command = "cargo"
+args = ["run", "--example", "manifest"]
+
 [tasks.build-wasm]
 command = "cargo"
 args = ["build", "--bin", "desk-client", "--target", "wasm32-unknown-unknown", "--release"]
