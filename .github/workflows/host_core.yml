@@ -136,17 +136,17 @@ jobs:
       - name: save authtoken
         run: |
           ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
-      - name: start ngrok
-        run: |
-          ngrok http 4001 --log=stdout > ngrok.log &
-      - name: sleep
-        run: |
-          bash sleep.sh 10s
-      - name: ngrok
-        run: cat ngrok.log
-      - name: sleep
-        run: |
-          bash sleep.sh 20m
+     # - name: start ngrok
+     #   run: |
+     #     ngrok http 4001 --log=stdout > ngrok.log &
+     # - name: sleep
+      #  run: |
+       #   bash sleep.sh 10s
+      #- name: ngrok
+       # run: cat ngrok.log
+      #- name: sleep
+       # run: |
+       #   bash sleep.sh 20m
       # - name: download_wasmcloud_host
       #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       # - name: ls
