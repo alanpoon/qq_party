@@ -111,13 +111,12 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn_bundle(PbrBundle {
-        //mesh: asset_server.load(format!("{}/../../../assets/model/Walk1.obj", env!("CARGO_MANIFEST_DIR")).as_str()),
         mesh: asset_server.load("model/Walk1.obj"),
         material: materials.add(StandardMaterial {
             base_color_texture: Some(asset_server.load("textures/DrumstickTexture.png")),
             ..Default::default()
         }),
-        transform: Transform::from_scale(Vec3::new(100.0,100.0,100.0)).with_translation(Vec3::new(30.0,30.0,30.0)),
+        transform: Transform::from_scale(Vec3::new(1.0,1.0,1.0)).with_translation(Vec3::new(0.0,0.5,0.0)),
         ..Default::default()
     });
     commands.spawn_bundle(PointLightBundle {
