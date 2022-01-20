@@ -32,27 +32,13 @@ fn init(
 	});
 	commands
 		.spawn()
-		.insert_bundle(PerspectiveCameraBundle::new_3d())
+		.insert_bundle(PerspectiveCameraBundle{
+			transform: Transform::from_xyz(-2.0, 2.5, 5.0 ).looking_at(Vec3::ZERO, Vec3::Y),
+			..Default::default()
+        })
 		.insert(FlyCamera::default());
 
-	let box_mesh = meshes.add(Mesh::from(shape::Cube { size: 0.25 }));
-	let box_material = materials.add(Color::rgb(1.0, 0.2, 0.3).into());
-
-	const AMOUNT: i32 = 6;
-	for x in -(AMOUNT / 2)..(AMOUNT / 2) {
-		for y in -(AMOUNT / 2)..(AMOUNT / 2) {
-			for z in -(AMOUNT / 2)..(AMOUNT / 2) {
-				commands.spawn().insert_bundle(PbrBundle {
-					mesh: box_mesh.clone(),
-					material: box_material.clone(),
-					transform: Transform::from_translation(Vec3::new(
-						x as f32, y as f32, z as f32,
-					)),
-					..Default::default()
-				});
-			}
-		}
-	}
+	
   let font_handle = asset_server
         .load("fonts/FiraSans-Bold.ttf");
   commands.spawn_bundle(TextBundle {

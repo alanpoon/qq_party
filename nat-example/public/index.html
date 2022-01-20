@@ -37,7 +37,7 @@
         bottom: 1vmin;
         right: 1vmin;
         max-width: 350px;
-        width: 40vw;
+        width: 60vw;
       }
     </style>
   </head>
@@ -50,7 +50,11 @@
       .insertAdjacentHTML('afterbegin', '<div><b>'+txt+'</b></div>');
       console2.log(txt)
     };
-    
+     console.error = function(txt){
+      document.querySelector("#events")
+      .insertAdjacentHTML('afterbegin', '<p style="color:red"><b>'+txt+'</b></p>');
+      console2.error(txt)
+    };
   </script>
   <script type="module">
     import init from './desk-client.js'

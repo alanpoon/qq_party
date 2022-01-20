@@ -11,6 +11,7 @@ use bevy::math::Vec3;
 #[path = "../src_debug_ui/mod.rs"]
 mod ui;
 use ui::DebugUiPlugin;
+mod plane;
 use crate::nalgebra::Vector2;
 use std::f32::consts::PI;
 use wasm_bindgen::prelude::*;
@@ -46,6 +47,7 @@ impl Plugin for PhysicsPlugin {
         app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(RapierRenderPlugin)
             .add_startup_system(walls.system())
+            .add_startup_system(plane::plane.system())
             .add_startup_system(cube.system())
             .add_startup_system(enable_physics_profiling.system())
             //.add_plugin(DebugUiPlugin)
