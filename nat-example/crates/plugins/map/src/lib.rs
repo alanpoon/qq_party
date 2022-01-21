@@ -4,7 +4,7 @@ pub struct MapPlugin;
 impl Plugin for MapPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app.add_plugin(TilemapPlugin)
-         .add_startup_system(startup)
+         .add_startup_system(startup);
   }
 }
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut map_query: MapQuery) {
