@@ -111,12 +111,6 @@ jobs:
         run: wash ctl get hosts
       - name: kill
         run: sudo netstat -ltnup | grep ':4000'
-      - name: build_manifest
-        uses: marcopolo/cargo@master
-        with:
-          command: make
-          args: manifest
-          working-directory: ./nat-example       
       - name: build_ui
         uses: marcopolo/cargo@master
         with:
