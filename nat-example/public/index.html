@@ -55,6 +55,10 @@
       .insertAdjacentHTML('afterbegin', '<p style="color:red"><b>'+txt+'</b></p>');
       console2.error(txt)
     };
+    window.setInterval(function() {
+      var elem = document.getElementById('events');
+      elem.scrollTop = elem.scrollHeight;
+    }, 5000);
   </script>
   <script type="module">
     import init from './desk-client.js'

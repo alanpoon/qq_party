@@ -75,18 +75,17 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
   pipeline.counters.enable()
 }
 fn walls(mut commands: Commands) {
-    let mut camera = OrthographicCameraBundle::new_2d();
     // camera.transform.translation.x = 630.0;
     // camera.transform.translation.y = 350.0;
-    commands.spawn_bundle(PointLightBundle {
-        point_light: PointLight {
-            intensity: 100_000.0,
-            range: 6000.0,
-            ..Default::default()
-        },
-        ..Default::default()
-    });
-    commands.spawn_bundle(camera);
+    // commands.spawn_bundle(PointLightBundle {
+    //     point_light: PointLight {
+    //         intensity: 100_000.0,
+    //         range: 6000.0,
+    //         ..Default::default()
+    //     },
+    //     ..Default::default()
+    // });
+    
     commands
         .spawn_bundle(ColliderBundle {
             position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
