@@ -64,7 +64,6 @@ pub fn update_velocity_system(mut query: Query<(&mut Velocity, &TargetVelocity)>
 
 pub fn update_position_system(mut query: Query<(&mut Position, &Velocity)>, time: Res<Time>) {
     for (mut pos, vel) in query.iter_mut() {
-
-        //pos.0 += vel.0 * time.delta_seconds() * 15.0;
+        pos.0 += vel.0 * time.delta_seconds() * 5.0;
     }
 }

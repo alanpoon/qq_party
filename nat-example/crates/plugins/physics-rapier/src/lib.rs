@@ -61,7 +61,6 @@ impl Plugin for PhysicsPlugin {
             //         .after(DeskSystem::Shell)
             //         .before(DeskSystem::PrePhysics),
             // )
-            //.add_system(update_ball_translation_system.system());
             .add_system(add_ball_mesh_system.system())
             .add_system(update_position_system1.system());
             // .add_system_set(
@@ -194,22 +193,6 @@ pub fn cube(
 //         rapier_velocity.linvel.y = velocity.0.y / rapier.scale;
 //     }
 // }
-fn update_ball_translation_system(keyboard_input: Res<Input<KeyCode>>,mut balls: Query<(&Position, &mut Transform)>) {
-  for (position, mut transform) in balls.iter_mut() {
-      
-      let mut direction = 0.0;
-      if keyboard_input.pressed(KeyCode::Left) {
-         direction -= 5.0;
-      }
-      if keyboard_input.pressed(KeyCode::Right) {
-        direction += 5.0;
-      }
-      transform.translation.x = transform.translation.x+direction;
-      //transform.translation.y = position.0.y;
-      // transform.rotation =
-      //     Quat::from_rotation_ypr(position.0.x * PI / 2.0, -position.0.y * PI / 2.0, 0.0);
-  }
-}
 //pub fn update_position_system1(mut query: Query<(&mut Position, &Velocity)>, time: Res<Time>) {
 pub fn update_position_system1(mut query: Query<(&mut TargetVelocity, &mut Transform)>, time: Res<Time>) {
    

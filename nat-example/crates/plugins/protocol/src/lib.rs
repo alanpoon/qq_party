@@ -108,12 +108,30 @@ fn handle_events(
         e.truncate();//added
         *commands = context.commands;
         let mut target_velocity_x = 0.0;
-        let mut target_velocity_y = 1.0;
-        if keyboard_input.pressed(KeyCode::Left)||keyboard_input.pressed(KeyCode::Right) {
+        let mut target_velocity_y = 0.0;
+        let mut pressed = false;
+        if keyboard_input.pressed(KeyCode::Left){
+          target_velocity_x -= 1.0;
+          pressed = true;
+        }
+        if keyboard_input.pressed(KeyCode::Right){
+          target_velocity_x += 1.0;
+          pressed = true;
+        }
+        if keyboard_input.pressed(KeyCode::Up){
+          target_velocity_y += 1.0;
+          pressed = true;
+        }
+        if keyboard_input.pressed(KeyCode::Down){
+          target_velocity_y -= 1.0;
+          pressed = true;
+        }
+        if pressed{
           let ball_id = (*local_user_info).0.ball_id;
           let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
           (*commands).push(c);
         }
+
         for gamepad in gamepads.iter().cloned() {
           if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)) {
             let ball_id = (*local_user_info).0.ball_id;

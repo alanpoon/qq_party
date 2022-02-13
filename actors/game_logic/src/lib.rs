@@ -40,6 +40,7 @@ impl Thread for GameLogicActor{
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
     update.add_system(sys.system());
+    update.add_system(update_position_system.system());
     schedule.add_stage("update", update);
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }

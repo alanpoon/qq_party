@@ -4,7 +4,7 @@ mod chicken;
 pub struct SpriteCharacterPlugin;
 impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
-      app.add_system(chicken::chicken_system)
+      app.add_system(chicken::chicken_system.system())
       .add_startup_system(startup);
   }
 }
@@ -28,9 +28,10 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_a
     texture_handles: None,
   };
   let texture_atlas_handle = texture_atlases.add(b);
+  
   commands.spawn_bundle(SpriteSheetBundle {
     texture_atlas: texture_atlas_handle,
     transform: Transform::from_xyz(3569.0,3691.8,2.0).with_scale(Vec3::splat(0.2)),
     ..Default::default()
-  });
+  }).insert(Position(Vec2::new(3569.0, 3691.8)));
 }
