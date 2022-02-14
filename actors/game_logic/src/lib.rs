@@ -3,6 +3,8 @@ mod host_call;
 mod info_;
 mod messaging_;
 mod spawn_;
+mod bevy_wasmcloud_time;
+use qq_party_shared::time_interface::TimeInterface;
 use spawn_::spawn;
 use host_call::host_call;
 use info_::info_;
@@ -20,7 +22,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use qq_party_shared::*;
-
+use bevy_ecs_wasm::component::Component;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
@@ -40,7 +42,8 @@ impl Thread for GameLogicActor{
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
     update.add_system(sys.system());
-    update.add_system(update_position_system.system());
+    update.add_system(sys_bevy_wasmcloud_time.system());
+    update.add_system(update_position_system::<bevy_wasmcloud_time::Time>.system());
     schedule.add_stage("update", update);
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }
@@ -75,7 +78,13 @@ impl Thread for GameLogicActor{
           }else{
             w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
           }
-        
+          if let Some(mut t) = w.get_resource_mut::<bevy_wasmcloud_time::Time>(){
+            n = String::from("can find time");
+            //t.update(start_thread_request.elapsed as f32);
+            t.update_with_timestamp(start_thread_request.timestamp)
+          }else{
+            w.insert_resource(bevy_wasmcloud_time::Time{timestamp:start_thread_request.timestamp,..Default::default()});
+          }
         // /w.spawn().insert_bundle(arugio_shared::BallBundle);
 
         s.run_once(w);
@@ -217,9 +226,11 @@ fn sys(mut query: Query<&mut A>,time: Res<Time>) {
       info_(n);
       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
       a.position = a.position + 1;
-      
-      
   }
+}
+fn sys_bevy_wasmcloud_time(time: Res<bevy_wasmcloud_time::Time>) {
+    let n = format!("bevy_wasmcloud_time sys t >{:?}",*time);
+    info_(n);
 }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {
 //   let mut count = 0;

@@ -13,44 +13,6 @@ use qq_party_shared::TargetVelocity;
 //     }
 //   }
 // }
-pub fn handle_events(
-  mut state: ResMut<Option<ClientStateDispatcher>>,
-  mut commands: ResMut<protocol::Commands>,
-  mut events: ResMut<protocol::Events>,
-  keyboard_input: Res<Input<KeyCode>>,
-  gamepads: Res<Gamepads>,
-  button_inputs: Res<Input<GamepadButton>>,
-  local_user_info: Res<LocalUserInfo>,
-  mut balls: Query<&Velocity>,
-) {
-  if let Some(ref mut state) = *state {
-      let mut context = ClientContext {
-          commands: Default::default(),
-      };
-      for event in events.iter() {
-        *state = state.handle(&mut context, &ClientInput::Event(event.clone()));
-      }
-      let ref mut e = *events;
-      e.clear();
-      e.truncate();//added
-      *commands = context.commands;
-      let mut target_velocity_x = 0.0;
-      let mut target_velocity_y = 1.0;
-      if keyboard_input.pressed(KeyCode::Left)||keyboard_input.pressed(KeyCode::Right) {
-        let ball_id = (*local_user_info).0.ball_id;
-        let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
-        (*commands).push(c);
-      }
-      for gamepad in gamepads.iter().cloned() {
-        if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)) {
-          let ball_id = (*local_user_info).0.ball_id;
-          let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
-          (*commands).push(c);  
-          info!("{:?} just pressed South", gamepad);
-        }
-      }
-  }
-}
 pub fn chicken_system(
   time: Res<Time>,
   texture_atlases: Res<Assets<TextureAtlas>>,

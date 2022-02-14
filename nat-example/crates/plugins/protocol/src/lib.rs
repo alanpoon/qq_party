@@ -65,7 +65,7 @@ impl Plugin for ProtocolPlugin {
                     .after(ProtocolSystem::ReceiveEvents)
                     .before(ProtocolSystem::SendCommands),
             )
-            .add_system(qq_party_shared::update_position_system.system())
+            .add_system(qq_party_shared::update_position_system::<TimeWrapper>.system())
             .add_system(send_commands.system().label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
             //.add_system(send_commands.system());
         app.add_startup_system(connect_websocket.system());
