@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_rapier2d::physics::wrapper;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
-use qq_party_shared::{Position,Velocity,update_position_system,TargetVelocity,BallId};
+use qq_party_shared::{Position,Velocity,systems::auto_target_velocity,TargetVelocity,BallId};
 pub struct PhysicsPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
@@ -54,15 +54,15 @@ impl Plugin for PhysicsPlugin {
                 gravity: Vector2::zeros(),
                 ..Default::default()
             })
-            .insert_resource(Msaa::default())
+            .insert_resource(Msaa::default());
             // .add_system(
             //     add_physics_components
             //         .system()
             //         .after(DeskSystem::Shell)
             //         .before(DeskSystem::PrePhysics),
             // )
-            .add_system(add_ball_mesh_system.system())
-            .add_system(update_position_system1.system());
+            //.add_system(add_ball_mesh_system.system())
+            //.add_system(update_position_system1.system());
             // .add_system_set(
             //     SystemSet::new()
             //         .label(DeskSystem::PrePhysics)

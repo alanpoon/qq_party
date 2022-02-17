@@ -4622,6 +4622,7 @@ name = "qq_party_shared"
 version = "0.1.0"
 dependencies = [
  "bevy_ecs",
+ "bevy_log",
  "bevy_math",
  "serde",
 ]

@@ -7,6 +7,7 @@ use wasm::*;
 mod native;
 mod userinfo;
 mod c_;
+mod timewrapper;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
@@ -56,6 +57,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
             .init_resource::<qq_party_shared::Time>()
+            .init_resource::<timewrapper::TimeWrapper>()
             .add_system(add_client_state.system())
             .add_system(receive_events.system().label(ProtocolSystem::ReceiveEvents))
             .add_system(
@@ -65,7 +67,8 @@ impl Plugin for ProtocolPlugin {
                     .after(ProtocolSystem::ReceiveEvents)
                     .before(ProtocolSystem::SendCommands),
             )
-            .add_system(qq_party_shared::update_position_system::<TimeWrapper>.system())
+            .add_system(timewrapper::into_timewrapper.system())
+            .add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>.system())
             .add_system(send_commands.system().label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
             //.add_system(send_commands.system());
         app.add_startup_system(connect_websocket.system());

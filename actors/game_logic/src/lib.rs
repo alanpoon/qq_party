@@ -4,20 +4,17 @@ mod info_;
 mod messaging_;
 mod spawn_;
 mod bevy_wasmcloud_time;
-use qq_party_shared::time_interface::TimeInterface;
-use spawn_::spawn;
-use host_call::host_call;
+mod thread;
+mod client_message_handlers;
+mod systems;
 use info_::info_;
-use messaging_::publish_;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
-use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
+use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
-use wasmcloud_interface_numbergen::random_in_range;
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
-use bevy_math::Vec2;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
@@ -41,9 +38,10 @@ impl Thread for GameLogicActor{
     let mut m = map.lock().unwrap();
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
-    update.add_system(sys.system());
-    update.add_system(sys_bevy_wasmcloud_time.system());
-    update.add_system(update_position_system::<bevy_wasmcloud_time::Time>.system());
+    update.add_system(systems::sys.system());
+    update.add_system(systems::sys_bevy_wasmcloud_time.system());
+    update.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system());
+    update.add_system(qq_party_shared::systems::update_state_velocity::<bevy_wasmcloud_time::Time>.system());
     schedule.add_stage("update", update);
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }
@@ -62,38 +60,7 @@ impl Thread for GameLogicActor{
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     info!("handle_request----");
     let mut map = MAP.clone();
-    let mut n = String::from("");
-    {
-      let mut guard = match map.lock() {
-        Ok(guard) => guard,
-        Err(poisoned) => {
-          n = format!("{:?}",poisoned);
-          poisoned.into_inner()
-        },
-      };
-      if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id){
-          if let Some(mut t) = w.get_resource_mut::<Time>(){
-            n = String::from("can find time");
-            t.update(start_thread_request.elapsed as f32);
-          }else{
-            w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
-          }
-          if let Some(mut t) = w.get_resource_mut::<bevy_wasmcloud_time::Time>(){
-            n = String::from("can find time");
-            //t.update(start_thread_request.elapsed as f32);
-            t.update_with_timestamp(start_thread_request.timestamp)
-          }else{
-            w.insert_resource(bevy_wasmcloud_time::Time{timestamp:start_thread_request.timestamp,..Default::default()});
-          }
-        // /w.spawn().insert_bundle(arugio_shared::BallBundle);
-
-        s.run_once(w);
-      }else{
-        n = String::from("can't find");
-      }
-    }
-    info!("{}",n);
-    Ok(StartThreadResponse{})
+    thread::thread_handle_request(map,start_thread_request).await
   }
 }
 #[async_trait]
@@ -105,96 +72,11 @@ impl MessageSubscriber for GameLogicActor{
       match client_message{
         Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
           let mut map = MAP.clone();
-          info!("handle_message map");
-          let mut guard = match map.lock() {
-            Ok(guard) => guard,
-            Err(poisoned) => {
-              poisoned.into_inner()
-            },
-          };
-          if let Some((ref mut s, ref mut w))= guard.get_mut(&game_id){
-            if let Some(mut tv) = w.get_resource_mut::<TargetVelocity>(){
-              *tv = target_velocity;
-            }else{
-              w.insert_resource(target_velocity);
-            }
-          }
-         // let b = serde_json::to_vec(&a.clone())?;
-          let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
-          match serde_json::to_vec(&server_message){
-            Ok(b)=>{
-              let pMsg = PubMessage{
-                body:b,
-                reply_to: None,
-                subject: "game_logic".to_owned()
-                };
-                publish_(pMsg);
-            }
-            _=>{}
-          }
-         
+          client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
         }
         Ok(ClientMessage::Welcome{game_id,ball_id})=>{
           let mut map = MAP.clone();
-          info!("handle_message map");
-          let x = random_in_range(35,70).await?;
-          let y = random_in_range(35,200).await?;
-          let mut n = String::from("");
-          let ball_bundle = BallBundle{
-            ball_id:ball_id,
-            position:Position(Vec2::new(x as f32,y as f32)),
-            velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
-            target_velocity: TargetVelocity(Vec2::ZERO),
-          };
-          let mut ball_bundles:Vec<BallBundle> = vec![];
-          {
-            let mut guard = match map.lock() {
-              Ok(guard) => guard,
-              Err(poisoned) => {
-                poisoned.into_inner()
-              },
-            };
-            
-            if let Some((ref mut s, ref mut w))= guard.get_mut(&game_id){
-              n = String::from("spawning");
-              n.push_str("spawning");
-              n.push_str(&x.to_string());
-              n.push_str("y:");
-              n.push_str(&y.to_string());
-              let mut query = w.query::<(&BallId,&Position, &Velocity,&TargetVelocity)>();
-              for (ball_id,position, velocity,target_velocity) in query.iter(&w){
-                ball_bundles.push(BallBundle{
-                  ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()
-                });
-              }
-              spawn(w,ball_bundle.clone());
-            }
-          }
-          info!("handle_message {:?}",n);
-          let server_message = ServerMessage::Welcome{ball_bundle};
-          match serde_json::to_vec(&server_message){
-            Ok(b)=>{
-              let pMsg = PubMessage{
-                body:b,
-                reply_to: None,
-                subject: "game_logic".to_owned()
-                };
-              publish_(pMsg);
-            }
-            _=>{}
-          }
-          let channel_message_back = ServerMessage::GameState{ball_bundles};
-          match serde_json::to_vec(&channel_message_back){
-            Ok(b)=>{
-              let pMsg = PubMessage{
-                body:b,
-                reply_to: None,
-                subject: format!("channel.{:?}",ball_id.0)
-                };
-              publish_(pMsg);
-            }
-            _=>{}
-          }
+          client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
         }
         _=>{}
       }
@@ -207,11 +89,11 @@ impl MessageSubscriber for GameLogicActor{
 //   game_engine::stop_thread(req)
 // }
 #[derive(Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
-struct A{
+pub struct A{
   position: i32,
 }
 #[derive(Debug, PartialEq, Default)]
-struct Time{pub elapsed:f32}
+pub struct Time{pub elapsed:f32}
 impl Time{
   pub fn update(&mut self,t:f32){
     self.elapsed = t;
@@ -219,19 +101,19 @@ impl Time{
 }
 
 
-fn sys(mut query: Query<&mut A>,time: Res<Time>) {
-  //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
-  for  mut a in query.iter_mut() {
-      let n = format!("sys a >{:?}, t >{:?}",a,2);
-      info_(n);
-      //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
-      a.position = a.position + 1;
-  }
-}
-fn sys_bevy_wasmcloud_time(time: Res<bevy_wasmcloud_time::Time>) {
-    let n = format!("bevy_wasmcloud_time sys t >{:?}",*time);
-    info_(n);
-}
+// fn sys(mut query: Query<&mut A>,time: Res<Time>) {
+//   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
+//   for  mut a in query.iter_mut() {
+//       let n = format!("sys a >{:?}, t >{:?}",a,2);
+//       info_(n);
+//       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
+//       a.position = a.position + 1;
+//   }
+// }
+// fn sys_bevy_wasmcloud_time(time: Res<bevy_wasmcloud_time::Time>) {
+//     let n = format!("bevy_wasmcloud_time sys t >{:?}",*time);
+//     info_(n);
+// }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {
 //   let mut count = 0;
 //   let mut highest_id = 0;

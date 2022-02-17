@@ -9,9 +9,10 @@ use bevy_math::{Vec2};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 mod bundle;
+pub mod systems;
 pub use bundle::*;
 pub mod time_interface;
-use time_interface::TimeInterface;
+
 
 #[cfg(feature = "non_actor")]
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
@@ -55,20 +56,4 @@ pub enum ServerMessage {
 pub enum ClientMessage {
     Welcome{game_id:String,ball_id:BallId},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
-}
-
-pub fn update_velocity_system(mut query: Query<(&mut Velocity, &TargetVelocity)>, time: Res<Time>) {
-    //let delta = time.delta_seconds();
-    let delta = 2.0;
-    let speed = 2.0;
-
-    for (mut velocity, target_velocity) in query.iter_mut() {
-        velocity.0 = velocity.0 * (1.0 - delta * speed) + target_velocity.0 * (delta * speed);
-    }
-}
-pub fn update_position_system<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position, &Velocity)>, time: Res<X>) {
-    let delta = time.delta_seconds();
-    for (mut pos, vel) in query.iter_mut() {
-        pos.0 += vel.0 * time.delta_seconds() * 5.0;
-    }
 }
