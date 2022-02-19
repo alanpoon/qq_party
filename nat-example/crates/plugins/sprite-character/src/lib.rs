@@ -4,11 +4,18 @@ use std::collections::HashMap;
 use bevy::asset::HandleId;
 mod chicken;
 mod sprite_sheet;
+mod timewrapper;
 pub struct SpriteCharacterPlugin;
 impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app
       .init_resource::<HashMap<String,HandleId>>()
+      .init_resource::<timewrapper::TimeWrapper>()
+      .add_system(timewrapper::into_timewrapper.system())
+      .add_system(qq_party_shared::systems::update_state_position::<timewrapper::TimeWrapper>.system())
+      .add_system(qq_party_shared::systems::update_state_velocity.system())
+      .add_system(chicken::chicken_translate.system())
+      
       //.add_system(chicken::chicken_system.system())
       .add_system(chicken::add_chicken_sprite_system.system())
       .add_startup_system(startup);

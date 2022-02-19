@@ -2,7 +2,7 @@
 build:
 	(cd capability_providers/game-provider && make push)
 	(cd capability_providers_officials/nats && make push)
-	(cd actors/game_logic && make push)
+	(cd actors/game_logic && make clean_wasm && make push)
 	wash ctl apply NDP4B6DPQICPNEA3UJ7FOG4KR66Y56JCKNASH6UXWZECNNYFTVYJ4ROS ops/manifest.yaml
 	sleep 15
 	(cd actors/game_logic && make start-thread)

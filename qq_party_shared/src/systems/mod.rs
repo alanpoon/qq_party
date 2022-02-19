@@ -4,6 +4,7 @@ use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
 use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity};
 #[cfg(feature = "actor")]
 use bevy_ecs_wasm::component::Component;
+use bevy_math::{Vec2};
 use bevy_log::info;
 use crate::time_interface;
 use crate::{TargetVelocity,Velocity,Time,BallId,Position};
@@ -19,14 +20,14 @@ pub fn update_velocity_system(mut query: Query<(&mut Velocity, &TargetVelocity)>
 }
 pub fn auto_target_velocity<X:time_interface::TimeInterface + Component>(mut query: Query<&mut TargetVelocity>, time: Res<X>) {
   let delta = time.delta_seconds();
-  info!("delta {:?}",delta);
+//  info!("delta {:?}",delta);
 
   for mut tv in query.iter_mut() {
       //pos.0 += vel.0 * time.delta_seconds() * 5.0;
       tv.0 +=  time.delta_seconds() * 50.0;
   }
 }
-pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut query: Query<&mut Position,&mut Velocity>, time: Res<X>) {
+pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position,&mut Velocity)>, time: Res<X>) {
   let delta = time.delta_seconds();
   for (mut pos,mut vel) in query.iter_mut() {
       //pos.0 += vel.0 * time.delta_seconds() * 5.0;
@@ -34,7 +35,7 @@ pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut qu
       pos.0.y +=  time.delta_seconds() * vel.0.y;
   }
 }
-pub fn update_state_velocity(mut query: Query<&mut Velocity,&mut TargetVelocity>){
+pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity)>){
   for (mut v,mut tv) in query.iter_mut() {
     if tv.0.x *50.0!=0.0{
       v.0.x = tv.0.x *50.0;

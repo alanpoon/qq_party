@@ -12,7 +12,6 @@ use tokio::sync::RwLock;
 use futures::executor::block_on;
 
 use lazy_static::lazy_static; // 1.4.0
-const TURN_DELAY_MILLIS_DEFAULT: u64 = 2000;
 #[allow(unused)]
 const CAPABILITY_ID: &str = "wasmcloud:thread";
 
@@ -100,12 +99,14 @@ impl Thread for ThreadProvider {
               if *v{
                 //drop(thread_pool);
                 info!("after drop");
-                sleep(Duration::from_millis(TURN_DELAY_MILLIS_DEFAULT));
+                sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
                 let local: DateTime<Local> = Local::now();
                 let m = StartThreadRequest{
                   game_id: start_thread_request_c.game_id.clone(),
-                  elapsed: TURN_DELAY_MILLIS_DEFAULT as u32,
+                  elapsed: start.elapsed().as_secs() as u32,
                   timestamp: local.timestamp_millis() as u64,
+                  sleep_interval: start_thread_request_c.sleep_interval,
+                  subject: start_thread_request_c.subject.clone(),
                 };
                 let read_guard = inner.read().await;
                 let bridge = read_guard.bridge;

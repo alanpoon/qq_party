@@ -17,7 +17,8 @@ pub async fn thread_handle_request(map:Arc<Mutex<HashMap<String,(Schedule,World)
         poisoned.into_inner()
       },
     };
-    if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id){
+    if start_thread_request.subject.is_none(){
+      if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id) {
         if let Some(mut t) = w.get_resource_mut::<Time>(){
           n = String::from("can find time");
           t.update(start_thread_request.elapsed as f32);
@@ -34,9 +35,17 @@ pub async fn thread_handle_request(map:Arc<Mutex<HashMap<String,(Schedule,World)
       // /w.spawn().insert_bundle(arugio_shared::BallBundle);
 
       s.run_once(w);
+      }else{
+        n = String::from("can't find");
+      }
     }else{
-      n = String::from("can't find");
+      let split_arr:Vec<String> = start_thread_request.game_id.split("_").map(|x|x.to_string()).collect();
+
+      if let Some((ref mut s, ref mut w))= guard.get_mut(split_arr.get(0).unwrap()) {
+        
+      }
     }
+    
   }
   info!("{}",n);
   Ok(StartThreadResponse{})

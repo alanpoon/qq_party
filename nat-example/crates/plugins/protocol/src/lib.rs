@@ -8,6 +8,7 @@ mod native;
 mod userinfo;
 mod c_;
 mod timewrapper;
+mod system;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
@@ -68,7 +69,8 @@ impl Plugin for ProtocolPlugin {
                     .before(ProtocolSystem::SendCommands),
             )
             .add_system(timewrapper::into_timewrapper.system())
-            .add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>.system())
+            //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>.system())
+            .add_system(system::camera::move_with_local_player.system())
             .add_system(send_commands.system().label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
             //.add_system(send_commands.system());
         app.add_startup_system(connect_websocket.system());
@@ -181,7 +183,8 @@ fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
   mut events: ResMut<protocol::Events>,
   user_info: Res<LocalUserInfo>,
-  mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
+  //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
+    mut query: Query<(Entity, &BallId)> ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
         let rand_int = get_random_int(0,len as i32);
@@ -195,8 +198,10 @@ fn receive_events(mut cmd: Commands,
                         let server_message: ServerMessage = serde_json::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
-                            for (entity, qball_id,mut tv) in query.iter_mut(){
+                            //for (entity, qball_id,mut tv) in query.iter_mut(){
+                            for (entity, qball_id) in query.iter_mut(){
                               if &ball_id ==qball_id{
+                                info!("insert target_velocity!!,{:?} {:?}",qball_id,ball_id);
                                 cmd.entity(entity).insert(target_velocity);
                               }
                             }
@@ -208,26 +213,25 @@ fn receive_events(mut cmd: Commands,
                           ServerMessage::GameState{ball_bundles}=>{
                             info!("recv msg!! gamestate {:?}",ball_bundles);
                             let len = ball_bundles.len();
-                            let mut founds = vec![];
-                            for (entity, ball_id,mut tv) in query.iter_mut(){
-                              //if ball_id ==&(*user_info).0.ball_id{
-                                
-                                for i in 0..len{
-                                  let ball_bundle = ball_bundles.get(i).unwrap();
-                                  if &ball_bundle.ball_id == ball_id{
-                                    cmd.entity(entity).insert(*tv);
-                                    founds.push(i);
-                                    break;
-                                  }
-                                }
-             
-                              //}
-                            }
-                            for (i,ball_bundle) in ball_bundles.iter().enumerate(){
-                              if !founds.contains(&i){
-                                cmd.spawn_bundle(ball_bundle.clone());
-                              }
-                            }
+                            // let mut founds = vec![];
+                            // for (entity, ball_id,mut tv) in query.iter_mut(){
+                            //   //if ball_id ==&(*user_info).0.ball_id{
+                              
+                            //   for i in 0..len{
+                            //     let ball_bundle = ball_bundles.get(i).unwrap();
+                            //     if &ball_bundle.ball_id == ball_id{
+                            //       cmd.entity(entity).insert(*tv);
+                            //       founds.push(i);
+                            //       break;
+                            //     }
+                            //   }
+                            //   //}
+                            // }
+                            // for (i,ball_bundle) in ball_bundles.iter().enumerate(){
+                            //   if !founds.contains(&i){
+                            //     cmd.spawn_bundle(ball_bundle.clone());
+                            //   }
+                            // }
                           }
                           _=>{}
                         }
