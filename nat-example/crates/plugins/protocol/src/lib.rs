@@ -184,6 +184,7 @@ fn receive_events(mut cmd: Commands,
   mut events: ResMut<protocol::Events>,
   user_info: Res<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
+    mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity)>,
     mut query: Query<(Entity, &BallId)> ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
@@ -207,31 +208,42 @@ fn receive_events(mut cmd: Commands,
                             }
                           }
                           ServerMessage::Welcome{ball_bundle}=>{
-                            info!("recv msg!! spawn {:?}",ball_bundle);
+                            // let mut not_init = vec![];
+                            // for welcome_balls in ball_bundles.iter(){
+                            //   for (_, qball_id) in query.iter_mut(){
+                            //     if &welcome_balls.ball_id!=qball_id{
+                            //       not_init.push(welcome_balls.clone());
+                            //     }
+                            //   }
+                            // }
+                            // info!("recv msg!! spawn {:?}",not_init);
                             cmd.spawn_bundle(ball_bundle);
                           }
                           ServerMessage::GameState{ball_bundles}=>{
                             info!("recv msg!! gamestate {:?}",ball_bundles);
                             let len = ball_bundles.len();
-                            // let mut founds = vec![];
-                            // for (entity, ball_id,mut tv) in query.iter_mut(){
-                            //   //if ball_id ==&(*user_info).0.ball_id{
+                            let mut founds = vec![];
+                            for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
+                              //if ball_id ==&(*user_info).0.ball_id{
                               
-                            //   for i in 0..len{
-                            //     let ball_bundle = ball_bundles.get(i).unwrap();
-                            //     if &ball_bundle.ball_id == ball_id{
-                            //       cmd.entity(entity).insert(*tv);
-                            //       founds.push(i);
-                            //       break;
-                            //     }
-                            //   }
-                            //   //}
-                            // }
-                            // for (i,ball_bundle) in ball_bundles.iter().enumerate(){
-                            //   if !founds.contains(&i){
-                            //     cmd.spawn_bundle(ball_bundle.clone());
-                            //   }
-                            // }
+                              for i in 0..len{
+                                let ball_bundle = ball_bundles.get(i).unwrap();
+                                if &ball_bundle.ball_id == ball_id{
+                                  *v = ball_bundle.velocity;
+                                  *pos = ball_bundle.position;
+                                  *tv = ball_bundle.target_velocity;
+                                  //cmd.entity(entity).insert(*v);
+                                  founds.push(i);
+                                  break;
+                                }
+                              }
+                              //}
+                            }
+                            for (i,ball_bundle) in ball_bundles.iter().enumerate(){
+                              if !founds.contains(&i){
+                                cmd.spawn_bundle(ball_bundle.clone());
+                              }
+                            }
                           }
                           _=>{}
                         }

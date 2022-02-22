@@ -63,6 +63,10 @@ impl ClientState for Normal {
                
                 _=>{}
               }
+              return AfterNormal{
+                  
+              }
+              .into()
               } else if &Event::NatPubOk(String::from("hello"))== e{
                 info!("pub going to afternormal");
                 return AfterNormal{

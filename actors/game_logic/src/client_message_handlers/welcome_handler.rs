@@ -13,7 +13,7 @@ use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:String,ball_id:BallId)-> RpcResult<()>{
     info!("handle_message map");
     let x = random_in_range(3300,3800).await?;
-    let y = random_in_range(3500,4000).await?;
+    let y = random_in_range(3500,3800).await?;
     let mut n = String::from("");
     let ball_bundle = BallBundle{
       ball_id:ball_id,
@@ -43,6 +43,7 @@ pub async fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:Strin
           });
         }
         spawn(w,ball_bundle.clone());
+        ball_bundles.push(ball_bundle.clone());
       }
     }
     info!("handle_message {:?}",n);
@@ -53,18 +54,6 @@ pub async fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:Strin
           body:b,
           reply_to: None,
           subject: "game_logic".to_owned()
-          };
-        publish_(pMsg);
-      }
-      _=>{}
-    }
-    let channel_message_back = ServerMessage::GameState{ball_bundles};
-    match serde_json::to_vec(&channel_message_back){
-      Ok(b)=>{
-        let pMsg = PubMessage{
-          body:b,
-          reply_to: None,
-          subject: format!("channel.{:?}",ball_id.0)
           };
         publish_(pMsg);
       }

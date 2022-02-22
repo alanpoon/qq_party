@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_rapier2d::physics::wrapper;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
-use qq_party_shared::{Position,Velocity,systems::auto_target_velocity,TargetVelocity,BallId};
+use qq_party_shared::{Position,Velocity,TargetVelocity,BallId};
 pub struct PhysicsPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;

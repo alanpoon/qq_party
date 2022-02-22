@@ -21,7 +21,7 @@ pub async fn thread_handle_request(map:Arc<Mutex<HashMap<String,(Schedule,World)
       if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id) {
         if let Some(mut t) = w.get_resource_mut::<Time>(){
           n = String::from("can find time");
-          t.update(start_thread_request.elapsed as f32);
+          //t.update(start_thread_request.elapsed as f32);
         }else{
           w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
         }

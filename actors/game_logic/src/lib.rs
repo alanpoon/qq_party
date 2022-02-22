@@ -34,14 +34,17 @@ impl Thread for GameLogicActor{
     info!("start_thread----");
     let mut world = World::default();
     world.spawn().insert(A{position:0});
+    world.insert_resource(Time{elapsed:0.0});
     {
     let mut map = MAP.clone();
     let mut m = map.lock().unwrap();
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
+    
     update.add_system(systems::sys.system());
     update.add_system(systems::sys_ball_bundle_debug.system());
     update.add_system(systems::sys_bevy_wasmcloud_time.system());
+    update.add_system(systems::publish::sys_publish_game_state.system());
     update.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system());
     update.add_system(qq_party_shared::systems::update_state_velocity.system());
     schedule.add_stage("update", update);
