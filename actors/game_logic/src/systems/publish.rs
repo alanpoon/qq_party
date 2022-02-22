@@ -14,7 +14,7 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
     }
     info_(format!("publish gamestate {:?}",ball_bundles.clone()));
 
-    let channel_message_back = ServerMessage::GameState{ball_bundles};
+    let channel_message_back = ServerMessage::GameState{ball_bundles,timestamp:(*bevy_wasmcloud_time_val).timestamp};
 
     match serde_json::to_vec(&channel_message_back){
       Ok(b)=>{

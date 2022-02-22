@@ -24,6 +24,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use wasmcloud_interface_messaging::SubMessage;
 use wasmbus_rpc::serialize;
 use serde::{Serialize,Deserialize};
+use chrono::prelude::*;
 use userinfo::LocalUserInfo;
 pub struct ProtocolPlugin;
 #[wasm_bindgen]
@@ -219,8 +220,12 @@ fn receive_events(mut cmd: Commands,
                             // info!("recv msg!! spawn {:?}",not_init);
                             cmd.spawn_bundle(ball_bundle);
                           }
-                          ServerMessage::GameState{ball_bundles}=>{
-                            info!("recv msg!! gamestate {:?}",ball_bundles);
+                          ServerMessage::GameState{ball_bundles,timestamp}=>{
+                            
+                            let utc: DateTime<Utc> = Utc::now();
+                            let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
+                            let delta =  (utc.signed_duration_since(server_utc).num_milliseconds() /1000) as f32;
+                            info!("recv msg!! gamestate {:?} delta {:?} server_utc{:?}",ball_bundles,delta,server_utc);
                             let len = ball_bundles.len();
                             let mut founds = vec![];
                             for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
@@ -230,7 +235,9 @@ fn receive_events(mut cmd: Commands,
                                 let ball_bundle = ball_bundles.get(i).unwrap();
                                 if &ball_bundle.ball_id == ball_id{
                                   *v = ball_bundle.velocity;
-                                  *pos = ball_bundle.position;
+                                  //*pos = ball_bundle.position;
+                                  (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
+                                  (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
                                   *tv = ball_bundle.target_velocity;
                                   //cmd.entity(entity).insert(*v);
                                   founds.push(i);

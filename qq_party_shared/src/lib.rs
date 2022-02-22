@@ -50,7 +50,7 @@ pub struct BallId(pub u32);
 pub enum ServerMessage {
     Welcome{ball_bundle:BallBundle},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
-    GameState{ball_bundles:Vec<BallBundle>},
+    GameState{ball_bundles:Vec<BallBundle>,timestamp:u64},
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {

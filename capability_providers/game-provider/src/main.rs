@@ -100,11 +100,11 @@ impl Thread for ThreadProvider {
                 //drop(thread_pool);
                 info!("after drop");
                 sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
-                let local: DateTime<Local> = Local::now();
+                let utc: DateTime<Utc> = Utc::now();
                 let m = StartThreadRequest{
                   game_id: start_thread_request_c.game_id.clone(),
                   elapsed: start.elapsed().as_secs() as u32,
-                  timestamp: local.timestamp_millis() as u64,
+                  timestamp: utc.timestamp_millis() as u64,
                   sleep_interval: start_thread_request_c.sleep_interval,
                   subject: start_thread_request_c.subject.clone(),
                 };
