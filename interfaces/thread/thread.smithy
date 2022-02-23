@@ -53,6 +53,13 @@ structure StartThreadRequest {
     @required
     @n(2)
     elapsed: U32,
+
+    @required
+    @n(3)
+    sleep_interval: U32,
+
+    @n(4)
+    subject: String,
 }
 
 

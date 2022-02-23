@@ -85,6 +85,9 @@ $(UNSIGNED_WASM): $(RUST_DEPS)
 push: $(DIST_WASM)
 	$(PUSH_REG_CMD) $(DIST_WASM)
 
+clean_wasm: 
+	rm $(UNSIGNED_WASM) || true
+	rm $(UNSIGNED_WASM2) || true
 # tell host to start an instance of the actor
 start:
 	$(WASH) ctl start actor $(REG_URL) --timeout 3 -h NDP4B6DPQICPNEA3UJ7FOG4KR66Y56JCKNASH6UXWZECNNYFTVYJ4ROS

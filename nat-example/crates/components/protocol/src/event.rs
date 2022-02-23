@@ -26,9 +26,13 @@ impl Events {
     pub fn push(&mut self, event: Event) {
         self.0.push(event);
     }
-
+    pub fn retain<F:FnMut(&Event)->bool>(&mut self, f: F){
+      self.0.retain(f);
+    }
+    pub fn clear(&mut self){
+      self.0.clear();
+    }
     pub fn truncate(&mut self) {
-        self.0.clear();
         self.0.truncate(32);
     }
 }

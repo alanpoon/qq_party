@@ -4,7 +4,8 @@ use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::Message;
 
 use crate::{SinkError, WebSocketClient};
-
+use ws_stream_wasm::WsEvent;
+use pharos;
 use eyre::Result;
 use futures::future::{ready, Ready};
 use futures::{prelude::*, Sink, Stream};
@@ -17,6 +18,7 @@ pub async fn connect<'a, T: Into<Cow<'a, str>>>(
     WebSocketClient<
         impl Sink<Bytes, Error = SinkError> + Send + Sync + Unpin + 'static,
         impl Stream<Item = Result<Bytes>> + Send + Sync + Unpin + 'static,
+        impl pharos::Observable<WsEvent>,
     >,
 > {
     let str: Cow<'a, str> = addr.into();
@@ -29,5 +31,5 @@ pub async fn connect<'a, T: Into<Cow<'a, str>>>(
             ready(Ok(Message::binary(bytes)))
         });
 
-    Ok(WebSocketClient { tx, rx })
+    Ok(WebSocketClient { tx, rx,meta: pharos::Pharos::default() })
 }

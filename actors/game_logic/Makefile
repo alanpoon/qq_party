@@ -4,7 +4,7 @@ PROJECT  = game_logic
 VERSION  = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] .version' | head -1)
 REVISION = 0
 # list of all contract claims for actor signing (space-separated)
-CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread
+CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread wasmcloud:builtin:numbergen
 #CLAIMS   = wasmcloud:thread wasmcloud:messaging
 # registry url for our actor
 REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
@@ -30,7 +30,9 @@ link:
 
 start-thread:
 	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
-		'{"game_id":"hello","timestamp":2,"elapsed":0}'
+		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":2000}'
+		# @wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
+		# '{"game_id":"hello_state","timestamp":2,"elapsed":0,"sleep_interval":5000}'
 start-thread2:
 	@wash call -o json $(ACTOR_ID) Thread.StartThread \
 		'{"game_id":"hello","timestamp":2,"elapsed":0}'

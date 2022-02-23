@@ -20,6 +20,9 @@ pub struct StartThreadRequest {
     /// Amount of transaction, in cents.
     #[serde(default)]
     pub game_id: String,
+    pub sleep_interval: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub subject: Option<String>,
     /// Amount of tax applied to this transaction, in cents
     pub timestamp: u64,
 }

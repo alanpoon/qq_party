@@ -2,12 +2,16 @@ extern crate wasmcloud_interface_messaging as messaging;
 mod host_call;
 mod info_;
 mod messaging_;
-use host_call::host_call;
+mod spawn_;
+mod bevy_wasmcloud_time;
+mod thread;
+mod client_message_handlers;
+mod systems;
+mod update_client_state;
 use info_::info_;
-use messaging_::publish_;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
-use wasmcloud_interface_messaging::PubMessage;
+use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
@@ -15,13 +19,13 @@ use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
-use qq_party_shared::update_velocity_system;
-
+use qq_party_shared::*;
+use bevy_ecs_wasm::component::Component;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[derive(Debug, Default, Actor, HealthResponder)]
-#[services(Actor,Thread)]
+#[services(Actor,Thread,MessageSubscriber)]
 struct GameLogicActor {}
 
 #[async_trait]
@@ -30,12 +34,20 @@ impl Thread for GameLogicActor{
     info!("start_thread----");
     let mut world = World::default();
     world.spawn().insert(A{position:0});
+    world.insert_resource(Time{elapsed:0.0});
     {
     let mut map = MAP.clone();
     let mut m = map.lock().unwrap();
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
-    update.add_system(sys.system());
+    
+    update.add_system(systems::sys.system());
+    update.add_system(systems::sys_ball_bundle_debug.system());
+    update.add_system(systems::sys_bevy_wasmcloud_time.system());
+    update.add_system(systems::publish::sys_publish_game_state.system());
+    update.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system());
+    update.add_system(qq_party_shared::systems::update_state_velocity.system());
+    update.add_system(systems::sys_health_check_despawn.system());
     schedule.add_stage("update", update);
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }
@@ -54,44 +66,39 @@ impl Thread for GameLogicActor{
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     info!("handle_request----");
     let mut map = MAP.clone();
-    let mut n = String::from("");
-    {
-      let mut guard = match map.lock() {
-        Ok(guard) => guard,
-        Err(poisoned) => {
-          n = format!("{:?}",poisoned);
-          poisoned.into_inner()
-        },
-      };
-      if let Some((ref mut s, ref mut w))= guard.get_mut(&start_thread_request.game_id){
-          if let Some(mut t) = w.get_resource_mut::<Time>(){
-            n = String::from("can find time");
-            t.update(start_thread_request.elapsed as f32);
-          }else{
-            w.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
-          }
-        
-        // /w.spawn().insert_bundle(arugio_shared::BallBundle);
-        s.run_once(w);
-      }else{
-        n = String::from("can't find");
-      }
-    }
-    info!("{}",n);
-    Ok(StartThreadResponse{})
+    thread::thread_handle_request(map,start_thread_request).await
   }
 }
-
+#[async_trait]
+impl MessageSubscriber for GameLogicActor{
+  async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
+    if req.subject.contains("client_handler"){
+      let client_message: Result<ClientMessage,_> = serde_json::from_slice(&req.body);
+      match client_message{
+        Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
+          let mut map = MAP.clone();
+          client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
+        }
+        Ok(ClientMessage::Welcome{game_id,ball_id})=>{
+          let mut map = MAP.clone();
+          client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
+        }
+        _=>{}
+      }
+    }
+    Ok(())
+  }
+}
 // fn stop_thread(req: game_engine::StartThreadRequest) -> HandlerResult<game_engine::StartThreadResponse> {
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "Stop thread")?;
 //   game_engine::stop_thread(req)
 // }
 #[derive(Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
-struct A{
+pub struct A{
   position: i32,
 }
 #[derive(Debug, PartialEq, Default)]
-struct Time{pub elapsed:f32}
+pub struct Time{pub elapsed:f32}
 impl Time{
   pub fn update(&mut self,t:f32){
     self.elapsed = t;
@@ -99,23 +106,19 @@ impl Time{
 }
 
 
-fn sys(mut query: Query<&mut A>,time: Res<Time>) {
-  //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
-  for  mut a in query.iter_mut() {
-      let n = format!("sys a >{:?}, t >{:?}",a,2);
-      info_(n);
-      //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
-      a.position = a.position + 1;
-      let b = serde_json::to_vec(&a.clone())
-                   .unwrap();
-      let pMsg = PubMessage{
-        body:b,
-        reply_to: None,
-        subject: "game_logic".to_owned()
-      };
-      publish_(pMsg);
-  }
-}
+// fn sys(mut query: Query<&mut A>,time: Res<Time>) {
+//   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
+//   for  mut a in query.iter_mut() {
+//       let n = format!("sys a >{:?}, t >{:?}",a,2);
+//       info_(n);
+//       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
+//       a.position = a.position + 1;
+//   }
+// }
+// fn sys_bevy_wasmcloud_time(time: Res<bevy_wasmcloud_time::Time>) {
+//     let n = format!("bevy_wasmcloud_time sys t >{:?}",*time);
+//     info_(n);
+// }
 // fn spawn_ball_system(mut cmd: Commands, unowned_balls: Query<&BallId, Without<NetworkHandle>>) {
 //   let mut count = 0;
 //   let mut highest_id = 0;

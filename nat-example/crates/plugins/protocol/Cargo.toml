@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 protocol = { package = "desk-protocol", path = "../../components/protocol", version = "0.1.0" }
 core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared" ,features=["non_actor"]}
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "d65fbd7b9d4e7393acb18ee446b76ed28a549548", default-features = false }
+bevy = { version = "0.6.0", default-features = false }
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
 client-websocket = { package = "desk-client-websocket", path = "../../adapters/client-websocket", version = "0.1.0" }
 futures = "0.3.16"
@@ -17,6 +17,11 @@ futures-lite = "1.12.0"
 tracing = "0.1.26"
 lazy_static = "1.4.0"
 log = "0.4"
+serde = { version = "1.0.123", features = ["derive"]}
+serde_json = "1.0.66"
+wasmcloud-interface-messaging = "0.2"
+wasmbus-rpc = "=0.5.2"
+chrono = {version="0.4", features = ["wasmbind"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen-futures = "0.4.28"

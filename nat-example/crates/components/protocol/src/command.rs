@@ -1,10 +1,12 @@
 use serde::{Deserialize, Serialize};
 use crate::nats;
+use crate::userinfo::UserInfo;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 //#[serde(tag = "c")] // stands for code
 pub enum Command {
     Nats(String,nats::proto::ClientOp),
+    StoreLocal(UserInfo),
     #[serde(other)]
     Unknown,
 }

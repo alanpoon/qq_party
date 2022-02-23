@@ -3,7 +3,6 @@ use tracing::error;
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher, Event,Command};
 use crate::nats;
 use super::normal::Normal;
-use wasm_bindgen::prelude::*;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct BeforeLogin {}

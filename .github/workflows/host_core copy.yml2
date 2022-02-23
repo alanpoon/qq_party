@@ -2,7 +2,7 @@ name: qq_party
 
 on:
   push:
-    branches: [0.5]
+    branches: [0.6]
   pull_request:
     branches: [main]
 
@@ -10,41 +10,143 @@ jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
-    container: 
-      image: rustropy/rust-wasm-ci
-      options: --user root
+    # container: 
+    #   image: rustropy/rust-wasm-ci
+    #   options: --user root
     services:
-      nats:
-        image: nats
+      registry:
+        image: registry:2.7
         ports:
-          - 4222:4222
-
+          - 5000:5000
+      # wasmcloud:
+      #   image: wasmcloud/wasmcloud_host:latest
+      #   env:
+      #     WASMCLOUD_RPC_HOST: nats
+      #     WASMCLOUD_CTL_HOST: nats
+      #     WASMCLOUD_PROV_RPC_HOST: nats
+      #     WASMCLOUD_CLUSTER_ISSUERS: CBLXC6GW777ZB4EZBVDWJ7AJHA5R4TIN7GQC32XMCDA4NIPQQTPY3SVP
+      #     WASMCLOUD_OCI_ALLOWED_INSECURE: localhost:5000
+      #     WASMCLOUD_HOST_SEED: SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y
+      #   ports:
+      #     - "4000:4000"
+      #     - "8080-8083:8080-8083" # Allows exposing examples on ports 8080-8089
     steps:
-      # - id: run-nats
-      #   uses: wasmcloud/common-actions/run-nats@main
-      #   with:
-      #     options: '-js'
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - id: run-nats
+        uses: wasmcloud/common-actions/run-nats@main
+        with:
+          options: '-js'
+      - name: install wasm-cloud
+        run: |
+          bash install_wasmcloud.sh
+          ls
+          WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 ./bin/wasmcloud_host start
       # - name: aa
       #   run: curl -fsSL https://get.docker.com -o get-docker.sh
-      - name: a
-        run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
-      - uses: actions/checkout@v2
-      - name: listen
-        run: apt-get install -y lsof
+      # - name: a
+      #   run: find /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
+
+      - uses: actions/cache@v2
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            nat-example/target/
+          key: ${{ runner.os }}-cargo1-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions/cache@v2
+        id: cargo-bin-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            /usr/local/bin/wash
+          key: ${{ runner.os }}-cargo1 }}
       # - name: a
       #   run:  && 
-      - name: create-bridge
-        run: docker network create -d bridge my-network
-      - name: Build the stack
-        run: docker-compose up -d
-      # - name: listen
-      #   run: lsof -i -P -n | grep LISTEN            
-      - name: install-wash
-        run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash && apt install wasmcloud wash
+      - name: cargo/bin
+        run: ls ~/.cargo/bin/
+      - name: ls
+        run: ls nat-example
+      - name: source profile
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+         
+      - name: Install neccessary tool
+        env:
+          CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
+        run: |
+          if [[ "$CACHE_HIT" != 'true' ]]; then
+            sudo apt-get install libcurl4-openssl-dev
+            curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
+            which wash
+            ls ~
+          fi
+          wasm-bindgen --version || { cargo install -f wasm-bindgen-cli --vers 0.2.78;}
+          cargo make --version || { cargo install -f cargo-make;}
+          basic-http-server --version || { cargo install -f basic-http-server;}
+          wasm-snip --version || { cargo install -f wasm-snip;}
+      - name: install wasm-snip
+        run: wasm-snip --version || { cargo install -f wasm-snip;}
+      - name: install-wasm32
+        run: rustup target add wasm32-unknown-unknown
+        #run: sudo apt install wasmcloud wash
       - name: make
-        run: make build
+        run: make reg_host=${{ job.services.registry.ports['5000'] }} build
+      - name: Collect docker logs on failure
+        uses: jwalton/gh-docker-logs@v1
+        with:
+          images: 'wasmcloud/wasmcloud_host:latest'
+          dest: './logs'
+      - name: Tar logs
+        run: tar cvzf ./logs.tgz ./logs
+      - name: Upload logs to GitHub
+        uses: actions/upload-artifact@master
+        with:
+          name: logs.tgz
+          path: ./logs.tgz
       - name: wash
         run: wash ctl get hosts
+      - name: kill
+        run: sudo netstat -ltnup | grep ':4000'
+      - name: build_manifest
+        uses: marcopolo/cargo@master
+        with:
+          command: make
+          args: manifest
+          working-directory: ./nat-example       
+      - name: build_ui
+        uses: marcopolo/cargo@master
+        with:
+          command: make
+          args: wasm-bindgen
+          working-directory: ./nat-example
+      - name: cp assets
+        run: cp -r nat-example/assets nat-example/public
+      - name: serve_ui
+        working-directory: ./nat-example
+        run: nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &
+      - name: ngrok install
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null &&
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list &&
+          sudo apt update && sudo apt install ngrok   
+      - name: save authtoken
+        run: |
+          ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
+      - name: start ngrok
+        run: |
+          ngrok http 4001 --log=stdout > ngrok.log &
+      - name: sleep
+        run: |
+          bash sleep.sh 10s
+      - name: ngrok
+        run: cat ngrok.log
+      - name: sleep
+        run: |
+          bash sleep.sh 20m
       # - name: download_wasmcloud_host
       #   run: wget -c https://github.com/wasmCloud/wasmcloud-otp/releases/download/v0.50.3/x86_64-linux.tar.gz -O - | tar -xz
       # - name: ls
