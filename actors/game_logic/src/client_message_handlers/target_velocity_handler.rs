@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use bevy_ecs_wasm::prelude::{Schedule,World,Entity,Query,SystemStage,IntoSystem,Res};
 use wasmcloud_interface_logging::{info,error,debug};
-
+use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
   let mut guard = match map.lock() {
     Ok(guard) => guard,
@@ -26,6 +26,8 @@ pub fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:String,ball
     //   }
     // }
     let mut query = w.query::<(Entity, &BallId)>();
+    let bevy_wasmcloud_time_val = w.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
+    let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
     let local_ball = query.iter(w).filter(|(_, &_ball_id)| {
       info_(format!("filter {:?}",_ball_id));
       ball_id == _ball_id})
@@ -33,6 +35,8 @@ pub fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:String,ball
     match local_ball {
       Some((entity, _)) => {
           w.entity_mut(entity).insert(target_velocity);
+          w.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
+          //w.entity_mut(entity).insert(bevy_wasmcloud_time_val);
           info_(format!("target_velocity_handler can find ball_id {:?}",ball_id));
           let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
           match serde_json::to_vec(&server_message){

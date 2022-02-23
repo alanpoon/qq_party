@@ -224,13 +224,13 @@ fn receive_events(mut cmd: Commands,
                             
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
-                            let delta =  (utc.signed_duration_since(server_utc).num_milliseconds() /1000) as f32;
+                            let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;
                             info!("recv msg!! gamestate {:?} delta {:?} server_utc{:?}",ball_bundles,delta,server_utc);
                             let len = ball_bundles.len();
                             let mut founds = vec![];
                             for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
                               //if ball_id ==&(*user_info).0.ball_id{
-                              
+                              let mut found= false;
                               for i in 0..len{
                                 let ball_bundle = ball_bundles.get(i).unwrap();
                                 if &ball_bundle.ball_id == ball_id{
@@ -241,8 +241,12 @@ fn receive_events(mut cmd: Commands,
                                   *tv = ball_bundle.target_velocity;
                                   //cmd.entity(entity).insert(*v);
                                   founds.push(i);
+                                  found = true;
                                   break;
                                 }
+                              }
+                              if !found{
+                                cmd.entity(entity).despawn();
                               }
                               //}
                             }
