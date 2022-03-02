@@ -5,16 +5,22 @@ use crate::Time;
 use crate::bevy_wasmcloud_time;
 use crate::messaging_::publish_;
 use bevy_ecs_wasm::prelude::{Query,Res,ResMut};
-pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>) {
+pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
+  query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>,
+  npc_query: Query<(&NPCId,&Position,&Velocity,&BallId)>) {
   if (*elapsed_time).elapsed > 5.0{
     (*elapsed_time).elapsed = 0.0;
     let mut ball_bundles =vec![];
+    let mut npc_bundles = vec![];
     for (ball_id,position,velocity,target_velocity) in query.iter(){
       ball_bundles.push(BallBundle{ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
     }
-    info_(format!("publish gamestate {:?}",ball_bundles.clone()));
+    for (npc_id,position,velocity,chase_target) in npc_query.iter(){
+      npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:chase_target.clone()});
+    }
+    info_(format!("publish gamestate {:?}",npc_bundles.clone()));
 
-    let channel_message_back = ServerMessage::GameState{ball_bundles,timestamp:(*bevy_wasmcloud_time_val).timestamp};
+    let channel_message_back = ServerMessage::GameState{ball_bundles,npc_bundles:npc_bundles,timestamp:(*bevy_wasmcloud_time_val).timestamp};
 
     match serde_json::to_vec(&channel_message_back){
       Ok(b)=>{

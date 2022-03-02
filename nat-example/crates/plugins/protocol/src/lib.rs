@@ -9,6 +9,7 @@ mod userinfo;
 mod c_;
 mod timewrapper;
 mod system;
+mod gamestate;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
@@ -220,11 +221,12 @@ fn receive_events(mut cmd: Commands,
                             // info!("recv msg!! spawn {:?}",not_init);
                             cmd.spawn_bundle(ball_bundle);
                           }
-                          ServerMessage::GameState{ball_bundles,timestamp}=>{
+                          ServerMessage::GameState{ball_bundles,npc_bundles,timestamp,..}=>{
                             
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
                             let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;
+                            gamestate::spawn_or_update(query);
                             info!("recv msg!! gamestate {:?} delta {:?} server_utc{:?}",ball_bundles,delta,server_utc);
                             let len = ball_bundles.len();
                             let mut founds = vec![];

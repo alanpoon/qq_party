@@ -33,6 +33,12 @@ pub struct TargetVelocity(pub Vec2);
 #[cfg(feature = "actor")]
 #[derive(Serialize, Deserialize, Default, Clone, Copy, Debug)]
 pub struct TargetVelocity(pub Vec2);
+#[cfg(feature = "non_actor")]
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
+pub struct TargetDestination(pub Vec2,pub f32);
+#[cfg(feature = "actor")]
+#[derive(Serialize, Deserialize, Default, Clone, Copy, Debug)]
+pub struct TargetDestination(pub Vec2,pub f32);
 //x:1.0,y:1.0->move to its right,x:0.0,y:1.0->move forward
 #[derive(Debug, PartialEq, Default)]
 #[cfg(feature = "non_actor")]
@@ -46,11 +52,25 @@ pub struct BallId(pub u32);
 #[cfg(feature = "actor")]
 #[derive(Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32);
+#[cfg(feature = "non_actor")]
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct NPCId{
+  pub id:u32,
+  pub sprite_enum:u32
+}
+#[cfg(feature = "actor")]
+#[derive(Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct NPCId{
+  pub id:u32,
+  pub sprite_enum:u32
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Welcome{ball_bundle:BallBundle},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
-    GameState{ball_bundles:Vec<BallBundle>,timestamp:u64},
+    TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
+    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {

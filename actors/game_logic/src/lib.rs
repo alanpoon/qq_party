@@ -7,6 +7,7 @@ mod bevy_wasmcloud_time;
 mod thread;
 mod client_message_handlers;
 mod systems;
+mod startup;
 mod update_client_state;
 use info_::info_;
 use wasmbus_rpc::actor::prelude::*;
@@ -34,13 +35,13 @@ impl Thread for GameLogicActor{
     info!("start_thread----");
     let mut world = World::default();
     world.spawn().insert(A{position:0});
+    startup::npc::spawn(&mut world).await?;
     world.insert_resource(Time{elapsed:0.0});
     {
     let mut map = MAP.clone();
     let mut m = map.lock().unwrap();
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
-    
     update.add_system(systems::sys.system());
     update.add_system(systems::sys_ball_bundle_debug.system());
     update.add_system(systems::sys_bevy_wasmcloud_time.system());
@@ -49,6 +50,7 @@ impl Thread for GameLogicActor{
     update.add_system(qq_party_shared::systems::update_state_velocity.system());
     update.add_system(systems::sys_health_check_despawn.system());
     schedule.add_stage("update", update);
+    
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }
     let provider = ThreadSender::new();

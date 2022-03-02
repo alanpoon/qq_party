@@ -3,13 +3,14 @@ use qq_party_shared::Position;
 use std::collections::HashMap;
 use bevy::asset::HandleId;
 mod chicken;
+mod npc;
 mod sprite_sheet;
 mod timewrapper;
 pub struct SpriteCharacterPlugin;
 impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app
-      .init_resource::<HashMap<String,HandleId>>()
+      .init_resource::<HashMap<String,Handle<TextureAtlas>>>()
       .init_resource::<timewrapper::TimeWrapper>()
       .add_system(timewrapper::into_timewrapper.system())
       .add_system(qq_party_shared::systems::update_state_position::<timewrapper::TimeWrapper>.system())
@@ -18,12 +19,13 @@ impl Plugin for SpriteCharacterPlugin {
       
       //.add_system(chicken::chicken_system.system())
       .add_system(chicken::add_chicken_sprite_system.system())
+      .add_system(npc::add_npc_sprite_system.system())
+      .add_startup_system(sprite_sheet::startup)
       .add_startup_system(startup);
   }
 }
 
-fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-  mut texture_ids:ResMut<HashMap<String,HandleId>>) {
+fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>) {
   let texture = asset_server.load("2d/round.png");
   // let mut texture_atlas = TextureAtlas::new_empty(texture_handle, Vec2::new(128.0, 145.0));
   // //let c = texture_atlas.add_texture(bevy::sprite::Rect{min:Vec2::new(740.0,141.0),max:Vec2::new(868.0,286.0)});
