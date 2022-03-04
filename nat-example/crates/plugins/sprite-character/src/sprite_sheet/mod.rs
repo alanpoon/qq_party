@@ -20,5 +20,4 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   texture_atlas = _fn_snake((sprite_infos)._2d_round.clone());
   let snake_handle = texture_atlases.add(texture_atlas.clone());
   texture_hashmap.insert(String::from("snake"),snake_handle);
-
 }

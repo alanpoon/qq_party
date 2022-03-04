@@ -5,6 +5,7 @@ use bevy::asset::HandleId;
 mod chicken;
 mod npc;
 mod sprite_sheet;
+mod single_image;
 mod timewrapper;
 pub struct SpriteCharacterPlugin;
 impl Plugin for SpriteCharacterPlugin {
@@ -21,6 +22,7 @@ impl Plugin for SpriteCharacterPlugin {
       .add_system(chicken::add_chicken_sprite_system.system())
       .add_system(npc::add_npc_sprite_system.system())
       .add_startup_system(sprite_sheet::startup)
+      .add_startup_system(single_image::startup)
       .add_startup_system(startup);
   }
 }

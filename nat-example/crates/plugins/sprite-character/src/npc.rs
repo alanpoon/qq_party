@@ -23,6 +23,9 @@ pub fn add_npc_sprite_system(
       0=>{
         String::from("snake")
       }
+      1 =>{
+        String::from("workercrate")
+      }
       _=>{
         String::from("snake")
       }
