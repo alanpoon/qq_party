@@ -19,7 +19,7 @@ pub fn add_npc_sprite_system(
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>
 ) {
   for (entity, npcid,position) in balls_without_mesh.iter() {
-    let sprite_name = match npcid.id{
+    let sprite_name = match npcid.sprite_enum{
       0=>{
         String::from("snake")
       }

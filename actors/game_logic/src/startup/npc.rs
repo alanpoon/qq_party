@@ -14,7 +14,7 @@ pub async fn spawn(w: &mut World)-> RpcResult<()>{
     },
     position:Position(Vec2::new(x as f32,y as f32)),
     velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
-    chase_target: BallId(0),
+    chase_target: ChaseTargetId(0),
   };
   let mut npc_bundles:Vec<NPCBundle> = vec![];
   npc_bundles.push(npc_bundle);

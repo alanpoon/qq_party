@@ -7,7 +7,7 @@ use crate::messaging_::publish_;
 use bevy_ecs_wasm::prelude::{Query,Res,ResMut};
 pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
   query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>,
-  npc_query: Query<(&NPCId,&Position,&Velocity,&BallId)>) {
+  npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>) {
   if (*elapsed_time).elapsed > 5.0{
     (*elapsed_time).elapsed = 0.0;
     let mut ball_bundles =vec![];

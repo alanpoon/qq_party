@@ -15,5 +15,5 @@ pub struct NPCBundle {
     pub npc_id: NPCId,
     pub position: Position,
     pub velocity: Velocity,
-    pub chase_target: BallId,
+    pub chase_target: ChaseTargetId,
 }

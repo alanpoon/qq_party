@@ -54,6 +54,12 @@ pub struct BallId(pub u32);
 pub struct BallId(pub u32);
 #[cfg(feature = "non_actor")]
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct ChaseTargetId(pub u32);
+#[cfg(feature = "actor")]
+#[derive(Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct ChaseTargetId(pub u32);
+#[cfg(feature = "non_actor")]
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
   pub sprite_enum:u32
