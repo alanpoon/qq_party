@@ -32,7 +32,7 @@ impl ClientState for Normal {
               commands.commands.push(Command::Nats(String::from("default"),n));
               let tv = ClientMessage::Welcome{
                 game_id:String::from("hello"),
-                ball_id:BallId(x),
+                ball_id:BallId(x,0),
               };
               info!("Welcome Welcome");
               let tv_= serde_json::to_vec(&tv).unwrap();
@@ -43,7 +43,7 @@ impl ClientState for Normal {
               };
               commands.commands.push(Command::Nats(String::from("default"),n));
               commands.commands.push(Command::StoreLocal(UserInfo{
-                ball_id:BallId(x),
+                ball_id:BallId(x,0),
               }));
               
               info!("normal client_name: {}, {:?}",client_name,s_op);

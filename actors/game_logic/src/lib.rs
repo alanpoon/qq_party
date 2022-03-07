@@ -48,6 +48,8 @@ impl Thread for GameLogicActor{
     update.add_system(systems::publish::sys_publish_game_state.system());
     update.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system());
     update.add_system(qq_party_shared::systems::update_state_velocity.system());
+    update.add_system(qq_party_shared::systems::set_state_chasetarget_npc.system());
+    update.add_system(qq_party_shared::systems::update_state_velocity_npc.system());
     update.add_system(systems::sys_health_check_despawn.system());
     schedule.add_stage("update", update);
     

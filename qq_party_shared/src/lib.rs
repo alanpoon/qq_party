@@ -46,18 +46,20 @@ pub struct TargetDestination(pub Vec2,pub f32);
 pub struct Time{pub elapsed:f32}
 #[cfg(feature = "actor")]
 pub struct Time{pub elapsed:f32}
+//id,trailing length
 #[cfg(feature = "non_actor")]
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct BallId(pub u32);
+pub struct BallId(pub u32,pub u8);
 #[cfg(feature = "actor")]
 #[derive(Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct BallId(pub u32);
+pub struct BallId(pub u32,pub u8);
+//ChaseTargetId(pub id,pub speed);
 #[cfg(feature = "non_actor")]
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct ChaseTargetId(pub u32);
+pub struct ChaseTargetId(pub u32,pub u8);
 #[cfg(feature = "actor")]
 #[derive(Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct ChaseTargetId(pub u32);
+pub struct ChaseTargetId(pub u32,pub u8);
 #[cfg(feature = "non_actor")]
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{

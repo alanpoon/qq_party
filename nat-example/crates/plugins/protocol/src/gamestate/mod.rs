@@ -59,10 +59,8 @@ pub fn spawn_or_update_npc_bundles(
         cmd.entity(entity).despawn();
       }
     }
-    info!(" npc bundles!!,{:?}",bundles.clone());
     for (i,bundle) in bundles.iter().enumerate(){
       if !founds.contains(&i){
-        info!("insert npc bundles!!,{:?}",bundle.clone());
         cmd.spawn_bundle(bundle.clone());
       }
     }
