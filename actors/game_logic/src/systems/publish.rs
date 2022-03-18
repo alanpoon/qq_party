@@ -4,7 +4,7 @@ use crate::info_::info_;
 use crate::Time;
 use crate::bevy_wasmcloud_time;
 use crate::messaging_::publish_;
-use bevy_ecs_wasm::prelude::{Query,Res,ResMut};
+use bevy_ecs_wasm::prelude::*;
 pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
   query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>,
   npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>) {

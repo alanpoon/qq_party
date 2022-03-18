@@ -1,6 +1,7 @@
 use qq_party_shared::time_interface::TimeInterface;
+use bevy_ecs_wasm::component::Component;
 
-#[derive(Debug,Clone,Default)]
+#[derive(Debug,Clone,Component,Default)]
 pub struct Time{
   pub delta_seconds: f32,
   pub timestamp: u64,

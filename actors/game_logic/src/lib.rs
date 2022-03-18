@@ -16,12 +16,11 @@ use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
+use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res,Component};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use qq_party_shared::*;
-use bevy_ecs_wasm::component::Component;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
@@ -97,7 +96,7 @@ impl MessageSubscriber for GameLogicActor{
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "Stop thread")?;
 //   game_engine::stop_thread(req)
 // }
-#[derive(Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
 pub struct A{
   position: i32,
 }
