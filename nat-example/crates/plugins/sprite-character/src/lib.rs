@@ -3,27 +3,52 @@ use qq_party_shared::Position;
 use std::collections::HashMap;
 use bevy::asset::HandleId;
 mod chicken;
+<<<<<<< HEAD
 mod sprite_sheet;
+=======
+mod npc;
+mod sprite_sheet;
+mod single_image;
+>>>>>>> develop
 mod timewrapper;
 pub struct SpriteCharacterPlugin;
 impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app
+<<<<<<< HEAD
       .init_resource::<HashMap<String,HandleId>>()
+=======
+      .init_resource::<HashMap<String,Handle<TextureAtlas>>>()
+>>>>>>> develop
       .init_resource::<timewrapper::TimeWrapper>()
       .add_system(timewrapper::into_timewrapper.system())
       .add_system(qq_party_shared::systems::update_state_position::<timewrapper::TimeWrapper>.system())
       .add_system(qq_party_shared::systems::update_state_velocity.system())
+<<<<<<< HEAD
+=======
+      .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+      .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+>>>>>>> develop
       .add_system(chicken::chicken_translate.system())
       
       //.add_system(chicken::chicken_system.system())
       .add_system(chicken::add_chicken_sprite_system.system())
+<<<<<<< HEAD
+=======
+      .add_system(npc::add_npc_sprite_system.system())
+      .add_startup_system(sprite_sheet::startup)
+      .add_startup_system(single_image::startup)
+>>>>>>> develop
       .add_startup_system(startup);
   }
 }
 
+<<<<<<< HEAD
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
   mut texture_ids:ResMut<HashMap<String,HandleId>>) {
+=======
+fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>) {
+>>>>>>> develop
   let texture = asset_server.load("2d/round.png");
   // let mut texture_atlas = TextureAtlas::new_empty(texture_handle, Vec2::new(128.0, 145.0));
   // //let c = texture_atlas.add_texture(bevy::sprite::Rect{min:Vec2::new(740.0,141.0),max:Vec2::new(868.0,286.0)});

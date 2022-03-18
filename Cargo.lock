@@ -253,10 +253,10 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58fe3d3f4140fb11cd294f43be7cb66a5783d9277ba0270743e2860e32b25ab5"
 dependencies = [
- "bevy_derive",
+ "bevy_derive 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_ecs",
  "bevy_reflect",
- "bevy_utils",
+ "bevy_utils 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -273,16 +273,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_derive"
+version = "0.6.0"
+source = "git+https://github.com/alanpoon/bevy-ecs-wasm06#cfcd6ddfe1df8d89af5149c2085d1f2c62743156"
+dependencies = [
+ "bevy_macro_utils",
+ "quote 1.0.14",
+ "syn 1.0.84",
+]
+
+[[package]]
 name = "bevy_ecs"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6b182092396e6c2caf5ab30d738511fcd382628aa86ef35878d28fabb325c933"
 dependencies = [
  "async-channel",
- "bevy_ecs_macros 0.6.0",
+ "bevy_ecs_macros 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bevy_reflect",
  "bevy_tasks",
- "bevy_utils",
+ "bevy_utils 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "downcast-rs",
  "fixedbitset 0.4.0",
  "fxhash",
@@ -292,8 +302,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_ecs_macros"
-version = "0.5.0"
-source = "git+https://github.com/UnlimitedHugs/bevy-ecs-wasm#cceb5a1790d39e253e22e3a7aa6b498f39368349"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c7e9e664b3ea45cfc9ab3251ee0255dfa6410f675b3a405e7bac8e59b2d76aa9"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
@@ -303,8 +314,7 @@ dependencies = [
 [[package]]
 name = "bevy_ecs_macros"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7e9e664b3ea45cfc9ab3251ee0255dfa6410f675b3a405e7bac8e59b2d76aa9"
+source = "git+https://github.com/alanpoon/bevy-ecs-wasm06#cfcd6ddfe1df8d89af5149c2085d1f2c62743156"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2 1.0.36",
@@ -314,12 +324,14 @@ dependencies = [
 
 [[package]]
 name = "bevy_ecs_wasm"
-version = "0.5.0"
-source = "git+https://github.com/UnlimitedHugs/bevy-ecs-wasm#cceb5a1790d39e253e22e3a7aa6b498f39368349"
+version = "0.6.0"
+source = "git+https://github.com/alanpoon/bevy-ecs-wasm06#cfcd6ddfe1df8d89af5149c2085d1f2c62743156"
 dependencies = [
- "bevy_ecs_macros 0.5.0",
+ "bevy_ecs_macros 0.6.0 (git+https://github.com/alanpoon/bevy-ecs-wasm06)",
+ "bevy_utils 0.6.0 (git+https://github.com/alanpoon/bevy-ecs-wasm06)",
  "downcast-rs",
  "fixedbitset 0.4.0",
+ "fxhash",
  "thiserror",
 ]
 
@@ -331,7 +343,7 @@ checksum = "9bf0083e72bf76cbfa6607311ac6baef2f4f7c9306c35942cece8c0589cd3e5e"
 dependencies = [
  "android_log-sys",
  "bevy_app",
- "bevy_utils",
+ "bevy_utils 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "console_error_panic_hook",
  "tracing-log",
  "tracing-subscriber",
@@ -366,7 +378,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d84ce8cbd484a39d67171831eaf72c20d2684de71f1e9d79333c8dd6d6f3ebca"
 dependencies = [
  "bevy_reflect_derive",
- "bevy_utils",
+ "bevy_utils 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "downcast-rs",
  "erased-serde",
  "glam",
@@ -404,16 +416,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_tracing"
+version = "0.1.0"
+source = "git+https://github.com/alanpoon/bevy-ecs-wasm06#cfcd6ddfe1df8d89af5149c2085d1f2c62743156"
+
+[[package]]
 name = "bevy_utils"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "252f6674aa3ba68bacfec506b91570a3cc206ad09b7ef4b23661959ef0246396"
 dependencies = [
  "ahash",
- "bevy_derive",
+ "bevy_derive 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "getrandom 0.2.3",
  "instant",
  "tracing",
+ "uuid",
+]
+
+[[package]]
+name = "bevy_utils"
+version = "0.6.0"
+source = "git+https://github.com/alanpoon/bevy-ecs-wasm06#cfcd6ddfe1df8d89af5149c2085d1f2c62743156"
+dependencies = [
+ "bevy_derive 0.6.0 (git+https://github.com/alanpoon/bevy-ecs-wasm06)",
+ "bevy_tracing",
  "uuid",
 ]
 

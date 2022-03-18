@@ -1,13 +1,25 @@
 #[cfg(feature = "non_actor")]
+<<<<<<< HEAD
 use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
 #[cfg(feature = "actor")]
 use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity};
+=======
+use bevy_ecs::prelude::*;
+#[cfg(feature = "actor")]
+use bevy_ecs_wasm::prelude::*;
+>>>>>>> develop
 #[cfg(feature = "actor")]
 use bevy_ecs_wasm::component::Component;
 use bevy_math::{Vec2};
 use bevy_log::info;
+<<<<<<< HEAD
 use crate::time_interface;
 use crate::{TargetVelocity,Velocity,Time,BallId,Position};
+=======
+mod trail;
+use crate::time_interface;
+use crate::{TargetVelocity,Velocity,Time,BallId,Position,ChaseTargetId,NPCId};
+>>>>>>> develop
 
 pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position,&mut Velocity)>, time: Res<X>) {
   let delta = time.delta_seconds();
@@ -31,4 +43,59 @@ pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity
     }
     *tv = TargetVelocity(Vec2::ZERO);
   }
+<<<<<<< HEAD
+=======
+}
+pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&ChaseTargetId),(With<NPCId>,Without<BallId>)>,
+  ball_query:Query<(&BallId,&Position,&Velocity)>){
+    //info!("update_state_velocity_npc");
+    for (npc_pos,mut v,chase_target_id) in npc_query.iter_mut(){
+      if chase_target_id.0 !=0{
+        for (ball_id,pos,velocity) in ball_query.iter(){
+          if chase_target_id.0 == ball_id.0{
+            //let unit_vec = (pos.0+4.0*velocity.0-npc_pos.0).normalize_or_zero();
+            let unit_vec = (pos.0+2.0*velocity.0-npc_pos.0).normalize_or_zero();
+            //let unit_vec = (pos.0-npc_pos.0).normalize_or_zero();
+            //info!("unit_vec{:?} {:?}",unit_vec,1.0/unit_vec.x);
+            // v.0.x = unit_vec.x *chase_target_id.1 as f32 * 1.0/unit_vec.x;
+            // v.0.y = unit_vec.y *chase_target_id.1 as f32 * 1.0/unit_vec.y;
+            v.0.x = unit_vec.x *chase_target_id.1 as f32 *unit_vec.length_recip();
+            v.0.y = unit_vec.y *chase_target_id.1 as f32 *unit_vec.length_recip();
+            break;
+          }
+        }
+      }
+    }
+}
+pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
+  ball_query:Query<(&BallId,&Position)>){
+    //info!("set_state_chasetarget_npc");
+
+    for (npc_id,npc_pos,mut v,mut chase_target_id) in npc_query.iter_mut(){
+      //info!("set_state_chasetarget_npc npc_query");
+
+      let speed:Option<u8> = match npc_id.sprite_enum{
+        0=>{
+          Some(70)
+        }
+        1=>{
+          None
+        }
+        2=>{
+          Some(70)
+        }
+        _=>{
+          None
+        }
+      };
+      if let Some(s) = speed{
+        for (ball_id,pos) in ball_query.iter(){
+          if pos.0.distance(npc_pos.0)<50.0{
+            *chase_target_id = ChaseTargetId(ball_id.0,s);
+            //info!("set_state_chasetarget_npc npc_query found");
+          }
+        }
+      } 
+    }
+>>>>>>> develop
 }

@@ -1,5 +1,5 @@
 use crate::bevy_wasmcloud_time;
-use bevy_ecs_wasm::prelude::{Commands,Entity,Schedule,World,Query,SystemStage,IntoSystem,Res,ResMut};
+use bevy_ecs_wasm::prelude::{Component,Commands,Entity,Schedule,World,Query,SystemStage,IntoSystem,Res,ResMut};
 use crate::{A,Time};
 use crate::info_::info_;
 pub mod publish;

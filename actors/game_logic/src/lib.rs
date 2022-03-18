@@ -7,6 +7,10 @@ mod bevy_wasmcloud_time;
 mod thread;
 mod client_message_handlers;
 mod systems;
+<<<<<<< HEAD
+=======
+mod startup;
+>>>>>>> develop
 mod update_client_state;
 use info_::info_;
 use wasmbus_rpc::actor::prelude::*;
@@ -15,12 +19,11 @@ use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
+use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res,Component};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use qq_party_shared::*;
-use bevy_ecs_wasm::component::Component;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
 }
@@ -34,21 +37,34 @@ impl Thread for GameLogicActor{
     info!("start_thread----");
     let mut world = World::default();
     world.spawn().insert(A{position:0});
+<<<<<<< HEAD
+=======
+    startup::npc::spawn(&mut world).await?;
+>>>>>>> develop
     world.insert_resource(Time{elapsed:0.0});
     {
     let mut map = MAP.clone();
     let mut m = map.lock().unwrap();
     let mut schedule = Schedule::default();
     let mut update = SystemStage::single_threaded();
+<<<<<<< HEAD
     
+=======
+>>>>>>> develop
     update.add_system(systems::sys.system());
     update.add_system(systems::sys_ball_bundle_debug.system());
     update.add_system(systems::sys_bevy_wasmcloud_time.system());
     update.add_system(systems::publish::sys_publish_game_state.system());
     update.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system());
     update.add_system(qq_party_shared::systems::update_state_velocity.system());
+<<<<<<< HEAD
+=======
+    update.add_system(qq_party_shared::systems::set_state_chasetarget_npc.system());
+    update.add_system(qq_party_shared::systems::update_state_velocity_npc.system());
+>>>>>>> develop
     update.add_system(systems::sys_health_check_despawn.system());
     schedule.add_stage("update", update);
+    
     m.insert(start_thread_request.game_id.clone(),(schedule,world));
     }
     let provider = ThreadSender::new();
@@ -93,7 +109,11 @@ impl MessageSubscriber for GameLogicActor{
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "Stop thread")?;
 //   game_engine::stop_thread(req)
 // }
+<<<<<<< HEAD
 #[derive(Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+=======
+#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
+>>>>>>> develop
 pub struct A{
   position: i32,
 }
