@@ -10,8 +10,6 @@ pub struct BallBundle {
     pub velocity: Velocity,
     pub target_velocity: TargetVelocity,
 }
-<<<<<<< HEAD
-=======
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct NPCBundle {
     pub npc_id: NPCId,
@@ -19,4 +17,3 @@ pub struct NPCBundle {
     pub velocity: Velocity,
     pub chase_target: ChaseTargetId,
 }
->>>>>>> develop

@@ -1,9 +1,5 @@
 pub mod _2d_round;
 use bevy::prelude::*;
-<<<<<<< HEAD
-pub struct SpriteInfos {
-	pub _2d_round: (Handle<Image>, Vec2),
-=======
 use std::collections::HashMap;
 use crate::sprite_sheet::{_2d_round::_fn_chicken,_2d_round::_fn_snake,_2d_round::_fn_chick,self};
 pub struct SpriteInfos {
@@ -30,5 +26,4 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   let snake_handle = texture_atlases.add(texture_atlas.clone());
   texture_hashmap.insert(String::from("snake"),snake_handle);
   info!("texture_hashmap end ");
->>>>>>> develop
 }

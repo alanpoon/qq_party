@@ -1,25 +1,14 @@
 #[cfg(feature = "non_actor")]
-<<<<<<< HEAD
-use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity};
-=======
 use bevy_ecs::prelude::*;
 #[cfg(feature = "actor")]
 use bevy_ecs_wasm::prelude::*;
->>>>>>> develop
 #[cfg(feature = "actor")]
 use bevy_ecs_wasm::component::Component;
 use bevy_math::{Vec2};
 use bevy_log::info;
-<<<<<<< HEAD
-use crate::time_interface;
-use crate::{TargetVelocity,Velocity,Time,BallId,Position};
-=======
 mod trail;
 use crate::time_interface;
 use crate::{TargetVelocity,Velocity,Time,BallId,Position,ChaseTargetId,NPCId};
->>>>>>> develop
 
 pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position,&mut Velocity)>, time: Res<X>) {
   let delta = time.delta_seconds();
@@ -43,8 +32,6 @@ pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity
     }
     *tv = TargetVelocity(Vec2::ZERO);
   }
-<<<<<<< HEAD
-=======
 }
 pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&ChaseTargetId),(With<NPCId>,Without<BallId>)>,
   ball_query:Query<(&BallId,&Position,&Velocity)>){
@@ -97,5 +84,4 @@ pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut Vel
         }
       } 
     }
->>>>>>> develop
 }

@@ -9,10 +9,7 @@ mod userinfo;
 mod c_;
 mod timewrapper;
 mod system;
-<<<<<<< HEAD
-=======
 mod gamestate;
->>>>>>> develop
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
@@ -53,11 +50,7 @@ macro_rules! console_log {
   // `bare_bones`
   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
-<<<<<<< HEAD
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,ClientMessage,ServerMessage,BallBundle};
-=======
 use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ClientMessage,ServerMessage,BallBundle,ChaseTargetId};
->>>>>>> develop
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -193,14 +186,9 @@ fn receive_events(mut cmd: Commands,
   mut events: ResMut<protocol::Events>,
   user_info: Res<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
-<<<<<<< HEAD
-    mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity)>,
-    mut query: Query<(Entity, &BallId)> ) {
-=======
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
     mut query: Query<(Entity, &BallId)>, ) {
->>>>>>> develop
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
         let rand_int = get_random_int(0,len as i32);
@@ -234,51 +222,14 @@ fn receive_events(mut cmd: Commands,
                             // info!("recv msg!! spawn {:?}",not_init);
                             cmd.spawn_bundle(ball_bundle);
                           }
-<<<<<<< HEAD
-                          ServerMessage::GameState{ball_bundles,timestamp}=>{
-=======
                           ServerMessage::GameState{ball_bundles,npc_bundles,timestamp,..}=>{
->>>>>>> develop
                             
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
                             let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;
-<<<<<<< HEAD
-                            info!("recv msg!! gamestate {:?} delta {:?} server_utc{:?}",ball_bundles,delta,server_utc);
-                            let len = ball_bundles.len();
-                            let mut founds = vec![];
-                            for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
-                              //if ball_id ==&(*user_info).0.ball_id{
-                              let mut found= false;
-                              for i in 0..len{
-                                let ball_bundle = ball_bundles.get(i).unwrap();
-                                if &ball_bundle.ball_id == ball_id{
-                                  *v = ball_bundle.velocity;
-                                  //*pos = ball_bundle.position;
-                                  (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
-                                  (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
-                                  *tv = ball_bundle.target_velocity;
-                                  //cmd.entity(entity).insert(*v);
-                                  founds.push(i);
-                                  found = true;
-                                  break;
-                                }
-                              }
-                              if !found{
-                                cmd.entity(entity).despawn();
-                              }
-                              //}
-                            }
-                            for (i,ball_bundle) in ball_bundles.iter().enumerate(){
-                              if !founds.contains(&i){
-                                cmd.spawn_bundle(ball_bundle.clone());
-                              }
-                            }
-=======
                             gamestate::spawn_or_update_ball_bundles(&mut cmd,&mut v_query,delta,ball_bundles);
                             gamestate::spawn_or_update_npc_bundles(&mut cmd,&mut npc_query,delta,npc_bundles);
 
->>>>>>> develop
                           }
                           _=>{}
                         }

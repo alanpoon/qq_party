@@ -306,6 +306,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7e9e664b3ea45cfc9ab3251ee0255dfa6410f675b3a405e7bac8e59b2d76aa9"
 dependencies = [
+ "bevy_macro_utils",
  "proc-macro2 1.0.36",
  "quote 1.0.14",
  "syn 1.0.84",

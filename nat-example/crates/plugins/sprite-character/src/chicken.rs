@@ -16,21 +16,6 @@ pub fn chicken_translate(
 pub fn add_chicken_sprite_system(
   mut cmd: Commands,
   balls_without_mesh: Query<(Entity, &BallId,&Position), Without<Transform>>,
-<<<<<<< HEAD
-  mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-  texture_ids: Res<HashMap<String,HandleId>>,
-  sprite_infos: Res<sprite_sheet::SpriteInfos>,
-) {
-  let texture_atlas = _2d_round::_fn_chicken((*sprite_infos)._2d_round.clone());
-  let chicken_handle = texture_atlases.add(texture_atlas.clone());
-  for (entity, _,position) in balls_without_mesh.iter() {
-    cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-      texture_atlas: chicken_handle.clone(),
-      transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.2)),
-      ..Default::default()
-    }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)));
-  }
-=======
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>
 ) {
   if let Some(t_handle)= texture_hashmap.get("chicken"){
@@ -43,5 +28,4 @@ pub fn add_chicken_sprite_system(
     }
   }
   
->>>>>>> develop
 }

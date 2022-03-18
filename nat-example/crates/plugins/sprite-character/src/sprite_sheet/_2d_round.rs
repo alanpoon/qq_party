@@ -11,9 +11,6 @@ pub fn _fn_chicken(texture_handle:(Handle<Image>,Vec2))->TextureAtlas{
     texture:texture_handle.0.clone(),
     texture_handles: None,
   }
-<<<<<<< HEAD
-}
-=======
 }
 pub fn _fn_chick(texture_handle:(Handle<Image>,Vec2))->TextureAtlas{
   let mut sprites = vec![];
@@ -41,4 +38,3 @@ pub fn _fn_snake(texture_handle:(Handle<Image>,Vec2))->TextureAtlas{
     texture_handles: None,
   }
 }
->>>>>>> develop
