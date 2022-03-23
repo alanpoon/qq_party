@@ -15,3 +15,4 @@ nat-example/public/*
 !nat-example/public/simulator.js
 !nat-example/public/controller.js
 nat-example/nohup.out
+wasmcloud_patches/*
