@@ -22,13 +22,17 @@ use org.wasmcloud.model#U64
     providerReceive: true )
 service Thread {
   version: "0.1",
-  operations: [ StartThread,HandleRequest ]
+  operations: [ StartThread,HandleRequest,Now ]
 }
 
 /// AuthorizePayment - Validates that a potential payment transaction
 /// can go through. If this succeeds then we should assume it is safe
 /// to complete a payment. Thread _cannot_ be completed without getting
 /// a validation code (in other words, all thread have to be pre-authorized).
+operation Now{
+  input: String,
+  output: U64,
+}
 operation StartThread {
     input: StartThreadRequest,
     output: StartThreadResponse,

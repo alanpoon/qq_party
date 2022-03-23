@@ -71,6 +71,10 @@ impl Thread for GameLogicActor{
     let mut map = MAP.clone();
     thread::thread_handle_request(map,start_thread_request).await
   }
+  async fn now(&self,ctx:&Context,req:String)  -> RpcResult<u64>{
+
+    Ok(2)
+  }
 }
 #[async_trait]
 impl MessageSubscriber for GameLogicActor{

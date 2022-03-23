@@ -16,3 +16,6 @@ default-members = [
 #opt-level = "s"
 #lto = true
 debug = true
+
+[patch.crates-io]
+instant = {path="wasmcloud_patches/instant"}

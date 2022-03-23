@@ -63,6 +63,8 @@ impl ThreadPool{
 }
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,bool>>> = Arc::new(Mutex::new(HashMap::new()));
+  static ref TIME: Arc<Mutex<HashMap<String,u64>>> = Arc::new(Mutex::new(HashMap::new()));
+
 }
 
 #[async_trait]
@@ -101,13 +103,16 @@ impl Thread for ThreadProvider {
                 info!("after drop");
                 sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
                 let utc: DateTime<Utc> = Utc::now();
+                let time_stamp = utc.timestamp_millis() as u64
                 let m = StartThreadRequest{
                   game_id: start_thread_request_c.game_id.clone(),
                   elapsed: start.elapsed().as_secs() as u32,
-                  timestamp: utc.timestamp_millis() as u64,
+                  timestamp: time_stamp,
                   sleep_interval: start_thread_request_c.sleep_interval,
                   subject: start_thread_request_c.subject.clone(),
                 };
+                let time_c = TIME.clone();
+                time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
                 let read_guard = inner.read().await;
                 let bridge = read_guard.bridge;
                 info!("before ProviderTransport");
@@ -152,6 +157,9 @@ impl Thread for ThreadProvider {
     async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse>{
       Ok(StartThreadResponse{})
     }
+    async fn now(&self, ctx: &Context, request: String) -> RpcResult<StartThreadResponse>{
+      Ok(StartThreadResponse{})
+    }
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -161,4 +169,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   eprintln!("Thread provider exiting");
   Ok(())
+}
+fn time_update(time:Arc<Mutex<HashMap<String,U64>>>,game_id:String,time_stamp:u64){
+  let mut guard = match time.lock() {
+    Ok(guard) => guard,
+    Err(poisoned) => {
+      poisoned.into_inner()
+    },
+  };
+
+  if let Some((ref mut s, ref mut t))= guard.get_mut(&game_id){
+    t = time_stamp;
+  }
 }

@@ -40,10 +40,6 @@ pub trait Thread {
     fn contract_id() -> &'static str {
         "wasmcloud:thread"
     }
-    /// AuthorizePayment - Validates that a potential payment transaction
-    /// can go through. If this succeeds then we should assume it is safe
-    /// to complete a payment. Thread _cannot_ be completed without getting
-    /// a validation code (in other words, all thread have to be pre-authorized).
     async fn start_thread(
         &self,
         ctx: &Context,
@@ -54,6 +50,15 @@ pub trait Thread {
         ctx: &Context,
         arg: &StartThreadRequest,
     ) -> RpcResult<StartThreadResponse>;
+    /// AuthorizePayment - Validates that a potential payment transaction
+    /// can go through. If this succeeds then we should assume it is safe
+    /// to complete a payment. Thread _cannot_ be completed without getting
+    /// a validation code (in other words, all thread have to be pre-authorized).
+    async fn now<TS: ToString + ?Sized + std::marker::Sync>(
+        &self,
+        ctx: &Context,
+        arg: &TS,
+    ) -> RpcResult<u64>;
 }
 
 /// ThreadReceiver receives messages defined in the Thread service trait
@@ -79,6 +84,16 @@ pub trait ThreadReceiver: MessageDispatch + Thread {
                 let buf = serialize(&resp)?;
                 Ok(Message {
                     method: "Thread.HandleRequest",
+                    arg: Cow::Owned(buf),
+                })
+            }
+            "Now" => {
+                let value: String = deserialize(message.arg.as_ref())
+                    .map_err(|e| RpcError::Deser(format!("message '{}': {}", message.method, e)))?;
+                let resp = Thread::now(self, ctx, &value).await?;
+                let buf = serialize(&resp)?;
+                Ok(Message {
+                    method: "Thread.Now",
                     arg: Cow::Owned(buf),
                 })
             }
@@ -151,10 +166,6 @@ impl ThreadSender<wasmbus_rpc::actor::prelude::WasmHost> {
 #[async_trait]
 impl<T: Transport + std::marker::Sync + std::marker::Send> Thread for ThreadSender<T> {
     #[allow(unused)]
-    /// AuthorizePayment - Validates that a potential payment transaction
-    /// can go through. If this succeeds then we should assume it is safe
-    /// to complete a payment. Thread _cannot_ be completed without getting
-    /// a validation code (in other words, all thread have to be pre-authorized).
     async fn start_thread(
         &self,
         ctx: &Context,
@@ -196,6 +207,32 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Thread for ThreadSend
             .await?;
         let value = deserialize(&resp)
             .map_err(|e| RpcError::Deser(format!("response to {}: {}", "HandleRequest", e)))?;
+        Ok(value)
+    }
+    #[allow(unused)]
+    /// AuthorizePayment - Validates that a potential payment transaction
+    /// can go through. If this succeeds then we should assume it is safe
+    /// to complete a payment. Thread _cannot_ be completed without getting
+    /// a validation code (in other words, all thread have to be pre-authorized).
+    async fn now<TS: ToString + ?Sized + std::marker::Sync>(
+        &self,
+        ctx: &Context,
+        arg: &TS,
+    ) -> RpcResult<u64> {
+        let buf = serialize(&arg.to_string())?;
+        let resp = self
+            .transport
+            .send(
+                ctx,
+                Message {
+                    method: "Thread.Now",
+                    arg: Cow::Borrowed(&buf),
+                },
+                None,
+            )
+            .await?;
+        let value = deserialize(&resp)
+            .map_err(|e| RpcError::Deser(format!("response to {}: {}", "Now", e)))?;
         Ok(value)
     }
 }
