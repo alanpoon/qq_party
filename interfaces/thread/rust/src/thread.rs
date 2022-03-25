@@ -54,11 +54,7 @@ pub trait Thread {
     /// can go through. If this succeeds then we should assume it is safe
     /// to complete a payment. Thread _cannot_ be completed without getting
     /// a validation code (in other words, all thread have to be pre-authorized).
-    async fn now<TS: ToString + ?Sized + std::marker::Sync>(
-        &self,
-        ctx: &Context,
-        arg: &TS,
-    ) -> RpcResult<u64>;
+    async fn now(&self, ctx: &Context, arg: &StartThreadRequest) -> RpcResult<u64>;
 }
 
 /// ThreadReceiver receives messages defined in the Thread service trait
@@ -88,7 +84,7 @@ pub trait ThreadReceiver: MessageDispatch + Thread {
                 })
             }
             "Now" => {
-                let value: String = deserialize(message.arg.as_ref())
+                let value: StartThreadRequest = deserialize(message.arg.as_ref())
                     .map_err(|e| RpcError::Deser(format!("message '{}': {}", message.method, e)))?;
                 let resp = Thread::now(self, ctx, &value).await?;
                 let buf = serialize(&resp)?;
@@ -214,12 +210,8 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Thread for ThreadSend
     /// can go through. If this succeeds then we should assume it is safe
     /// to complete a payment. Thread _cannot_ be completed without getting
     /// a validation code (in other words, all thread have to be pre-authorized).
-    async fn now<TS: ToString + ?Sized + std::marker::Sync>(
-        &self,
-        ctx: &Context,
-        arg: &TS,
-    ) -> RpcResult<u64> {
-        let buf = serialize(&arg.to_string())?;
+    async fn now(&self, ctx: &Context, arg: &StartThreadRequest) -> RpcResult<u64> {
+        let buf = serialize(arg)?;
         let resp = self
             .transport
             .send(

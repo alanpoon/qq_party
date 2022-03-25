@@ -9,7 +9,6 @@ use std::{collections::HashMap, time::Duration, time::Instant};
 use std::sync::{Arc, Mutex};
 use chrono::prelude::*;
 use tokio::sync::RwLock;
-use futures::executor::block_on;
 
 use lazy_static::lazy_static; // 1.4.0
 #[allow(unused)]
@@ -103,7 +102,7 @@ impl Thread for ThreadProvider {
                 info!("after drop");
                 sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
                 let utc: DateTime<Utc> = Utc::now();
-                let time_stamp = utc.timestamp_millis() as u64
+                let time_stamp = utc.timestamp_millis() as u64;
                 let m = StartThreadRequest{
                   game_id: start_thread_request_c.game_id.clone(),
                   elapsed: start.elapsed().as_secs() as u32,
@@ -157,8 +156,19 @@ impl Thread for ThreadProvider {
     async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse>{
       Ok(StartThreadResponse{})
     }
-    async fn now(&self, ctx: &Context, request: String) -> RpcResult<StartThreadResponse>{
-      Ok(StartThreadResponse{})
+    async fn now(&self, ctx: &Context, request: &StartThreadRequest) -> RpcResult<u64>{
+      let time_c = TIME.clone();
+      let mut guard = match time_c.lock() {
+        Ok(guard) => guard,
+        Err(poisoned) => {
+          poisoned.into_inner()
+        },
+      };
+      let mut b =0;
+      if let Some(t)= guard.get(&request.game_id){
+        b = *t;
+      }
+      Ok(b)
     }
 }
 
@@ -170,7 +180,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   eprintln!("Thread provider exiting");
   Ok(())
 }
-fn time_update(time:Arc<Mutex<HashMap<String,U64>>>,game_id:String,time_stamp:u64){
+fn time_update(time:Arc<Mutex<HashMap<String,u64>>>,game_id:String,time_stamp:u64){
   let mut guard = match time.lock() {
     Ok(guard) => guard,
     Err(poisoned) => {
@@ -178,7 +188,7 @@ fn time_update(time:Arc<Mutex<HashMap<String,U64>>>,game_id:String,time_stamp:u6
     },
   };
 
-  if let Some((ref mut s, ref mut t))= guard.get_mut(&game_id){
-    t = time_stamp;
+  if let Some(t)= guard.get_mut(&game_id){
+    *t = time_stamp;
   }
 }

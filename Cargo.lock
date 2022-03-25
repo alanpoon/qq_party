@@ -1182,7 +1182,6 @@ dependencies = [
  "async-trait",
  "chrono",
  "env_logger 0.8.4",
- "futures 0.3.19",
  "lazy_static",
  "log",
  "tokio",
@@ -1196,6 +1195,7 @@ name = "game_logic"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "bevy_app",
  "bevy_ecs_wasm",
  "bevy_math",
  "convert_case",

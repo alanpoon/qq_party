@@ -23,3 +23,4 @@ bevy_ecs_wasm = {git = "https://github.com/alanpoon/bevy-ecs-wasm06"}
 bevy_math = {version = "0.6.0"}
 lazy_static = "1.4.0"
 qq_party_shared = {path = "../../qq_party_shared" , features = ["actor"]}
+bevy_app = {version = "0.6.0",default-features = false}

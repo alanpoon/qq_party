@@ -17,12 +17,15 @@ use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res,Component};
+use bevy_app::App;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
+use std::boxed::Box;
 use qq_party_shared::*;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
+  static ref APPMAP: Arc<Mutex<HashMap<String,App>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[derive(Debug, Default, Actor, HealthResponder)]
 #[services(Actor,Thread,MessageSubscriber)]
@@ -64,6 +67,12 @@ impl Thread for GameLogicActor{
     {
         error!("sending reply: {}",e.to_string());
     }
+    let app = App::new();
+    {
+      let mut appmap = APPMAP.clone();
+      let mut m = appmap.lock().unwrap();
+      m.insert(start_thread_request.game_id.clone(),app);
+    }
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
@@ -71,8 +80,7 @@ impl Thread for GameLogicActor{
     let mut map = MAP.clone();
     thread::thread_handle_request(map,start_thread_request).await
   }
-  async fn now(&self,ctx:&Context,req:String)  -> RpcResult<u64>{
-
+  async fn now(&self,ctx:&Context,start_thread_request: &StartThreadRequest)  -> RpcResult<u64>{
     Ok(2)
   }
 }

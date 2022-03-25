@@ -30,7 +30,7 @@ service Thread {
 /// to complete a payment. Thread _cannot_ be completed without getting
 /// a validation code (in other words, all thread have to be pre-authorized).
 operation Now{
-  input: String,
+  input: StartThreadRequest,
   output: U64,
 }
 operation StartThread {
