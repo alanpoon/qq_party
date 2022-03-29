@@ -19,3 +19,5 @@ debug = true
 
 [patch.crates-io]
 instant = {path="wasmcloud_patches/instant"}
+getrandom = {path="wasmcloud_patches/getrandom"}
+bevy_app = {path="wasmcloud_patches/bevy_app"}

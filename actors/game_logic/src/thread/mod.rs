@@ -8,7 +8,7 @@ use crate::bevy_wasmcloud_time;
 use crate::Time;
 use qq_party_shared::time_interface::TimeInterface;
 pub async fn thread_handle_request(map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
-  let mut n = String::from("");
+  let mut n = String::from("thread_handle_request");
   {
     let mut guard = match map.lock() {
       Ok(guard) => guard,

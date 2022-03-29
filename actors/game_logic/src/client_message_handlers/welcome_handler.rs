@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex};
 use bevy_ecs_wasm::prelude::{Schedule,World,Query,SystemStage,IntoSystem,Res};
 use wasmcloud_interface_logging::{info,error,debug};
 use bevy_math::Vec2;
-use wasmbus_rpc::RpcResult;
+use wasmbus_rpc::error::RpcResult;
 use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<HashMap<String,(Schedule,World)>>>,game_id:String,ball_id:BallId)-> RpcResult<()>{
     info!("handle_message map");

@@ -1,6 +1,6 @@
-use wasmbus_rpc::serialize;
+use wasmbus_rpc::common::serialize;
 use wasmbus_rpc::actor::prelude::*;
-use wasmbus_rpc::RpcError;
+use wasmbus_rpc::error::RpcError;
 use wasmcloud_interface_messaging::{PubMessage};
 use crate::host_call::host_call;
 use std::borrow::Cow;
@@ -9,6 +9,7 @@ pub fn publish_(s:PubMessage)->std::result::Result<Vec<u8>, RpcError>{
   let msg = Message {
     method: "Messaging.Publish",
     arg: Cow::Borrowed(&buf),
+    //arg: buf,
   };
   host_call("default","wasmcloud:messaging",msg.method,msg.arg.as_ref())?;
   Ok(vec![])

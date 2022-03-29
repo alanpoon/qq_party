@@ -13,7 +13,8 @@
     <div id="content">
         <div class="p-4 overflow-y-auto">
             <h1 id="org_wasmcloud_examples_thread" class="text-2xl font-serif">Namespace org.wasmcloud.examples.thread</h1>
-            <div class="table m-4 ml-12">            <div class="table-row">
+            <div class="table m-4 ml-12">
+            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Services
                 </div>
@@ -21,15 +22,17 @@
                     <ul>
 <li class="font-light"><a href="#org_wasmcloud_examples_thread_thread"><a href="#thread">Thread</a></a></li>                    </ul>
                 </div>
-            </div>            <div class="table-row">
+            </div>
+            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Operations
                 </div>
                 <div class="table-cell align-top">
                     <ul>
-<li class="font-light"><a href="#org_wasmcloud_examples_thread_start_thread"><a href="#start_thread">StartThread</a></a></li>                    </ul>
+<li class="font-light"><a href="#org_wasmcloud_examples_thread_handle_request"><a href="#handle_request">HandleRequest</a></a></li><li class="font-light"><a href="#org_wasmcloud_examples_thread_now"><a href="#now">Now</a></a></li><li class="font-light"><a href="#org_wasmcloud_examples_thread_start_thread"><a href="#start_thread">StartThread</a></a></li>                    </ul>
                 </div>
-            </div>            <div class="table-row">
+            </div>
+            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Structures
                 </div>
@@ -40,12 +43,10 @@
             </div>            </div>
 
 
-    <h2 id="start_thread" class="mt-8 border-t-2 border-gray-300">
-        <a href="#start_thread">StartThread</a><span class="text-lg pl-4">(operation)</span>
-    </h2><p class="font-light ml-6">AuthorizePayment - Validates that a potential payment transaction
-can go through. If this succeeds then we should assume it is safe
-to complete a payment. Thread _cannot_ be completed without getting
-a validation code (in other words, all thread have to be pre-authorized).</p>
+
+    <h2 id="handle_request" class="mt-8 border-t-2 border-gray-300">
+        <a href="#handle_request">HandleRequest</a><span class="text-lg pl-4">(operation)</span>
+    </h2>
                         <div class="ml-12">
                             <table>
                                 <thead>
@@ -66,6 +67,69 @@ a validation code (in other words, all thread have to be pre-authorized).</p>
                                     </tr>                                </tbody>
                             </table>
                         </div>
+                        
+
+
+
+
+
+
+    <h2 id="now" class="mt-8 border-t-2 border-gray-300">
+        <a href="#now">Now</a><span class="text-lg pl-4">(operation)</span>
+    </h2><p class="font-light ml-6">AuthorizePayment - Validates that a potential payment transaction
+can go through. If this succeeds then we should assume it is safe
+to complete a payment. Thread _cannot_ be completed without getting
+a validation code (in other words, all thread have to be pre-authorized).</p>
+                        <div class="ml-12">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="w-48"></th>
+                                    <th class="w-48"></th>
+                                    <th class=""></th>
+                                </tr>
+                                </thead>
+                                <tbody>                                    <tr>
+                                        <td>input:</td>
+                                        <td><a href="#start_thread_request">StartThreadRequest</a></td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                    <tr>
+                                        <td>output:</td>
+                                        <td><a href="./org_wasmcloud_model.html#u64">org.wasmcloud.model#U64</a></td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                </tbody>
+                            </table>
+                        </div>
+                        
+
+
+
+
+    <h2 id="start_thread" class="mt-8 border-t-2 border-gray-300">
+        <a href="#start_thread">StartThread</a><span class="text-lg pl-4">(operation)</span>
+    </h2>
+                        <div class="ml-12">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="w-48"></th>
+                                    <th class="w-48"></th>
+                                    <th class=""></th>
+                                </tr>
+                                </thead>
+                                <tbody>                                    <tr>
+                                        <td>input:</td>
+                                        <td><a href="#start_thread_request">StartThreadRequest</a></td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                    <tr>
+                                        <td>output:</td>
+                                        <td><a href="#start_thread_response">StartThreadResponse</a></td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                </tbody>
+                            </table>
+                        </div>
+                        
+
 
 
 
@@ -90,12 +154,22 @@ a validation code (in other words, all thread have to be pre-authorized).</p>
                                         <td>String</td>
                                         <td><span class="font-light">Amount of transaction, in cents.</span></td>
                                     </tr>                                    <tr>
+                                        <td>sleep_interval:</td>
+                                        <td><a href="./org_wasmcloud_model.html#u32">org.wasmcloud.model#U32</a></td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                    <tr>
+                                        <td>subject:</td>
+                                        <td>String</td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                    <tr>
                                         <td>timestamp:</td>
                                         <td><a href="./org_wasmcloud_model.html#u64">org.wasmcloud.model#U64</a></td>
                                         <td><span class="font-light">Amount of tax applied to this transaction, in cents</span></td>
                                     </tr>                                </tbody>
                             </table>
                         </div>
+
+
 
 
     <h2 id="start_thread_response" class="mt-8 border-t-2 border-gray-300">
@@ -115,6 +189,9 @@ a validation code (in other words, all thread have to be pre-authorized).</p>
                         </div>
 
 
+
+
+
     <h2 id="thread" class="mt-8 border-t-2 border-gray-300">
         <a href="#thread">Thread</a><span class="text-lg pl-4">(service)</span>
     </h2>
@@ -129,6 +206,14 @@ a validation code (in other words, all thread have to be pre-authorized).</p>
                                             <ul>                                                    <li class="font-light">
                                                         <a href="#org_wasmcloud_examples_thread_start_thread">
                                                             <a href="#start_thread">StartThread</a>
+                                                        </a>
+                                                    </li>                                                    <li class="font-light">
+                                                        <a href="#org_wasmcloud_examples_thread_handle_request">
+                                                            <a href="#handle_request">HandleRequest</a>
+                                                        </a>
+                                                    </li>                                                    <li class="font-light">
+                                                        <a href="#org_wasmcloud_examples_thread_now">
+                                                            <a href="#now">Now</a>
                                                         </a>
                                                     </li>                                            </ul>
                                         </div>

@@ -25,7 +25,7 @@ use std::boxed::Box;
 use qq_party_shared::*;
 lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,(Schedule,World)>>> = Arc::new(Mutex::new(HashMap::new()));
-  static ref APPMAP: Arc<Mutex<HashMap<String,App>>> = Arc::new(Mutex::new(HashMap::new()));
+  //static ref APPMAP: Arc<Mutex<HashMap<String,App>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[derive(Debug, Default, Actor, HealthResponder)]
 #[services(Actor,Thread,MessageSubscriber)]
@@ -67,17 +67,18 @@ impl Thread for GameLogicActor{
     {
         error!("sending reply: {}",e.to_string());
     }
-    let app = App::new();
-    {
-      let mut appmap = APPMAP.clone();
-      let mut m = appmap.lock().unwrap();
-      m.insert(start_thread_request.game_id.clone(),app);
-    }
+    // let app = App::new();
+    // {
+    //   let mut appmap = APPMAP.clone();
+    //   let mut m = appmap.lock().unwrap();
+    //   m.insert(start_thread_request.game_id.clone(),app);
+    // }
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     info!("handle_request----");
     let mut map = MAP.clone();
+    //Ok(StartThreadResponse{})
     thread::thread_handle_request(map,start_thread_request).await
   }
   async fn now(&self,ctx:&Context,start_thread_request: &StartThreadRequest)  -> RpcResult<u64>{

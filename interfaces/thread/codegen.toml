@@ -9,7 +9,9 @@
 # The namespaces(s) that will be generated for this library are indicated
 # in the per-language file settings later in this file.
 [[models]]
-path = "thread.smithy"
+
+path = "."
+files = ["thread.smithy"]
 
 [[models]]
 url = "https://wasmcloud.github.io/models/org.wasmcloud"
