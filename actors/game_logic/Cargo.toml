@@ -20,6 +20,6 @@ wasmcloud-interface-numbergen = "0.2.0"
 wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
 convert_case = "0.1.0"
 bevy_ecs_wasm = {git = "https://github.com/alanpoon/bevy-ecs-wasm06"}
-bevy_math = {version = "0.6.0"}
+bevy_math = {git="https://github.com/bevyengine/bevy"}
 lazy_static = "1.4.0"
 qq_party_shared = {path = "../../qq_party_shared" , features = ["actor"]}

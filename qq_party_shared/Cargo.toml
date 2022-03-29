@@ -12,6 +12,6 @@ non_actor = ["bevy_ecs"]
 [dependencies]
 serde = { version = "1.0.125", features = ["derive"] }
 bevy_ecs_wasm = {git = "https://github.com/alanpoon/bevy-ecs-wasm06",optional = true}
-bevy_ecs = { version = "0.6", default-features = false,optional = true}
-bevy_math = {version = "0.6"}
-bevy_log = {version = "0.6"}
+bevy_ecs = { git = "https://github.com/bevyengine/bevy", default-features = false,optional = true}
+bevy_math = {git = "https://github.com/bevyengine/bevy"}
+bevy_log = {git = "https://github.com/bevyengine/bevy"}
