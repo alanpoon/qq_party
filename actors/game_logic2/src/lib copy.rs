@@ -24,7 +24,7 @@ use std::boxed::Box;
 use qq_party_shared::*;
 use std::io::Write;
 use std::borrow::Cow;
-use bevy_app::{ScheduleRunnerSettings,App};
+use bevy_app::{App};
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
 }
@@ -35,35 +35,14 @@ struct GameLogicActor {}
 #[async_trait]
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    info!("start_thread----");
     {
-      let mut map = APP.clone();
-      let mut m = map.lock().unwrap();
-      m.init_resource::<Time>()
+      let mut app_guard = APP.clone();
+      let mut app = app_guard.lock().unwrap();
+      app.init_resource::<Time>()
       .add_startup_system(systems::spawn.system())
       .add_system(systems::sys.system());
     }
-    let provider = ThreadSender::new();
-    if let Err(e) = provider
-        .start_thread(
-            ctx,
-            start_thread_request,
-        )
-        .await
-    {
-        error!("sending reply: {}",e.to_string());
-    }
-    info!("end_thread----");
     Ok(StartThreadResponse{})
-  }
-  async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    //info!("handle_request----");
-    let mut map = APP.clone();
-    //Ok(StartThreadResponse{})
-     thread::thread_handle_request(map,start_thread_request).await
-  }
-  async fn now(&self,ctx:&Context,start_thread_request: &StartThreadRequest)  -> RpcResult<u64>{
-    Ok(2)
   }
 }
 #[async_trait]
