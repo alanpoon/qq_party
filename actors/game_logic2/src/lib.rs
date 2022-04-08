@@ -16,6 +16,7 @@ use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_app::{ScheduleRunnerSettings,App};
 use bevy_ecs::prelude::*;
+use bevy_rapier2d::prelude::*;
 use bevy_utils::Duration;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -24,7 +25,6 @@ use std::boxed::Box;
 use qq_party_shared::*;
 use std::io::Write;
 use std::borrow::Cow;
-use bevy_app::{ScheduleRunnerSettings,App};
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
 }
@@ -40,6 +40,7 @@ impl Thread for GameLogicActor{
       let mut map = APP.clone();
       let mut m = map.lock().unwrap();
       m.init_resource::<Time>()
+      .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
       .add_startup_system(systems::spawn.system())
       .add_system(systems::sys.system());
     }

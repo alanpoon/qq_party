@@ -40,8 +40,8 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           app.world.insert_resource(bevy_wasmcloud_time::Time{timestamp:start_thread_request.timestamp,..Default::default()});
         }
       // /w.spawn().insert_bundle(arugio_shared::BallBundle);
-        app.update();
-        drop(app);
+         app.update();
+        // drop(app);
         
         info_(format!("{}",n));
       

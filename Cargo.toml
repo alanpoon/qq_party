@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 
 members = [
   "actors/*",
@@ -19,5 +20,9 @@ debug = true
 
 [patch.crates-io]
 instant = {path="wasmcloud_patches/instant"}
-bevy_app = {path="wasmcloud_patches/bevy_app"}
+getrandom = {path="wasmcloud_patches/getrandom"}
+#bevy_app = {path="wasmcloud_patches/bevy_app"}
 wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="84b71217e9a88b7dd76378715d422da1b5f874c4"}
+
+[patch."https://github.com/bevyengine/bevy"]
+bevy_app = {path="wasmcloud_patches/bevy_app"}

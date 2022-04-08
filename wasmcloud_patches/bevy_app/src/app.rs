@@ -51,7 +51,6 @@ pub struct App {
     /// the application's event loop and advancing the [`Schedule`].
     /// Typically, it is not configured manually, but set by one of Bevy's built-in plugins.
     /// See `bevy::winit::WinitPlugin` and [`ScheduleRunnerPlugin`](crate::schedule_runner::ScheduleRunnerPlugin).
-    //pub runner: Box<dyn Fn(App)>,
     /// A container of [`Stage`]s set to be run in a linear order.
     pub schedule: Schedule,
     sub_apps: HashMap<Box<dyn AppLabel>, SubApp>,
@@ -60,7 +59,6 @@ pub struct App {
 /// Each [`SubApp`] has its own [`Schedule`] and [`World`], enabling a separation of concerns.
 struct SubApp {
     app: App,
-    //runner: Box<dyn Fn(&mut World, &mut App)>,
 }
 
 impl Default for App {
@@ -96,7 +94,6 @@ impl App {
         Self {
             world: Default::default(),
             schedule: Default::default(),
-            //runner: Box::new(run_once),
             sub_apps: HashMap::default(),
         }
     }
@@ -110,9 +107,6 @@ impl App {
         #[cfg(feature = "trace")]
         let _bevy_frame_update_guard = bevy_frame_update_span.enter();
         self.schedule.run(&mut self.world);
-        // for sub_app in self.sub_apps.values_mut() {
-        //     (sub_app.runner)(&mut self.world, &mut sub_app.app);
-        // }
     }
 
     /// Starts the application by calling the app's [runner function](Self::set_runner).
@@ -125,7 +119,7 @@ impl App {
         #[cfg(feature = "trace")]
         let _bevy_app_run_guard = bevy_app_run_span.enter();
 
-        // let mut app = std::mem::replace(self, App::empty());
+        //let mut app = std::mem::replace(self, App::empty());
         // let runner = std::mem::replace(&mut app.runner, Box::new(run_once));
         // (runner)(app);
     }
@@ -744,10 +738,6 @@ impl App {
     /// App::new()
     ///     .set_runner(my_runner);
     /// ```
-    // pub fn set_runner(&mut self, run_fn: impl Fn(App) + 'static) -> &mut Self {
-    //     self.runner = Box::new(run_fn);
-    //     self
-    // }
 
     /// Adds a single plugin
     ///
@@ -859,13 +849,11 @@ impl App {
         &mut self,
         label: impl AppLabel,
         app: App,
-        //f: impl Fn(&mut World, &mut App) + 'static,
     ) -> &mut Self {
         self.sub_apps.insert(
             Box::new(label),
             SubApp {
                 app,
-                //runner: Box::new(f),
             },
         );
         self

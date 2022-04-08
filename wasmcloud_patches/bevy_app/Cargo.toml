@@ -15,10 +15,10 @@ default = ["bevy_reflect"]
 
 [dependencies]
 # bevy
-bevy_derive = { version = "0.6.0" }
-bevy_ecs = { version = "0.6.0" }
-bevy_reflect = { version = "0.6.0", optional = true }
-bevy_utils = { version = "0.6.0" }
+bevy_derive = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab" }
+bevy_ecs = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab" }
+bevy_reflect = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab", optional = true }
+bevy_utils = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab"}
 
 # other
 serde = { version = "1.0", features = ["derive"], optional = true }
@@ -31,4 +31,4 @@ web-sys = { version = "0.3", features = [ "Window" ] }
 
 [dev-dependencies]
 # bevy
-bevy_log = { version = "0.6.0" }
+bevy_log = { path = "../bevy_log", version = "0.6.0" }
