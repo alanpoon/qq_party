@@ -16,6 +16,7 @@ use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
 use bevy_app::{ScheduleRunnerSettings,App};
 use bevy_ecs::prelude::*;
+use bevy_transform::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_utils::Duration;
 use std::collections::HashMap;
@@ -40,6 +41,7 @@ impl Thread for GameLogicActor{
       let mut map = APP.clone();
       let mut m = map.lock().unwrap();
       m.init_resource::<Time>()
+      .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
       .add_startup_system(systems::spawn.system())
       .add_system(systems::sys.system());

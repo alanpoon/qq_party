@@ -8,10 +8,13 @@
 
 //! Implementation for WASI
 use crate::Error;
-
+extern crate std;
+use std::io::Write;
+use crate::host_call::host_call;
 pub fn getrandom_inner(dest: &mut [u8]) -> Result<(), Error> {
     //NumberGen.GenerateGuid
-    let mut buf = host_call("default","wasmcloud:builtin:numbergen","GenerateGuid",vec![]).unwrap();
-    buf.write(&mut dest);
+    // let m :[u8;0]=[]; 
+    // let mut buf = host_call("default","wasmcloud:builtin:numbergen","GenerateGuid",&m).unwrap();
+    // buf.write(dest);
     Ok(())
 }

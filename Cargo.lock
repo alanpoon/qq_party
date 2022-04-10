@@ -1248,6 +1248,7 @@ dependencies = [
  "bevy_ecs",
  "bevy_math",
  "bevy_rapier2d",
+ "bevy_transform",
  "bevy_utils 0.6.0 (git+https://github.com/bevyengine/bevy?rev=523e7af73930be4dc726ce44c609a2dcae0486ab)",
  "convert_case",
  "futures 0.3.21",
@@ -1301,6 +1302,8 @@ version = "0.2.6"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
+ "serde",
+ "thiserror",
  "wasi 0.10.0+wasi-snapshot-preview1",
 ]
 

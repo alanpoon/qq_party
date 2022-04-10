@@ -24,6 +24,7 @@ qq_party_shared = {path = "../../qq_party_shared" , features = ["actor"]}
 bevy_app = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false,version="0.6.0"}
 bevy_utils = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 bevy_ecs = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
+bevy_transform = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 #bevy_rapier2d = { git = "https://github.com/dimforge/bevy_rapier" , rev = "bd97b0b219b56f4f1e04535e503fa104e01bfb58", features = ["wasm-bindgen"] }
 bevy_rapier2d = { path = "../../../../bevy_stuffs/bevy_rapier/bevy_rapier2d", features = ["wasm-bindgen"] }
 rapier2d = { version = "0.11", default-features = false, features = [ "dim2", "f32" ] }

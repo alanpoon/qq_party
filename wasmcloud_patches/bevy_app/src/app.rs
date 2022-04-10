@@ -134,7 +134,7 @@ impl App {
     /// # use bevy_ecs::prelude::*;
     /// # let mut app = App::new();
     /// #
-    /// app.add_stage("my_stage", SystemStage::parallel());
+    /// app.add_stage("my_stage", SystemStage::single_threaded());
     /// ```
     pub fn add_stage<S: Stage>(&mut self, label: impl StageLabel, stage: S) -> &mut Self {
         self.schedule.add_stage(label, stage);
@@ -151,7 +151,7 @@ impl App {
     /// # use bevy_ecs::prelude::*;
     /// # let mut app = App::new();
     /// #
-    /// app.add_stage_after(CoreStage::Update, "my_stage", SystemStage::parallel());
+    /// app.add_stage_after(CoreStage::Update, "my_stage", SystemStage::single_threaded());
     /// ```
     pub fn add_stage_after<S: Stage>(
         &mut self,
@@ -173,7 +173,7 @@ impl App {
     /// # use bevy_ecs::prelude::*;
     /// # let mut app = App::new();
     /// #
-    /// app.add_stage_before(CoreStage::Update, "my_stage", SystemStage::parallel());
+    /// app.add_stage_before(CoreStage::Update, "my_stage", SystemStage::single_threaded());
     /// ```
     pub fn add_stage_before<S: Stage>(
         &mut self,
@@ -195,7 +195,7 @@ impl App {
     /// # use bevy_ecs::prelude::*;
     /// # let mut app = App::new();
     /// #
-    /// app.add_startup_stage("my_startup_stage", SystemStage::parallel());
+    /// app.add_startup_stage("my_startup_stage", SystemStage::single_threaded());
     /// ```
     pub fn add_startup_stage<S: Stage>(&mut self, label: impl StageLabel, stage: S) -> &mut Self {
         self.schedule
@@ -220,7 +220,7 @@ impl App {
     /// app.add_startup_stage_after(
     ///     StartupStage::Startup,
     ///     "my_startup_stage",
-    ///     SystemStage::parallel()
+    ///     SystemStage::single_threaded()
     /// );
     /// ```
     pub fn add_startup_stage_after<S: Stage>(
@@ -251,7 +251,7 @@ impl App {
     /// app.add_startup_stage_before(
     ///     StartupStage::Startup,
     ///     "my_startup_stage",
-    ///     SystemStage::parallel()
+    ///     SystemStage::single_threaded()
     /// );
     /// ```
     pub fn add_startup_stage_before<S: Stage>(
@@ -570,19 +570,19 @@ impl App {
     /// let app = App::empty().add_default_stages();
     /// ```
     pub fn add_default_stages(&mut self) -> &mut Self {
-        self.add_stage(CoreStage::First, SystemStage::parallel())
+        self.add_stage(CoreStage::First, SystemStage::single_threaded())
             .add_stage(
                 CoreStage::Startup,
                 Schedule::default()
                     .with_run_criteria(RunOnce::default())
-                    .with_stage(StartupStage::PreStartup, SystemStage::parallel())
-                    .with_stage(StartupStage::Startup, SystemStage::parallel())
-                    .with_stage(StartupStage::PostStartup, SystemStage::parallel()),
+                    .with_stage(StartupStage::PreStartup, SystemStage::single_threaded())
+                    .with_stage(StartupStage::Startup, SystemStage::single_threaded())
+                    .with_stage(StartupStage::PostStartup, SystemStage::single_threaded()),
             )
-            .add_stage(CoreStage::PreUpdate, SystemStage::parallel())
-            .add_stage(CoreStage::Update, SystemStage::parallel())
-            .add_stage(CoreStage::PostUpdate, SystemStage::parallel())
-            .add_stage(CoreStage::Last, SystemStage::parallel())
+            .add_stage(CoreStage::PreUpdate, SystemStage::single_threaded())
+            .add_stage(CoreStage::Update, SystemStage::single_threaded())
+            .add_stage(CoreStage::PostUpdate, SystemStage::single_threaded())
+            .add_stage(CoreStage::Last, SystemStage::single_threaded())
     }
 
     /// Setup the application to manage events of type `T`.

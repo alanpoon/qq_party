@@ -157,7 +157,7 @@
 
 #[macro_use]
 extern crate cfg_if;
-
+pub mod host_call;
 mod error;
 mod util;
 // To prevent a breaking change when targets are added, we always export the
@@ -166,7 +166,6 @@ mod util;
 mod custom;
 #[cfg(feature = "std")]
 mod error_impls;
-mod host_call;
 pub use crate::error::Error;
 
 // System-specific implementations.

@@ -1,3 +1,7 @@
+extern crate std;
+use std::string::{ToString,String};
+
+use serde::__private::Vec;
 pub type RpcResult<T> = std::result::Result<T, RpcError>;
 use serde::{Serialize,Deserialize};
 #[derive(thiserror::Error, Debug, Serialize, Deserialize)]
@@ -70,7 +74,7 @@ impl From<&str> for RpcError {
 
 impl From<std::io::Error> for RpcError {
     fn from(e: std::io::Error) -> RpcError {
-        RpcError::Other(format!("io: {}", e))
+        RpcError::Other(String::new())
     }
 }
 #[link(wasm_import_module = "wasmbus")]
