@@ -10,4 +10,4 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 bevy = { version = "0.6.0", default-features = false }
 anyhow = { version = "1.0" }
-qq_party_shared = { path = "../../../../qq_party_shared",features=["non_actor"] }
+qq_party_shared = { path = "../../../../qq_party_shared" }

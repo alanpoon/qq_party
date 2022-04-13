@@ -1,8 +1,8 @@
-#[cfg(feature = "non_actor")]
-use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::prelude::{Query, Component,Res,ResMut,Entity};
-
+// #[cfg(feature = "non_actor")]
+// use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
+// #[cfg(feature = "actor")]
+// use bevy_ecs_wasm::prelude::{Query, Component,Res,ResMut,Entity};
+use bevy_ecs::prelude::*;
 use bevy_math::{Vec2};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;

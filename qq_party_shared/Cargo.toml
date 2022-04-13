@@ -6,13 +6,13 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
-actor = ["bevy_ecs_wasm"]
-non_actor = ["bevy_ecs"]
+#actor = ["bevy_ecs_wasm"]
+#non_actor = ["bevy_ecs"]
 
 [dependencies]
 serde = { version = "1.0.125", features = ["derive"] }
-bevy_ecs_wasm = {git = "https://github.com/alanpoon/bevy-ecs-wasm06",optional = true}
-bevy_ecs = {  git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab", default-features = false,optional = true}
+#bevy_ecs_wasm = {git = "https://github.com/alanpoon/bevy-ecs-wasm06",optional = true}
+bevy_ecs = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 bevy_math = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab"}
 bevy_log = { git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab"}
-
+bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "a60860197295a6ab4472f49d4441258f7b264ffe" }

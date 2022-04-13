@@ -4,6 +4,9 @@ mod info_;
 mod systems;
 mod thread;
 mod bevy_wasmcloud_time;
+mod messaging_;
+mod spawn_;
+mod client_message_handlers;
 use host_call::host_call;
 use std::borrow::Borrow;
 use info_::info_;
@@ -26,6 +29,7 @@ use std::boxed::Box;
 use qq_party_shared::*;
 use std::io::Write;
 use std::borrow::Cow;
+
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
 }
@@ -43,7 +47,10 @@ impl Thread for GameLogicActor{
       m.init_resource::<Time>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-      .add_startup_system(systems::spawn.system())
+      //.add_startup_system(systems::spawn.system())
+      .add_system(systems::sys_bevy_wasmcloud_time.system())
+      .add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system())
+      .add_system(qq_party_shared::systems::physics::spawn_player_rigid.system())
       .add_system(systems::sys.system());
     }
     let provider = ThreadSender::new();
@@ -76,12 +83,12 @@ impl MessageSubscriber for GameLogicActor{
       let client_message: Result<ClientMessage,_> = serde_json::from_slice(&req.body);
       match client_message{
         Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
-          //let mut map = MAP.clone();
-          //client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
+          let mut map = APP.clone();
+          client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
         }
         Ok(ClientMessage::Welcome{game_id,ball_id})=>{
-          //let mut map = MAP.clone();
-          //client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
+          let mut map = APP.clone();
+          client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
         }
         _=>{}
       }

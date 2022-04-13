@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 bevy = { version = "0.6.0", default-features = false }
-bevy_ecs_tilemap = { version = "0.5.0" ,features = ["atlas"]}
+bevy_ecs_tilemap = { path="../../../../../../bevy_stuffs/bevy_ecs_tilemap" ,features = ["atlas"]}
 anyhow = { version = "1.0" }
 tiled = { version = "0.9", default-features = false }
-qq_party_shared = { path = "../../../../qq_party_shared",features=["non_actor"] }
+qq_party_shared = { path = "../../../../qq_party_shared" }
