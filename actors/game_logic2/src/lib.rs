@@ -46,11 +46,13 @@ impl Thread for GameLogicActor{
       let mut m = map.lock().unwrap();
       m.init_resource::<Time>()
       .add_plugin(bevy_transform::TransformPlugin::default())
-      .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+      //.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
       //.add_startup_system(systems::spawn.system())
       .add_system(systems::sys_bevy_wasmcloud_time.system())
-      .add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system())
-      .add_system(qq_party_shared::systems::physics::spawn_player_rigid.system())
+      //.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system())
+      .add_system(qq_party_shared::systems::update_state_position_physics::<bevy_wasmcloud_time::Time>.system())
+      .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
+      .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
       .add_system(systems::sys.system());
     }
     let provider = ThreadSender::new();

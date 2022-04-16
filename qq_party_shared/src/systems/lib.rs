@@ -9,8 +9,6 @@ const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
 #[path = "../src_debug_ui/mod.rs"]
 mod ui;
-mod timewrapper;
-mod timewrapper_qq;
 use ui::DebugUiPlugin;
 use crate::nalgebra::Vector2;
 use std::f32::consts::PI;
@@ -44,26 +42,18 @@ const RAPIER_SCALE: f32 = 20.0;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build PhysicsPlugin");
-        app.add_plugin(RapierPhysicsPlugin::<NoUserData,timewrapper::TimeWrapper>::default())
+        app.add_plugin(RapierPhysicsPlugin::<NoUserData,>::default())
             //.add_plugin(RapierRenderPlugin)
             // .add_startup_system(walls.system())
             // .add_startup_system(cube.system())
             //.add_startup_system(enable_physics_profiling.system())
             //.add_plugin(DebugUiPlugin)
-            .insert_resource(RapierConfiguration {
-              scale: 100.0,
-              gravity: Vector2::zeros(),
-              ..Default::default()
-            })
-            .init_resource::<timewrapper::TimeWrapper>()
-            .init_resource::<timewrapper_qq::TimeWrapper>()
-            .add_system(timewrapper_qq::into_timewrapper.system())
             .add_system(debug_rigid.system())
-            .add_system(qq_party_shared::systems::update_state_position_physics::<timewrapper_qq::TimeWrapper>.system())
-            .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
-            .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
-            //.init_resource::<bevy_rapier2d::physics::time::Time>()
-            .add_system(timewrapper::into_timewrapper.system());
+            .insert_resource(RapierConfiguration {
+                scale: 100.0,
+                gravity: Vector2::zeros(),
+                ..Default::default()
+            });
             //.insert_resource(Msaa::default());
             // .add_system(
             //     add_physics_components
@@ -138,7 +128,7 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //         commands
 //             .entity(card)
 //             .insert_bundle(RigidBodyBundle {
-//                 position: wrapper::RigidBodyPositionComponent(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
+//                 position: wrapper::spawn_player_collider(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
 //                 mass_properties: wrapper::RigidBodyMassPropsComponent(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
 //                 damping: wrapper::RigidBodyDampingComponent(RigidBodyDamping {
 //                     linear_damping: LINEAR_DAMPING,
@@ -176,12 +166,12 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //           ..Default::default()
 //         },
 //         ..Default::default()
-//     }).insert(wrapper::RigidBodyPositionComponent([x as f32,y as f32].into()))
+//     }).insert(wrapper::spawn_player_collider([x as f32,y as f32].into()))
 //     .insert(Position(Vec2::new(x as f32, y as f32)))
 //     .insert(TargetVelocity(Vec2::ZERO));
 //     // .insert_bundle(RigidBodyBundle {
 //     //   body_type: wrapper::RigidBodyType(RigidBodyType::Static),
-//     //   position: wrapper::RigidBodyPositionComponent([40.0, 0.0].into()),
+//     //   position: wrapper::spawn_player_collider([40.0, 0.0].into()),
 //     //   ..RigidBodyBundle::default()
 //     // }).insert(RigidBodyPositionSync::Discrete);
 //   // let collider = ColliderBundle {
@@ -212,9 +202,9 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //     *tv = TargetVelocity(Vec2::ZERO);
 //   }
 // }
-pub fn debug_rigid(mut query:Query<(&RigidBodyPositionComponent,&RigidBodyVelocityComponent)> ){
-  for (q,v) in query.iter(){
-    info!("rigid{:?} velocity {:?}",q.0.position,v.0);
+pub fn debug_rigid(mut query:Query<&spawn_player_collider> ){
+  for q in query.iter(){
+    info!("rigid{:?}",q.0);
   }
 }
 // fn add_ball_mesh_system(
@@ -236,6 +226,6 @@ pub fn debug_rigid(mut query:Query<(&RigidBodyPositionComponent,&RigidBodyVeloci
 //           ..Default::default()
 //         },
 //         ..Default::default()
-//       }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
+//       }).insert(wrapper::spawn_player_collider([position.0.x as f32,position.0.y as f32].into()));
 //   }
 // }
