@@ -357,8 +357,10 @@ dependencies = [
  "bevy_math",
  "bevy_transform",
  "bevy_utils",
+ "log",
  "nalgebra 0.30.1",
  "rapier2d 0.12.0-alpha.1",
+ "wasm-bindgen",
 ]
 
 [[package]]

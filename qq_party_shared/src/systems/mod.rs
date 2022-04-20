@@ -11,6 +11,7 @@ use bevy_math::{Vec2};
 use bevy_log::info;
 mod trail;
 pub mod physics;
+pub use physics::*;
 use crate::time_interface;
 use crate::{TargetVelocity,Velocity,Time,BallId,Position,ChaseTargetId,NPCId};
 
@@ -26,33 +27,7 @@ pub fn update_state_position<X:time_interface::TimeInterface + Component>(mut qu
     }
   }
 }
-pub fn update_state_position_physics<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position,&mut RigidBodyPositionComponent)>, time: Res<X>) {
-  let delta = time.delta_seconds();
-  for (mut pos,mut rigid_pos) in query.iter_mut() {
-      //pos.0 += vel.0 * time.delta_seconds() * 5.0;
-    // if (pos.0.x<=20.0 && vel.0.x >0.0) || (pos.0.x>=3820.0 && vel.0.x <0.0) || (pos.0.x>=20.0 && pos.0.x <= 3820.0){
-    //   pos.0.x +=  delta * vel.0.x;
-    // }
-    // if (pos.0.y<=20.0 && vel.0.y >0.0) || (pos.0.y>=3820.0 && vel.0.y <0.0) || (pos.0.y>=20.0 && pos.0.y <= 3820.0){
-    //   pos.0.y +=  delta * vel.0.y;
-    // }
-    pos.0.x = rigid_pos.0.position.translation.vector.x;
-    pos.0.y = rigid_pos.0.position.translation.vector.y;
-  }
-}
-pub fn update_state_velocity_physics(mut query: Query<(&mut RigidBodyVelocityComponent,&mut TargetVelocity)>) {
-  for (mut v,mut tv) in query.iter_mut() {
-    if tv.0.x *50.0!=0.0{
-      let move_delta = Vector2::new(tv.0.x *50.0 as f32, 0.0);
-      v.0.linvel += move_delta;
-    }
-    if tv.0.y *50.0!=0.0{
-      let move_delta = Vector2::new(0.0, tv.0.y * 50.0);
-      v.0.linvel += move_delta;
-    }
-    *tv = TargetVelocity(Vec2::ZERO);
-  }
-}
+
 pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity)>){
   for (mut v,mut tv) in query.iter_mut() {
     if tv.0.x *50.0!=0.0{

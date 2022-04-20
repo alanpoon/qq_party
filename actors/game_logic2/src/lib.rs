@@ -7,6 +7,8 @@ mod bevy_wasmcloud_time;
 mod messaging_;
 mod spawn_;
 mod client_message_handlers;
+mod plugins;
+mod startup;
 use host_call::host_call;
 use std::borrow::Borrow;
 use info_::info_;
@@ -29,7 +31,7 @@ use std::boxed::Box;
 use qq_party_shared::*;
 use std::io::Write;
 use std::borrow::Cow;
-
+use crate::plugins::physics::PhysicsPlugin;
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
 }
@@ -41,19 +43,26 @@ struct GameLogicActor {}
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     info!("start_thread----");
+    let npc_bundles = startup::npc::spawn_npc_bundles().await?;
+
     {
       let mut map = APP.clone();
       let mut m = map.lock().unwrap();
+      
+      m.world.spawn_batch(npc_bundles);
       m.init_resource::<Time>()
       .add_plugin(bevy_transform::TransformPlugin::default())
+      .add_plugin(PhysicsPlugin)
       //.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
       //.add_startup_system(systems::spawn.system())
       .add_system(systems::sys_bevy_wasmcloud_time.system())
       //.add_system(qq_party_shared::systems::update_state_position::<bevy_wasmcloud_time::Time>.system())
-      .add_system(qq_party_shared::systems::update_state_position_physics::<bevy_wasmcloud_time::Time>.system())
-      .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
-      .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
+      // .add_system(qq_party_shared::systems::update_state_position_physics::<bevy_wasmcloud_time::Time>.system())
+      .add_system(qq_party_shared::systems::update_state_velocity.system())
+      .add_system(systems::publish::sys_publish_game_state.system())
+      // .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
       .add_system(systems::sys.system());
+      
     }
     let provider = ThreadSender::new();
     if let Err(e) = provider

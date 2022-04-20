@@ -50,7 +50,7 @@ impl Plugin for PhysicsPlugin {
             //.add_plugin(DebugUiPlugin)
             .add_system(debug_rigid.system())
             .insert_resource(RapierConfiguration {
-                scale: 100.0,
+                scale: 1.0,
                 gravity: Vector2::zeros(),
                 ..Default::default()
             });

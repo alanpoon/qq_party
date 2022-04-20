@@ -27,7 +27,7 @@ bevy_utils = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc7
 bevy_ecs = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 bevy_transform = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 #bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "a60860197295a6ab4472f49d4441258f7b264ffe" }
-bevy_rapier2d = { path = "../../../../bevy_stuffs/bevy_rapier/bevy_rapier2d", features = ["wasm-bindgen"] }
+bevy_rapier2d = { path = "../../../../bevy_stuffs/bevy_rapier/bevy_rapier2d" }
 rapier2d = { version = "0.11", default-features = false, features = [ "dim2", "f32" ] }
 instant = "0.1.12"
 wasm-bindgen = "=0.2.78"

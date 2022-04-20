@@ -17,9 +17,9 @@ impl Plugin for SpriteCharacterPlugin {
       //.add_system(qq_party_shared::systems::update_state_position::<timewrapper::TimeWrapper>.system())
       //.add_system(qq_party_shared::systems::update_state_velocity.system())
       
-      .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
-      .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
-      .add_system(chicken::chicken_translate.system())      
+      // .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+      // .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+      //.add_system(chicken::chicken_translate.system())      
       .add_system(chicken::add_chicken_sprite_system.system())
       .add_system(npc::add_npc_sprite_system.system())
       .add_startup_system(sprite_sheet::startup)

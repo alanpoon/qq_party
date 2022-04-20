@@ -48,10 +48,10 @@ impl Plugin for PhysicsPlugin {
             //.add_plugin(RapierRenderPlugin)
             // .add_startup_system(walls.system())
             // .add_startup_system(cube.system())
-            //.add_startup_system(enable_physics_profiling.system())
-            //.add_plugin(DebugUiPlugin)
+            .add_startup_system(enable_physics_profiling.system())
+            .add_plugin(DebugUiPlugin)
             .insert_resource(RapierConfiguration {
-              scale: 100.0,
+              scale: 1.0,
               gravity: Vector2::zeros(),
               ..Default::default()
             })
@@ -60,8 +60,10 @@ impl Plugin for PhysicsPlugin {
             .add_system(timewrapper_qq::into_timewrapper.system())
             .add_system(debug_rigid.system())
             .add_system(qq_party_shared::systems::update_state_position_physics::<timewrapper_qq::TimeWrapper>.system())
+            .add_system(qq_party_shared::systems::update_state_velocity.system())
             .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
             .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
+            .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
             //.init_resource::<bevy_rapier2d::physics::time::Time>()
             .add_system(timewrapper::into_timewrapper.system());
             //.insert_resource(Msaa::default());
@@ -212,9 +214,9 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //     *tv = TargetVelocity(Vec2::ZERO);
 //   }
 // }
-pub fn debug_rigid(mut query:Query<(&RigidBodyPositionComponent,&RigidBodyVelocityComponent)> ){
-  for (q,v) in query.iter(){
-    info!("rigid{:?} velocity {:?}",q.0.position,v.0);
+pub fn debug_rigid(mut query:Query<(&Transform,&RigidBodyPositionComponent,&RigidBodyVelocityComponent)> ){
+  for (q,rb,v) in query.iter(){
+    //info!("transform{:?} rb {:?} , velocity {:?}",q.translation,rb.0,v.0);
   }
 }
 // fn add_ball_mesh_system(
