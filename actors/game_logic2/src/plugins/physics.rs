@@ -12,8 +12,15 @@ impl Plugin for PhysicsPlugin {
             gravity: Vector2::zeros(),
             ..Default::default()
           })
+          //player
+          .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
           .add_system(qq_party_shared::systems::update_state_position_physics::<bevy_wasmcloud_time::Time>.system())
+          .add_system(qq_party_shared::systems::update_state_velocity.system())
           .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
-          .add_system(qq_party_shared::systems::physics::spawn_player_collider.system());
+          //npc
+          .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
+          .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+          .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+          ;
   }
 }

@@ -3,7 +3,7 @@ use core::DeskSystem;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
-use qq_party_shared::{Position,Velocity,TargetVelocity,BallId};
+use qq_party_shared::*;
 pub struct PhysicsPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
@@ -49,7 +49,7 @@ impl Plugin for PhysicsPlugin {
             // .add_startup_system(walls.system())
             // .add_startup_system(cube.system())
             .add_startup_system(enable_physics_profiling.system())
-            .add_plugin(DebugUiPlugin)
+            //.add_plugin(DebugUiPlugin)
             .insert_resource(RapierConfiguration {
               scale: 1.0,
               gravity: Vector2::zeros(),
@@ -58,12 +58,16 @@ impl Plugin for PhysicsPlugin {
             .init_resource::<timewrapper::TimeWrapper>()
             .init_resource::<timewrapper_qq::TimeWrapper>()
             .add_system(timewrapper_qq::into_timewrapper.system())
-            .add_system(debug_rigid.system())
+            //.add_system(debug_rigid.system())
+            //player
+            .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
             .add_system(qq_party_shared::systems::update_state_position_physics::<timewrapper_qq::TimeWrapper>.system())
             .add_system(qq_party_shared::systems::update_state_velocity.system())
             .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
-            .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
+            //npc
             .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
+            .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+            .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
             //.init_resource::<bevy_rapier2d::physics::time::Time>()
             .add_system(timewrapper::into_timewrapper.system());
             //.insert_resource(Msaa::default());
@@ -214,9 +218,20 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //     *tv = TargetVelocity(Vec2::ZERO);
 //   }
 // }
-pub fn debug_rigid(mut query:Query<(&Transform,&RigidBodyPositionComponent,&RigidBodyVelocityComponent)> ){
-  for (q,rb,v) in query.iter(){
-    //info!("transform{:?} rb {:?} , velocity {:?}",q.translation,rb.0,v.0);
+pub fn debug_rigid(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&NPCId,&Position,&ChaseTargetId,&RigidBodyVelocityComponent),Without<BallId>> ){
+  // for (q,rb) in query.iter(){
+  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
+  // }
+  for (q,pos,rb,v) in npc_query.iter(){
+    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
+  }
+}
+pub fn debug_rigid2(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&Position,&ChaseTargetId,&RigidBodyVelocityComponent),(With<NPCId>,Without<BallId>)> ){
+  // for (q,rb) in query.iter(){
+  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
+  // }
+  for (pos,rb,v) in npc_query.iter(){
+    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
   }
 }
 // fn add_ball_mesh_system(
