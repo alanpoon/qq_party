@@ -65,6 +65,6 @@ pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut Cha
             *chase_target_id = ChaseTargetId(ball_id.0,s);
           }
         }
-      } 
+      }
     }
 }

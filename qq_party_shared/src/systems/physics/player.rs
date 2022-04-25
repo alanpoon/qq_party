@@ -47,7 +47,7 @@ pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut RigidBodyV
       x = vel.0.x;
     }
     if (pos.0.y<=20.0 && vel.0.y >0.0) || (pos.0.y>=3820.0 && vel.0.y <0.0) || (pos.0.y>=20.0 && pos.0.y <= 3820.0){
-      y = vel.0.y
+      y = vel.0.y;
     }
     let move_delta = Vector2::new(x, y);
     v.0.linvel = move_delta;

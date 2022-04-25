@@ -100,7 +100,7 @@ fn handle_events(
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    mut balls: Query<&Velocity>,
+    mut balls: Query<(&BallId,&Velocity)>,
     
 ) {
     if let Some(ref mut state) = *state {
@@ -134,11 +134,17 @@ fn handle_events(
           pressed = true;
         }
         if pressed{
-          let ball_id = (*local_user_info).0.ball_id;
-          let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
-          (*commands).push(c);
+          for (ball_id_ingame,v) in balls.iter(){
+            let ball_id = (*local_user_info).0.ball_id;
+            if ball_id_ingame==&ball_id{
+              if v.0.x / target_velocity_x <1.0 || v.0.y /target_velocity_y <1.0{
+                let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
+                (*commands).push(c);
+                break;
+              }
+            }
+          }
         }
-
         for gamepad in gamepads.iter().cloned() {
           if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)) {
             let ball_id = (*local_user_info).0.ball_id;
@@ -204,7 +210,7 @@ fn receive_events(mut cmd: Commands,
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
                             for (entity, qball_id) in query.iter_mut(){
-                              if &ball_id ==qball_id{
+                              if ball_id ==*qball_id{
                                 info!("insert target_velocity!!,{:?} {:?}",qball_id,ball_id);
                                 cmd.entity(entity).insert(target_velocity);
                               }
