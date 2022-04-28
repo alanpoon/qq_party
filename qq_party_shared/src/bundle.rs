@@ -1,7 +1,9 @@
-#[cfg(feature = "non_actor")]
-use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity,Bundle};
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity,Bundle};
+// #[cfg(feature = "non_actor")]
+// use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity,Bundle};
+// #[cfg(feature = "actor")]
+// use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity,Bundle};
+use bevy_ecs::prelude::*;
+use bevy_rapier2d::prelude::*;
 use crate::*;
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct BallBundle {

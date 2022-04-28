@@ -1,0 +1,33 @@
+[package]
+name = "game_logic2"
+version = "0.1.0"
+authors = ["alanpoon"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasmbus-rpc = "=0.5.2"
+async-trait = "0.1"
+serde_bytes = "0.11"
+serde = { version = "1.0.123", features = ["derive"]}
+serde_json = "1.0.64"
+futures = "0.3"
+wasmcloud-interface-logging = "0.2.0"
+wasmcloud-interface-messaging = "0.2.0"
+wasmcloud-interface-numbergen = "0.2.0"
+wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
+convert_case = "0.1.0"
+bevy_math = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab"}
+lazy_static = "1.4.0"
+qq_party_shared = {path = "../../qq_party_shared"}
+bevy_app = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false,version="0.6.0"}
+bevy_utils = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
+bevy_ecs = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
+bevy_transform = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
+bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "61eefc3339c1e4cc7419ed7676fb9f0f6e386583" }
+#bevy_rapier2d = { path = "../../../../bevy_stuffs/bevy_rapier/bevy_rapier2d" }
+rapier2d = { version = "0.11", default-features = false, features = [ "dim2", "f32" ] }
+instant = "0.1.12"
+wasm-bindgen = "=0.2.78"

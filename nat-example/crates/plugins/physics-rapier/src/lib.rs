@@ -2,14 +2,15 @@ use core::DeskSystem;
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use bevy_rapier2d::physics::wrapper;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
-use qq_party_shared::{Position,Velocity,TargetVelocity,BallId};
+use qq_party_shared::*;
 pub struct PhysicsPlugin;
 const LINEAR_DAMPING: f32 = 8.0;
 use bevy::math::Vec3;
 #[path = "../src_debug_ui/mod.rs"]
 mod ui;
+mod timewrapper;
+mod timewrapper_qq;
 use ui::DebugUiPlugin;
 use crate::nalgebra::Vector2;
 use std::f32::consts::PI;
@@ -43,18 +44,33 @@ const RAPIER_SCALE: f32 = 20.0;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build PhysicsPlugin");
-        app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-            .add_plugin(RapierRenderPlugin)
-            .add_startup_system(walls.system())
-            .add_startup_system(cube.system())
+        app.add_plugin(RapierPhysicsPlugin::<NoUserData,timewrapper::TimeWrapper>::default())
+            //.add_plugin(RapierRenderPlugin)
+            // .add_startup_system(walls.system())
+            // .add_startup_system(cube.system())
             .add_startup_system(enable_physics_profiling.system())
             //.add_plugin(DebugUiPlugin)
             .insert_resource(RapierConfiguration {
-                scale: 100.0,
-                gravity: Vector2::zeros(),
-                ..Default::default()
+              scale: 1.0,
+              gravity: Vector2::zeros(),
+              ..Default::default()
             })
-            .insert_resource(Msaa::default());
+            .init_resource::<timewrapper::TimeWrapper>()
+            .init_resource::<timewrapper_qq::TimeWrapper>()
+            .add_system(timewrapper_qq::into_timewrapper.system())
+            //.add_system(debug_rigid.system())
+            //player
+            .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
+            .add_system(qq_party_shared::systems::update_state_position_physics::<timewrapper_qq::TimeWrapper>.system())
+            .add_system(qq_party_shared::systems::update_state_velocity.system())
+            .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
+            //npc
+            .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
+            .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+            .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+            //.init_resource::<bevy_rapier2d::physics::time::Time>()
+            .add_system(timewrapper::into_timewrapper.system());
+            //.insert_resource(Msaa::default());
             // .add_system(
             //     add_physics_components
             //         .system()
@@ -73,117 +89,117 @@ impl Plugin for PhysicsPlugin {
 fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
   pipeline.counters.enable()
 }
-fn walls(mut commands: Commands) {
-    // camera.transform.translation.x = 630.0;
-    // camera.transform.translation.y = 350.0;
-    // commands.spawn_bundle(PointLightBundle {
-    //     point_light: PointLight {
-    //         intensity: 100_000.0,
-    //         range: 6000.0,
-    //         ..Default::default()
-    //     },
-    //     ..Default::default()
-    // });
+// fn walls(mut commands: Commands) {
+//     // camera.transform.translation.x = 630.0;
+//     // camera.transform.translation.y = 350.0;
+//     // commands.spawn_bundle(PointLightBundle {
+//     //     point_light: PointLight {
+//     //         intensity: 100_000.0,
+//     //         range: 6000.0,
+//     //         ..Default::default()
+//     //     },
+//     //     ..Default::default()
+//     // });
     
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(10.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-    commands
-        .spawn_bundle(ColliderBundle {
-            position: wrapper::ColliderPositionComponent(Vector::new(0.0, 7.0).into()),
-            shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::default());
-}
+//     commands
+//         .spawn_bundle(ColliderBundle {
+//             position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
+//             shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
+//             ..Default::default()
+//         })
+//         .insert(ColliderPositionSync::Discrete)
+//         .insert(ColliderDebugRender::default());
+//     commands
+//         .spawn_bundle(ColliderBundle {
+//             position: wrapper::ColliderPositionComponent(Vector::new(10.0, 0.0).into()),
+//             shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 9.0)),
+//             ..Default::default()
+//         })
+//         .insert(ColliderPositionSync::Discrete)
+//         .insert(ColliderDebugRender::default());
+//     commands
+//         .spawn_bundle(ColliderBundle {
+//             position: wrapper::ColliderPositionComponent(Vector::new(0.0, 0.0).into()),
+//             shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
+//             ..Default::default()
+//         })
+//         .insert(ColliderPositionSync::Discrete)
+//         .insert(ColliderDebugRender::default());
+//     commands
+//         .spawn_bundle(ColliderBundle {
+//             position: wrapper::ColliderPositionComponent(Vector::new(0.0, 7.0).into()),
+//             shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(12.0, 0.1)),
+//             ..Default::default()
+//         })
+//         .insert(ColliderPositionSync::Discrete)
+//         .insert(ColliderDebugRender::default());
+// }
 
-fn add_physics_components(
-    rapier: Res<RapierConfiguration>,
-    mut commands: Commands,
-    query: Query<(Entity, &GlobalTransform), Added<Position>>,
-) {
-    for (card, transform) in query.iter() {
-        commands
-            .entity(card)
-            .insert_bundle(RigidBodyBundle {
-                position: wrapper::RigidBodyPositionComponent(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
-                mass_properties: wrapper::RigidBodyMassPropsComponent(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
-                damping: wrapper::RigidBodyDampingComponent(RigidBodyDamping {
-                    linear_damping: LINEAR_DAMPING,
-                    ..Default::default()
-                }),
-                ..Default::default()
-            })
-            .insert(RigidBodyPositionSync::Discrete)
-            .with_children(|build| {
-                build.spawn_bundle(ColliderBundle {
-                    shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 0.1)),
-                    ..Default::default()
-                });
-            });
-    }
-}
-pub fn cube(
-  mut commands: Commands,
-  mut materials: ResMut<Assets<ColorMaterial>>
-) {
-  let mut rand_rng = rand::thread_rng();
-  let x:i32 = rand_rng.gen_range(35..70);
-  let y:i32 = rand_rng.gen_range(0..200);
-  let r:i32 = rand_rng.gen_range(0..255);
-  let g:i32 = rand_rng.gen_range(0..255);
-  let b:i32 = rand_rng.gen_range(0..255);
-  let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
-  commands
-    .spawn()
-    .insert_bundle(SpriteBundle {
-        transform: Transform::from_translation(Vec3::new(x as f32, y as f32, 1.0)),
-        sprite: Sprite{
-          color: bevy_color,
-          custom_size: Some(Vec2::new(30.0,30.0)),
-          ..Default::default()
-        },
-        ..Default::default()
-    }).insert(wrapper::RigidBodyPositionComponent([x as f32,y as f32].into()))
-    .insert(Position(Vec2::new(x as f32, y as f32)))
-    .insert(TargetVelocity(Vec2::ZERO));
-    // .insert_bundle(RigidBodyBundle {
-    //   body_type: wrapper::RigidBodyType(RigidBodyType::Static),
-    //   position: wrapper::RigidBodyPositionComponent([40.0, 0.0].into()),
-    //   ..RigidBodyBundle::default()
-    // }).insert(RigidBodyPositionSync::Discrete);
-  // let collider = ColliderBundle {
-  //     shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(rad, rad)),
-  //     ..Default::default()
-  // };
-  // commands
-  //     .spawn_bundle(body)
-  //     .insert_bundle(collider)
-  //     .insert(ColliderDebugRender::with_id(color))
-  //     .insert(ColliderPositionSync::Discrete);
-}
+// fn add_physics_components(
+//     rapier: Res<RapierConfiguration>,
+//     mut commands: Commands,
+//     query: Query<(Entity, &GlobalTransform), Added<Position>>,
+// ) {
+//     for (card, transform) in query.iter() {
+//         commands
+//             .entity(card)
+//             .insert_bundle(RigidBodyBundle {
+//                 position: wrapper::RigidBodyPositionComponent(Vector2::new(transform.translation[0] / rapier.scale,transform.translation[1]/rapier.scale).into()),
+//                 mass_properties: wrapper::RigidBodyMassPropsComponent(RigidBodyMassPropsFlags::ROTATION_LOCKED.into()),
+//                 damping: wrapper::RigidBodyDampingComponent(RigidBodyDamping {
+//                     linear_damping: LINEAR_DAMPING,
+//                     ..Default::default()
+//                 }),
+//                 ..Default::default()
+//             })
+//             .insert(RigidBodyPositionSync::Discrete)
+//             .with_children(|build| {
+//                 build.spawn_bundle(ColliderBundle {
+//                     shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(0.1, 0.1)),
+//                     ..Default::default()
+//                 });
+//             });
+//     }
+// }
+// pub fn cube(
+//   mut commands: Commands,
+//   mut materials: ResMut<Assets<ColorMaterial>>
+// ) {
+//   let mut rand_rng = rand::thread_rng();
+//   let x:i32 = rand_rng.gen_range(35..70);
+//   let y:i32 = rand_rng.gen_range(0..200);
+//   let r:i32 = rand_rng.gen_range(0..255);
+//   let g:i32 = rand_rng.gen_range(0..255);
+//   let b:i32 = rand_rng.gen_range(0..255);
+//   let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
+//   commands
+//     .spawn()
+//     .insert_bundle(SpriteBundle {
+//         transform: Transform::from_translation(Vec3::new(x as f32, y as f32, 1.0)),
+//         sprite: Sprite{
+//           color: bevy_color,
+//           custom_size: Some(Vec2::new(30.0,30.0)),
+//           ..Default::default()
+//         },
+//         ..Default::default()
+//     }).insert(wrapper::RigidBodyPositionComponent([x as f32,y as f32].into()))
+//     .insert(Position(Vec2::new(x as f32, y as f32)))
+//     .insert(TargetVelocity(Vec2::ZERO));
+//     // .insert_bundle(RigidBodyBundle {
+//     //   body_type: wrapper::RigidBodyType(RigidBodyType::Static),
+//     //   position: wrapper::RigidBodyPositionComponent([40.0, 0.0].into()),
+//     //   ..RigidBodyBundle::default()
+//     // }).insert(RigidBodyPositionSync::Discrete);
+//   // let collider = ColliderBundle {
+//   //     shape: wrapper::ColliderShapeComponent(ColliderShape::cuboid(rad, rad)),
+//   //     ..Default::default()
+//   // };
+//   // commands
+//   //     .spawn_bundle(body)
+//   //     .insert_bundle(collider)
+//   //     .insert(ColliderDebugRender::with_id(color))
+//   //     .insert(ColliderPositionSync::Discrete);
+// }
 // fn update_velocity(
 //     rapier: Res<RapierConfiguration>,
 //     mut query: Query<(&mut wrapper::RigidBodyVelocityComponent, &Velocity), Changed<Velocity>>,
@@ -194,33 +210,49 @@ pub fn cube(
 //     }
 // }
 //pub fn update_position_system1(mut query: Query<(&mut Position, &Velocity)>, time: Res<Time>) {
-pub fn update_position_system1(mut query: Query<(&mut TargetVelocity, &mut Transform)>, time: Res<Time>) {
+// pub fn update_position_system1(mut query: Query<(&mut TargetVelocity, &mut Transform)>, time: Res<Time>) {
    
-  for (mut tv,mut transform) in query.iter_mut() {
-    transform.translation.x += tv.0.x;
-    transform.translation.y += tv.0.y;
-    *tv = TargetVelocity(Vec2::ZERO);
+//   for (mut tv,mut transform) in query.iter_mut() {
+//     transform.translation.x += tv.0.x;
+//     transform.translation.y += tv.0.y;
+//     *tv = TargetVelocity(Vec2::ZERO);
+//   }
+// }
+pub fn debug_rigid(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&NPCId,&Position,&ChaseTargetId,&RigidBodyVelocityComponent),Without<BallId>> ){
+  // for (q,rb) in query.iter(){
+  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
+  // }
+  for (q,pos,rb,v) in npc_query.iter(){
+    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
   }
 }
-fn add_ball_mesh_system(
-  mut cmd: Commands,
-  balls_without_mesh: Query<(Entity, &BallId,&Position), Without<Transform>>,
-  mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-  for (entity, _,position) in balls_without_mesh.iter() {
-    let mut rand_rng = rand::thread_rng();
-    let r = rand_rng.gen_range(0..255);
-    let g = rand_rng.gen_range(0..255);
-    let b = rand_rng.gen_range(0..255);
-    let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
-      cmd.entity(entity).insert_bundle(SpriteBundle {
-        transform: Transform::from_translation(Vec3::new(position.0.x as f32, position.0.y as f32, 1.0)),
-        sprite: Sprite{
-          color: bevy_color,
-          custom_size: Some(Vec2::new(30.0,30.0)),
-          ..Default::default()
-        },
-        ..Default::default()
-      }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
+pub fn debug_rigid2(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&Position,&ChaseTargetId,&RigidBodyVelocityComponent),(With<NPCId>,Without<BallId>)> ){
+  // for (q,rb) in query.iter(){
+  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
+  // }
+  for (pos,rb,v) in npc_query.iter(){
+    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
   }
 }
+// fn add_ball_mesh_system(
+//   mut cmd: Commands,
+//   balls_without_mesh: Query<(Entity, &BallId,&Position), Without<Transform>>,
+//   mut materials: ResMut<Assets<ColorMaterial>>,
+// ) {
+//   for (entity, _,position) in balls_without_mesh.iter() {
+//     let mut rand_rng = rand::thread_rng();
+//     let r = rand_rng.gen_range(0..255);
+//     let g = rand_rng.gen_range(0..255);
+//     let b = rand_rng.gen_range(0..255);
+//     let bevy_color = Color::rgb_u8(r as u8,g as u8,b as u8);
+//       cmd.entity(entity).insert_bundle(SpriteBundle {
+//         transform: Transform::from_translation(Vec3::new(position.0.x as f32, position.0.y as f32, 1.0)),
+//         sprite: Sprite{
+//           color: bevy_color,
+//           custom_size: Some(Vec2::new(30.0,30.0)),
+//           ..Default::default()
+//         },
+//         ..Default::default()
+//       }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
+//   }
+// }

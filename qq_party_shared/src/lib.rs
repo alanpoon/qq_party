@@ -1,8 +1,8 @@
-#[cfg(feature = "non_actor")]
-use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::prelude::{Query, Component,Res,ResMut,Entity};
-
+// #[cfg(feature = "non_actor")]
+// use bevy_ecs::prelude::{Query, Res,ResMut,Component,Entity};
+// #[cfg(feature = "actor")]
+// use bevy_ecs_wasm::prelude::{Query, Component,Res,ResMut,Entity};
+use bevy_ecs::prelude::*;
 use bevy_math::{Vec2};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
@@ -27,13 +27,14 @@ pub struct Time{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub u8);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct ChaseTargetId(pub u32,pub u8);
+pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
   pub sprite_enum:u32
 }
-
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct LastNPC(pub u32);
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Welcome{ball_bundle:BallBundle},

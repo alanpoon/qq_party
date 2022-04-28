@@ -1,9 +1,10 @@
-#[cfg(feature = "non_actor")]
+// #[cfg(feature = "non_actor")]
+// use bevy_ecs::prelude::*;
+// #[cfg(feature = "actor")]
+// use bevy_ecs_wasm::prelude::*;
+// #[cfg(feature = "actor")]
+// use bevy_ecs_wasm::component::Component;
 use bevy_ecs::prelude::*;
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::prelude::*;
-#[cfg(feature = "actor")]
-use bevy_ecs_wasm::component::Component;
 use bevy_math::{Vec2};
 use bevy_log::info;
 use crate::time_interface;

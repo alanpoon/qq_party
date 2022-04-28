@@ -5,6 +5,7 @@ cluster_seed.txt
 **/build
 **.log
 **.out
+archive
 newReadme2.md
 archive_actors
 archive_interfaces
