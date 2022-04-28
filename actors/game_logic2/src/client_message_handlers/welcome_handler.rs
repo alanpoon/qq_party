@@ -21,6 +21,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
       position:Position(Vec2::new(x as f32,y as f32)),
       velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
+      last_npc:0,
     };
     let mut ball_bundles:Vec<BallBundle> = vec![];
     {
@@ -39,7 +40,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
       let mut query = app.world.query::<(&BallId,&Position, &Velocity,&TargetVelocity)>();
       for (ball_id,position, velocity,target_velocity) in query.iter(&app.world){
         ball_bundles.push(BallBundle{
-          ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()
+          ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone(),
+          last_npc:0,
         });
       }
       spawn(&mut app.world,ball_bundle.clone());

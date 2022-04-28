@@ -11,6 +11,7 @@ pub struct BallBundle {
     pub position: Position,
     pub velocity: Velocity,
     pub target_velocity: TargetVelocity,
+    pub last_npc: LastNPC,
 }
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct NPCBundle {

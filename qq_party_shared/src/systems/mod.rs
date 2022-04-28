@@ -13,7 +13,7 @@ mod trail;
 pub mod physics;
 pub use physics::*;
 use crate::time_interface;
-use crate::{TargetVelocity,Velocity,Time,BallId,Position,ChaseTargetId,NPCId};
+use crate::*;
 
 pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity)>){
   for (mut v,mut tv) in query.iter_mut() {
@@ -32,10 +32,14 @@ pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&
     if chase_target_id.0 !=0{
       for (ball_id,pos,velocity) in ball_query.iter(){
         if chase_target_id.0 == ball_id.0{
-          let unit_vec = (pos.0+2.0*velocity.0-npc_pos.0).normalize_or_zero();    
-          v.0.x = unit_vec.x *chase_target_id.1 as f32 *unit_vec.length_recip();
-          v.0.y = unit_vec.y *chase_target_id.1 as f32 *unit_vec.length_recip();
-          break;
+          if chase_target_id.1 ==0{
+            let unit_vec = (pos.0+2.0*velocity.0-npc_pos.0).normalize_or_zero();    
+            v.0.x = unit_vec.x *chase_target_id.2 as f32 *unit_vec.length_recip();
+            v.0.y = unit_vec.y *chase_target_id.2 as f32 *unit_vec.length_recip();
+            break;
+          }else{
+            
+          }
         }
       }
     }
@@ -43,7 +47,7 @@ pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&
 }
 
 pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut ChaseTargetId),Without<BallId>>,
-  ball_query:Query<(&BallId,&Position)>){    
+  mut ball_query:Query<(&BallId,&Position,&mut LastNPC)>){    
     for (npc_id,npc_pos,mut chase_target_id) in npc_query.iter_mut(){
       let speed:Option<u8> = match npc_id.sprite_enum{
         0=>{
@@ -60,9 +64,10 @@ pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut Cha
         }
       };
       if let Some(s) = speed{
-        for (ball_id,pos) in ball_query.iter(){
+        for (ball_id,pos,mut last_npc) in ball_query.iter_mut(){
           if pos.0.distance(npc_pos.0)<50.0{
-            *chase_target_id = ChaseTargetId(ball_id.0,s);
+            *chase_target_id = ChaseTargetId(ball_id.0,last_npc.0,s);
+            *last_npc = LastNPC(npc_id.id);
           }
         }
       }
