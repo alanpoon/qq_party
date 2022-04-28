@@ -351,6 +351,7 @@ dependencies = [
 [[package]]
 name = "bevy_rapier2d"
 version = "0.12.1"
+source = "git+https://github.com/alanpoon/bevy_rapier?rev=61eefc3339c1e4cc7419ed7676fb9f0f6e386583#61eefc3339c1e4cc7419ed7676fb9f0f6e386583"
 dependencies = [
  "bevy_app",
  "bevy_ecs",

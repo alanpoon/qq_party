@@ -34,8 +34,8 @@ pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&
         if chase_target_id.0 == ball_id.0{
           if chase_target_id.1 ==0{
             let unit_vec = (pos.0+2.0*velocity.0-npc_pos.0).normalize_or_zero();    
-            v.0.x = unit_vec.x *chase_target_id.2 as f32 *unit_vec.length_recip();
-            v.0.y = unit_vec.y *chase_target_id.2 as f32 *unit_vec.length_recip();
+            v.0.x = unit_vec.x *chase_target_id.1 as f32 *unit_vec.length_recip();
+            v.0.y = unit_vec.y *chase_target_id.1 as f32 *unit_vec.length_recip();
             break;
           }else{
             
@@ -66,7 +66,7 @@ pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut Cha
       if let Some(s) = speed{
         for (ball_id,pos,mut last_npc) in ball_query.iter_mut(){
           if pos.0.distance(npc_pos.0)<50.0{
-            *chase_target_id = ChaseTargetId(ball_id.0,last_npc.0,s);
+            *chase_target_id = ChaseTargetId(ball_id.0,s);
             *last_npc = LastNPC(npc_id.id);
           }
         }

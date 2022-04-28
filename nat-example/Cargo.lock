@@ -815,6 +815,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_rapier2d"
+version = "0.12.1"
+source = "git+https://github.com/alanpoon/bevy_rapier?rev=61eefc3339c1e4cc7419ed7676fb9f0f6e386583#61eefc3339c1e4cc7419ed7676fb9f0f6e386583"
+dependencies = [
+ "bevy_app",
+ "bevy_ecs",
+ "bevy_math",
+ "bevy_transform",
+ "bevy_utils",
+ "log",
+ "nalgebra 0.30.1",
+ "rapier2d 0.12.0-alpha.1",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "bevy_reflect"
 version = "0.6.0"
 source = "git+https://github.com/bevyengine/bevy?rev=523e7af73930be4dc726ce44c609a2dcae0486ab#523e7af73930be4dc726ce44c609a2dcae0486ab"
@@ -1942,7 +1958,7 @@ name = "desk-plugin-physics-rapier"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "bevy_rapier2d",
+ "bevy_rapier2d 0.12.1",
  "desk-plugin-core",
  "getrandom 0.2.5",
  "log",
@@ -4532,7 +4548,7 @@ dependencies = [
  "bevy_ecs",
  "bevy_log",
  "bevy_math",
- "bevy_rapier2d",
+ "bevy_rapier2d 0.12.1 (git+https://github.com/alanpoon/bevy_rapier?rev=61eefc3339c1e4cc7419ed7676fb9f0f6e386583)",
  "serde",
 ]
 

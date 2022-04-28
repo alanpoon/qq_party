@@ -27,7 +27,7 @@ pub struct Time{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub u8);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct ChaseTargetId(pub u32, pub u32,pub u8);//ball, npc, speed
+pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
