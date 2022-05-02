@@ -137,11 +137,22 @@ fn handle_events(
           for (ball_id_ingame,v) in balls.iter(){
             let ball_id = (*local_user_info).0.ball_id;
             if ball_id_ingame==&ball_id{
-              if v.0.x / target_velocity_x <1.0 || v.0.y /target_velocity_y <1.0{
+              let mut send= false;
+              if target_velocity_x!=0.0{
+                if v.0.x / target_velocity_x <0.0{
+                  send = true;
+                }
+              }
+              if target_velocity_y!=0.0{
+                if v.0.y / target_velocity_y <0.0{
+                  send = true;
+                }
+              }
+              if send{
                 let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
                 (*commands).push(c);
-                break;
               }
+              break;
             }
           }
         }
@@ -150,7 +161,6 @@ fn handle_events(
             let ball_id = (*local_user_info).0.ball_id;
             let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
             (*commands).push(c);  
-            info!("{:?} just pressed South", gamepad);
           }
         }
     }
@@ -204,14 +214,12 @@ fn receive_events(mut cmd: Commands,
                   match s_op{
                     nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
                       if subject == String::from("game_logic"){
-                        info!("recv msg!! game_logic {} payload:{} user{:?}",subject,std::str::from_utf8(&payload).unwrap(),(*user_info));
                         let server_message: ServerMessage = serde_json::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
                             for (entity, qball_id) in query.iter_mut(){
                               if ball_id ==*qball_id{
-                                info!("insert target_velocity!!,{:?} {:?}",qball_id,ball_id);
                                 cmd.entity(entity).insert(target_velocity);
                               }
                             }

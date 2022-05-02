@@ -12,10 +12,6 @@ pub fn spawn_npc_collider(
     .insert_bundle(RigidBodyBundle{
       mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
       position: [position.0.x, position.0.y].into(),
-      // ccd: RigidBodyCcd {
-      //   ccd_enabled: true,
-      //   ..Default::default()
-      // }.into(),
       ..Default::default()
     })
     // .insert_bundle(ColliderBundle {
