@@ -21,6 +21,7 @@ impl Plugin for PhysicsPlugin {
           .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
           .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
           .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+          .add_system(qq_party_shared::systems::joint::spawn_joint.system())
           ;
   }
 }

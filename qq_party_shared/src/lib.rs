@@ -29,12 +29,16 @@ pub struct BallId(pub u32,pub u8);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct ChaseTargetId2(pub u32, pub Option<Entity>);//ball, npc, speed
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
   pub sprite_enum:u32
 }
-#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct LastNPC(pub u32);
+#[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct LastNPC(pub u32,pub Option<Entity>);
+#[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+pub struct Parent(Entity);
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Welcome{ball_bundle:BallBundle},

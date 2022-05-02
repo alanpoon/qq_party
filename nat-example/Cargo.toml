@@ -21,4 +21,4 @@ default-members = [
 [patch.crates-io]
 bevy_ecs = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
 bevy = {git="https://github.com/bevyengine/bevy",rev = "523e7af73930be4dc726ce44c609a2dcae0486ab",default-features = false}
-#bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "a60860197295a6ab4472f49d4441258f7b264ffe" }
+##bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "a60860197295a6ab4472f49d4441258f7b264ffe" }

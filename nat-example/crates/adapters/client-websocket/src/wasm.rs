@@ -67,7 +67,6 @@ pub async fn connect(
         .insert(client_name.clone(), Vec::new());
     
     wasm_bindgen_futures::spawn_local(async {event_receiver.for_each(move |event| {
-          info!("events{:?}",event);
           ready(
             EVENTS
                 .lock()

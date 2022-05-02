@@ -48,28 +48,28 @@ pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&
 
 pub fn set_state_chasetarget_npc(mut npc_query: Query<(&NPCId,&Position,&mut ChaseTargetId),Without<BallId>>,
   mut ball_query:Query<(&BallId,&Position,&mut LastNPC)>){    
-    for (npc_id,npc_pos,mut chase_target_id) in npc_query.iter_mut(){
-      let speed:Option<u8> = match npc_id.sprite_enum{
-        0=>{
-          Some(70)
-        }
-        1=>{
-          None
-        }
-        2=>{
-          Some(70)
-        }
-        _=>{
-          None
-        }
-      };
-      if let Some(s) = speed{
-        for (ball_id,pos,mut last_npc) in ball_query.iter_mut(){
-          if pos.0.distance(npc_pos.0)<50.0{
-            *chase_target_id = ChaseTargetId(ball_id.0,s);
-            *last_npc = LastNPC(npc_id.id);
-          }
-        }
-      }
-    }
+    // for (npc_id,npc_pos,mut chase_target_id) in npc_query.iter_mut(){
+    //   let speed:Option<u8> = match npc_id.sprite_enum{
+    //     0=>{
+    //       Some(70)
+    //     }
+    //     1=>{
+    //       None
+    //     }
+    //     2=>{
+    //       Some(70)
+    //     }
+    //     _=>{
+    //       None
+    //     }
+    //   };
+    //   if let Some(s) = speed{
+    //     for (ball_id,pos,mut last_npc) in ball_query.iter_mut(){
+    //       if pos.0.distance(npc_pos.0)<50.0{
+    //         *chase_target_id = ChaseTargetId(ball_id.0,s);
+    //        // *last_npc = LastNPC(npc_id.id,None);
+    //       }
+    //     }
+    //   }
+    // }
 }

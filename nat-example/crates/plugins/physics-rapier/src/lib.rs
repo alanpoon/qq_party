@@ -66,8 +66,12 @@ impl Plugin for PhysicsPlugin {
             .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
             //npc
             .add_system(qq_party_shared::systems::physics::spawn_npc_collider.system())
-            .add_system(qq_party_shared::systems::set_state_chasetarget_npc.system())
+            .add_system(qq_party_shared::systems::set_state_chasetarget_npc2.system())
             .add_system(qq_party_shared::systems::update_state_velocity_npc.system())
+            //spawn_hierachy
+            .add_system(qq_party_shared::systems::physics::spawn_hierachy.system())
+            .add_system(qq_party_shared::systems::physics::spawn_joint.system())
+
             //.init_resource::<bevy_rapier2d::physics::time::Time>()
             .add_system(timewrapper::into_timewrapper.system());
             //.insert_resource(Msaa::default());
