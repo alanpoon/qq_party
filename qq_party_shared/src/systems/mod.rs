@@ -12,6 +12,7 @@ use bevy_log::info;
 mod trail;
 pub mod physics;
 pub use physics::*;
+pub mod scoring;
 use crate::time_interface;
 use crate::*;
 

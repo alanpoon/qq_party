@@ -51,6 +51,7 @@ impl Thread for GameLogicActor{
       
       m.world.spawn_batch(npc_bundles);
       m.init_resource::<Time>()
+      .init_resource::<ScoreBoard>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_system(systems::sys_bevy_wasmcloud_time.system())

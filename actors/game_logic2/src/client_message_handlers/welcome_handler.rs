@@ -43,6 +43,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
         });
       }
       spawn(&mut app.world,ball_bundle.clone());
+      init_score(ball_id,0);
       ball_bundles.push(ball_bundle.clone());
       
     }
@@ -60,4 +61,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
       _=>{}
     }
     Ok(())
+}
+
+pub init_score(ball_id:u32){
+
 }

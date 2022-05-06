@@ -7,13 +7,16 @@ use bevy_math::{Vec2};
 use crate::systems::nalgebra::Point2;
 
 pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Position),(Without<BallId>,Without<ChaseTargetId2>)>,
-mut ball_query:Query<(Entity,&BallId,&Position)>){    
+mut ball_query:Query<(Entity,&BallId,&Position)>,
+query_scoring:Query<(Entity,&Parent)>,mut res:ResMut<ScoreBoard>){    
   for (npc_e,npc_id,npc_pos) in npc_query.iter_mut(){
+    let mut is_crate = false;
     let speed:Option<u8> = match npc_id.sprite_enum{
       0=>{
         Some(70)
       }
       1=>{
+        is_crate = true;
         None
       }
       2=>{
@@ -23,11 +26,14 @@ mut ball_query:Query<(Entity,&BallId,&Position)>){
         None
       }
     };
-    if let Some(s) = speed{
-      for (ball_e,ball_id,pos) in ball_query.iter_mut(){
+    
+    for (ball_e,ball_id,pos) in ball_query.iter_mut(){
+      if let Some(s) = speed{
         if pos.0.distance(npc_pos.0)<50.0{
           cmd.entity(npc_e).insert(ChaseTargetId2(ball_id.0,Some(ball_e)));
         }
+      }else if is_crate{
+        crate::systems::scoring::score(&mut cmd,ball_id.0,npc_e,&query_scoring,&mut res);
       }
     }
   }

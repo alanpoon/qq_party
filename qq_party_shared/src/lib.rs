@@ -10,6 +10,8 @@ mod bundle;
 pub mod systems;
 pub use bundle::*;
 pub mod time_interface;
+pub mod scoreboard;
+pub use scoreboard::*;
 
 
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
