@@ -32,7 +32,7 @@ pub fn spawn_player_collider(
     .insert(RigidBodyPositionSync::Discrete)
     .insert(LastNPC(0,None))
     ;
-    scoreboard.score.insert(ball_id.0,0);
+    scoreboard.scores.insert(ball_id.0,0);
   }
 }
 

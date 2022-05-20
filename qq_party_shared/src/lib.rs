@@ -53,3 +53,9 @@ pub enum ClientMessage {
     Welcome{game_id:String,ball_id:BallId},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
 }
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
+pub struct UserInfo{
+  pub ball_id:BallId,
+}
+#[derive(Component,Default,Debug)]
+pub struct LocalUserInfo(pub UserInfo);

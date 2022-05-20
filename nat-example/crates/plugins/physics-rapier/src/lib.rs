@@ -57,6 +57,7 @@ impl Plugin for PhysicsPlugin {
             })
             .init_resource::<timewrapper::TimeWrapper>()
             .init_resource::<timewrapper_qq::TimeWrapper>()
+            .init_resource::<qq_party_shared::scoreboard::ScoreBoard>()
             .add_system(timewrapper_qq::into_timewrapper.system())
             //.add_system(debug_rigid.system())
             //player
@@ -260,3 +261,4 @@ pub fn debug_rigid2(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&P
 //       }).insert(wrapper::RigidBodyPositionComponent([position.0.x as f32,position.0.y as f32].into()));
 //   }
 // }
+

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::nats;
-use crate::userinfo::UserInfo;
+use qq_party_shared::UserInfo;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 //#[serde(tag = "c")] // stands for code

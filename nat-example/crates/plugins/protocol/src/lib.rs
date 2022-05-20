@@ -5,7 +5,6 @@ mod wasm;
 use wasm::*;
 #[cfg(not(target_arch = "wasm32"))]
 mod native;
-mod userinfo;
 mod c_;
 mod timewrapper;
 mod system;
@@ -26,7 +25,6 @@ use wasmcloud_interface_messaging::SubMessage;
 use wasmbus_rpc::serialize;
 use serde::{Serialize,Deserialize};
 use chrono::prelude::*;
-use userinfo::LocalUserInfo;
 pub struct ProtocolPlugin;
 #[wasm_bindgen]
 extern "C" {
@@ -50,7 +48,7 @@ macro_rules! console_log {
   // `bare_bones`
   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ClientMessage,ServerMessage,BallBundle,ChaseTargetId};
+use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ClientMessage,ServerMessage,BallBundle,ChaseTargetId,LocalUserInfo};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -141,16 +139,21 @@ fn handle_events(
               if target_velocity_x!=0.0{
                 if v.0.x / target_velocity_x <0.0{
                   send = true;
+                }else if v.0.x==0.0{
+                  send = true;
                 }
               }
               if target_velocity_y!=0.0{
                 if v.0.y / target_velocity_y <0.0{
+                  send = true;
+                }else if v.0.y==0.0{
                   send = true;
                 }
               }
               if send{
                 let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
                 (*commands).push(c);
+              }else{
               }
               break;
             }
@@ -187,7 +190,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
                 });
               },
               Command::StoreLocal(user_info)=>{
-                let local_user_info = userinfo::LocalUserInfo(user_info);
+                let local_user_info = LocalUserInfo(user_info);
                 cmd.insert_resource(local_user_info);
               }
               _=>{}

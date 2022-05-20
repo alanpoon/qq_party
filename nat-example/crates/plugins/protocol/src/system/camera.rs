@@ -1,5 +1,4 @@
 use bevy::{core::Time, input::Input, math::Vec3, prelude::*, render::camera::Camera};
-use crate::userinfo::LocalUserInfo;
 use qq_party_shared::*;
 // A simple camera system for moving and zooming the camera.
 pub fn move_with_local_player(

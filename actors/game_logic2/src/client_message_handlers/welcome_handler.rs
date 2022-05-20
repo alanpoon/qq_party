@@ -19,7 +19,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
     let ball_bundle = BallBundle{
       ball_id:ball_id,
       position:Position(Vec2::new(x as f32,y as f32)),
-      velocity:Velocity(Vec2::new(0.0 as f32,2.0 as f32)),
+      velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
     };
     let mut ball_bundles:Vec<BallBundle> = vec![];
@@ -31,6 +31,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
         },
       };
       let mut app = guard;
+      
       n = String::from("spawning");
       n.push_str("spawning");
       n.push_str(&x.to_string());
@@ -43,7 +44,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
         });
       }
       spawn(&mut app.world,ball_bundle.clone());
-      init_score(ball_id,0);
+      let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
+      init_score(ball_id.0,&mut scoreboard.scores);
       ball_bundles.push(ball_bundle.clone());
       
     }
@@ -63,6 +65,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
     Ok(())
 }
 
-pub init_score(ball_id:u32){
-
+pub fn init_score(ball_id:u32,mut scores:&mut HashMap<u32,i16>){
+  scores.insert(ball_id,0);
 }

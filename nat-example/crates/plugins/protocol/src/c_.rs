@@ -1,7 +1,6 @@
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,ClientMessage,ServerMessage,BallBundle};
+use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,LocalUserInfo,ClientMessage,ServerMessage,BallBundle};
 use protocol::{Command,Event,nats};
 use bevy::math::Vec2;
-use crate::userinfo::LocalUserInfo;
 pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f32)->Command{
   let tv = ClientMessage::TargetVelocity{
     game_id:String::from("hello"),

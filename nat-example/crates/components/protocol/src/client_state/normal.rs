@@ -1,8 +1,7 @@
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
 use crate::nats;
 use super::after_normal::AfterNormal;
-use crate::userinfo::UserInfo;
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,ClientMessage,ServerMessage};
+use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,UserInfo,ClientMessage,ServerMessage};
 use rand::Rng;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
