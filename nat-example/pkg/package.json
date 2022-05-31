@@ -1,0 +1,16 @@
+{
+  "name": "desk-client",
+  "collaborators": [
+    "Rustropy_gaming <brightshadowx@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "desk-client_bg.wasm",
+    "desk-client_bg.js",
+    "desk-client.js",
+    "desk-client.d.ts"
+  ],
+  "module": "desk-client.js",
+  "types": "desk-client.d.ts",
+  "sideEffects": false
+}

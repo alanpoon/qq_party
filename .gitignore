@@ -1,6 +1,7 @@
 **/target
 ui/build
 ui/node_modules
+**/node_modules
 cluster_seed.txt
 **/build
 **.log
@@ -17,3 +18,5 @@ nat-example/public/*
 !nat-example/public/controller.js
 nat-example/nohup.out
 wasmcloud_patches/*
+nat-example/pkg/**
+!nat-example/pkg/package.json

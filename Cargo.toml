@@ -12,6 +12,9 @@ default-members = [
   "interfaces/*/rust",
   "capability_providers/*",
 ]
+exclude = ["ui/rust_new"]
+
+
 [profile.release]
 # Optimize for small code size
 #opt-level = "s"
