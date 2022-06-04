@@ -12,7 +12,8 @@ archive_actors
 archive_interfaces
 archive_cap
 nat-example/target
-nat-example/public/*
+**.wasm
+nat-example/public/bundle.js
 !nat-example/public/index.html
 !nat-example/public/simulator.js
 !nat-example/public/controller.js

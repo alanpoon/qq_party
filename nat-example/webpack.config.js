@@ -18,7 +18,7 @@ module.exports = {
   entry: './index.js',
   output: {
     path: path.resolve(__dirname, "public"),
-    publicPath: "/assets/",
+    //publicPath: "/assets/",
     filename: "bundle.js"
   },
   // static: { 
