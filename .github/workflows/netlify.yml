@@ -18,6 +18,8 @@ jobs:
         run: |
           wasm-bindgen --version || { cargo install -f wasm-bindgen-cli --vers 0.2.78;}
           cargo make --version || { cargo install -f cargo-make;}
+      - name: install-wasm32
+        run: rustup target add wasm32-unknown-unknown
       - name: build_ui
         uses: marcopolo/cargo@master
         with:
