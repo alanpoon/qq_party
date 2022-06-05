@@ -12,6 +12,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+      id: cargo-cache
+      with:
+        path: |
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+          nat-example/target/
+        key: ${{ runner.os }}-cargo1-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions/cache@v2
+        id: cargo-bin-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            /usr/local/bin/wash
+          key: ${{ runner.os }}-cargo1 }}
+      # - name: a
+      #   run:  && 
+      - name: cargo/bin
+        run: ls ~/.cargo/bin/
       - name: Install neccessary tool
         env:
           CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
