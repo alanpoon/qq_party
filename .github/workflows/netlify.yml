@@ -13,15 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
-      id: cargo-cache
-      with:
-        path: |
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          target/
-          nat-example/target/
-        key: ${{ runner.os }}-cargo1-${{ hashFiles('**/Cargo.lock') }}
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            nat-example/target/
+          key: ${{ runner.os }}-cargo1-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/cache@v2
         id: cargo-bin-cache
         with:
