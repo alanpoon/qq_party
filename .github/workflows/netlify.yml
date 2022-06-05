@@ -28,7 +28,7 @@ jobs:
           working-directory: ./nat-example
       - name: webpack build
         run: |
-          cd nat-example && npm i && npx run build
+          cd nat-example && npm i && npm run build
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.2
         with:

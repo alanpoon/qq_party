@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack build -o public",
-    "serve":"basic-http-server public -a 127.0.0.1:4001"
+    "serve": "basic-http-server public -a 127.0.0.1:4001"
   },
   "author": "",
   "license": "ISC",
