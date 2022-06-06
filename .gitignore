@@ -1,6 +1,7 @@
 **/target
 ui/build
 ui/node_modules
+**/node_modules
 cluster_seed.txt
 **/build
 **.log
@@ -11,9 +12,12 @@ archive_actors
 archive_interfaces
 archive_cap
 nat-example/target
-nat-example/public/*
+**.wasm
+nat-example/public/bundle.js
 !nat-example/public/index.html
 !nat-example/public/simulator.js
 !nat-example/public/controller.js
 nat-example/nohup.out
 wasmcloud_patches/*
+nat-example/pkg/**
+!nat-example/pkg/package.json
