@@ -1,1 +1,0 @@
-SCCACHE_CACHE_SIZE=1G RUSTC_WRAPPER=sccache cargo build --bin desk-client --target wasm32-unknown-unknown --release --features web

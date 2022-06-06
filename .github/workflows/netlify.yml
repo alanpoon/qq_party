@@ -1,0 +1,66 @@
+name: netlify
+
+on:
+  push:
+    branches: [before-webpack]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            nat-example/target/
+          key: ${{ runner.os }}-cargo1-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions/cache@v2
+        id: cargo-bin-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            /usr/local/bin/wash
+          key: ${{ runner.os }}-cargo1 }}
+      # - name: a
+      #   run:  && 
+      - name: cargo/bin
+        run: ls ~/.cargo/bin/
+      - name: Install neccessary tool
+        env:
+          CACHE_HIT: ${{steps.cargo-bin-cache.outputs.cache-hit}}
+        run: |
+          wasm-bindgen --version || { cargo install -f wasm-bindgen-cli --vers 0.2.78;}
+          cargo make --version || { cargo install -f cargo-make;}
+      - name: install-wasm32
+        run: rustup target add wasm32-unknown-unknown
+      - name: build_ui
+        uses: marcopolo/cargo@master
+        with:
+          command: make
+          args: wasm-bindgen
+          working-directory: ./nat-example
+      - name: webpack build
+        run: |
+          cd nat-example && npm i && npm run build
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './nat-example/public'
+          production-branch: before-webpack
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.QQPARTY_NETLIFY_SITE_ID }}
+        timeout-minutes: 2
