@@ -13,3 +13,10 @@ include ../../build/makefiles/provider.mk
 
 test:
 	cargo test -- --nocapture
+
+bui:
+	/usr/local/bin/docker run --userns host -e PKG_CONFIG_ALLOW_CROSS=1 --rm --user 71002896:345931250 -e XARGO_HOME=/xargo -e CARGO_HOME=/cargo -e CARGO_TARGET_DIR=/target -e USER=alan.poon -e CROSS_RUNNER= -v /Users/alan.poon/.xargo:/xargo:Z -v /Users/alan.poon/.cargo:/cargo:Z -v /cargo/bin -v /Users/alan.poon/Documents/rust/wascc/qq_party/capability_providers/game-provider://Users/alan.poon/Documents/rust/wascc/qq_party/capability_providers/game-provider:Z -v /Users/alan.poon/.rustup/toolchains/stable-x86_64-unknown-linux-gnu:/rust:Z,ro -v /Users/alan.poon/Documents/rust/wascc/qq_party/capability_providers/game-provider/target:/target:Z -w /Users/alan.poon/Documents/rust/wascc/qq_party/capability_providers/game-provider -i -t wasmcloud/cross:aarch64-unknown-linux-gnu sh -c PATH=$PATH:/rust/bin cargo build --release -vv --target aarch64-unknown-linux-gnu
+par_insert_linux:
+	XDG_CACHE_HOME=${HOME}/.cache cross build --release -vv --target aarch64-unknown-linux-gnu
+	cross build --release -vv --target aarch64-unknown-linux-gnu
+#wash par insert --arch aarch64-linux  --binary aarch64-unknown-linux-gnu/release/ build/game-provider.par.gz

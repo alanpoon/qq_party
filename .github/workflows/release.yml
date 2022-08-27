@@ -1,0 +1,13 @@
+name: qq_party
+
+on:
+  push:
+    branches: [release]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    steps:
+      - run: cd capability_providers/game-provider && make
+      

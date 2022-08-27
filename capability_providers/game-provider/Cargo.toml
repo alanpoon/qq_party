@@ -20,3 +20,6 @@ tokio = { version = "1", features = ["full"] }
 
 [dependencies.wasmcloud-provider-core]
 version = "0.1.0"
+
+[patch.crates-io]
+wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="84b71217e9a88b7dd76378715d422da1b5f874c4"}

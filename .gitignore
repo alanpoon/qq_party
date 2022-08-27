@@ -21,3 +21,4 @@ nat-example/nohup.out
 wasmcloud_patches/*
 nat-example/pkg/**
 !nat-example/pkg/package.json
+*.txt
