@@ -16,5 +16,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: game-provider.par.gz
-          path: game-provider.par.gz
+          path: build/game-provider.par.gz
       
