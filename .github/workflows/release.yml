@@ -12,4 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cd capability_providers/game-provider && make
+      - run: ls capability_providers/game-provider/build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: game-provider.par.gz
+          path: game-provider.par.gz
       
