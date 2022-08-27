@@ -54,7 +54,7 @@ ARCH_LOOKUP_aarch64-unknown-linux-gnu=aarch64-linux
 ARCH_LOOKUP_aarch64-apple-darwin=aarch64-macos
 ARCH_LOOKUP_x86_64-pc-windows-gnu=x86_64-windows
 
-bin_targets = $(foreach target,$(par_targets),../../target/$(target)/release/$(bin_name))
+bin_targets = $(foreach target,$(par_targets),target/$(target)/release/$(bin_name))
 
 # pick target0 for starting par
 ifeq ($(machine_id)-$(platform_id),x86_64-Linux)
@@ -71,7 +71,7 @@ endif
 # the target of the current platform, as defined by cross
 cross_target0=target/$(par_target0)/release/$(bin_name)
 # bin_target0=$(cross_target0)
-bin_target0=../../target/release/$(bin_name)
+bin_target0=target/release/$(bin_name)
 
 # traverse subdirs
 .ONESHELL:
@@ -125,10 +125,10 @@ ifeq ($(wildcard ./Cargo.toml),./Cargo.toml)
 # rust dependencies
 RUST_DEPS += $(wildcard src/*.rs) $(wildcard target/*/deps/*) Cargo.toml Makefile
 
-../../target/release/$(bin_name): $(RUST_DEPS)
+target/release/$(bin_name): $(RUST_DEPS)
 	cargo build --release
 
-../../target/debug/$(bin_name): $(RUST_DEPS)
+target/debug/$(bin_name): $(RUST_DEPS)
 	cargo build
 
 # cross-compile target, remove intermediate build artifacts before build
