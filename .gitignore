@@ -22,3 +22,4 @@ wasmcloud_patches/*
 nat-example/pkg/**
 !nat-example/pkg/package.json
 *.txt
+build_linux
