@@ -90,6 +90,8 @@ par:: $(dest_par)
 # rebuild base par if target0 changes
 $(dest_par): $(bin_target0) Makefile Cargo.toml
 	@mkdir -p $(dir $(dest_par))
+	echo $(bin_target0)
+	ls $(bin_target0)
 	$(WASH) par create \
 		--arch $(ARCH_LOOKUP_$(par_target0)) \
 		--binary $(bin_target0) \
