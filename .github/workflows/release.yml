@@ -10,5 +10,9 @@ jobs:
   build_cap:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+    steps:
       - run: cd capability_providers/game-provider && make
       
