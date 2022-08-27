@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v2
       - run: curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | sudo bash && sudo apt install wash
       - run: which wash
-      - run: cd capability_providers/game-provider && make
+      - run: mkdir capability_providers/game-provider/build
+      - run: cd capability_providers/game-provider && make && ls build
       - run: ls capability_providers/game-provider/build
       - uses: actions/upload-artifact@v3
         with:
