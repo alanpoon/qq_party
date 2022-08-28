@@ -70,36 +70,27 @@ lazy_static! {
 impl Thread for ThreadProvider {
     async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
       let start = Instant::now();
-      info!("inside thread");
       //let MAP = Arc::new(Mutex::new(HashMap::new()));
       let mut actors = self.actors.clone();
       let ctxr = ctx.clone();
       let start_thread_request_c = start_thread_request.clone();
 
       tokio::spawn(async move{
-          info!("inside thread2");
           let mut thread_actor = actors.write().await;
           let v = ctxr.actor.clone();
-          info!("inside thread2 v: {:?}",v);
           let thread_poolx = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap());
-          info!("inside thread2 thread_poolx is some: {:?}",thread_poolx.is_some());
           
           let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
-          info!("before insert ");
           thread_pool.threads.insert(start_thread_request_c.game_id.clone(),true);
           let ld = thread_pool.linkdefs.clone();
           let inner = thread_pool.inner.clone();
           drop(thread_actor);
           loop{
-            info!("1elapsed {:?}",start.elapsed().as_secs());
             let mut thread_actor = actors.read().await;
             let mut thread_pool = (*thread_actor).get(&ctxr.actor.clone().unwrap()).unwrap();
-            info!("elapsed {:?} thread_pool.threads len {:?}",start.elapsed().as_secs(),thread_pool.threads.len());
             if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
-              info!("v {:?}",v);
               if *v{
                 //drop(thread_pool);
-                info!("after drop");
                 sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
                 let utc: DateTime<Utc> = Utc::now();
                 let time_stamp = utc.timestamp_millis() as u64;
@@ -114,12 +105,9 @@ impl Thread for ThreadProvider {
                 time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
                 let read_guard = inner.read().await;
                 let bridge = read_guard.bridge;
-                info!("before ProviderTransport");
                 let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
-                info!("after ProviderTransport");
                 let ctx = wasmbus_rpc::Context::default();
                 let actor = ThreadSender::via(tx);
-                info!("via");
                 match actor.handle_request(&ctx, &m).await {
                   Err(RpcError::Timeout(_)) => {
                     info!(

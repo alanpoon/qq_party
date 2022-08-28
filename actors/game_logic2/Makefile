@@ -7,7 +7,9 @@ REVISION = 0
 CLAIMS   = wasmcloud:messaging wasmcloud:builtin:logging wasmcloud:thread wasmcloud:builtin:numbergen
 #CLAIMS   = wasmcloud:thread wasmcloud:messaging
 # registry url for our actor
-REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
+REG_URL  = $(shell if [  -z "$(REMOTE)" ]; then echo localhost:5000/v2/$(PROJECT):$(VERSION); else echo $(REMOTE):5000/v2/$(PROJECT):$(VERSION);fi )
+DEFAULT_REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
+
 #REG_URL  = localhost:5000/v2/$(PROJECT):$(VERSION)
 # command to upload to registry (without last wasm parameter)
 PUSH_REG_CMD = wash reg push --insecure $(REG_URL)
@@ -31,7 +33,7 @@ link:
 # 		'{"game_id":"qq_db_kv1","timestamp":0,"elapsed":0,"sleep_interval":100}'
 start-thread:
 	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
-		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":330}'
+		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":300}'
 start-thread3:
 	echo $(ACTOR_ID)
 	@wash call -o json $(ACTOR_ID) Thread.StartThread \
@@ -43,3 +45,7 @@ start-thread2:
 		'{"game_id":"hello","timestamp":2,"elapsed":0}'
 push2:
 	$(PUSH_REG_CMD) game_logic_s.wasm
+
+testz:
+	@if [ "$(WA)" = "hi" ]; then echo "PASSED"; else echo "FAILED"; fi
+	echo $(REG_URL)

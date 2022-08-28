@@ -18,6 +18,7 @@ jobs:
       - run: mkdir capability_providers/game-provider/build
       - run: cd capability_providers/game-provider && make && ls build
       - run: ls capability_providers/game-provider/build
+      - run: wash par inspect capability_providers/game-provider/build/game-provider.par.gz
       - uses: actions/upload-artifact@v3
         with:
           name: game-provider.par.gz

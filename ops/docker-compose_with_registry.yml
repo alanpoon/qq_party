@@ -11,10 +11,10 @@ services:
   #   image: redis:6.2
   #   ports:
   #     - "6379:6379"
-  # registry:
-  #   image: registry:2.7
-  #   ports:
-  #     - "5000:5000"
+  registry:
+    image: registry:2.7
+    ports:
+      - "5000:5000"
   # grafana:
   #   image: grafana/grafana:8.1.2
   #   ports:

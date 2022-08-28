@@ -8,7 +8,8 @@ VENDOR   = "wasmCloud"
 VERSION = "0.11.5"
 # During development iterations, REVISION should be incremented each build
 REVISION = 0
-oci_url  = localhost:5000/v2/$(PROJECT):$(VERSION)
+oci_url  = $(shell if [  -z "$REMOTE" ]; then echo localhost:5000/v2/$(PROJECT):$(VERSION); else echo $(REMOTE):5000/v2/$(PROJECT):$(VERSION);fi )
+#oci_url  = localhost:5000/v2/$(PROJECT):$(VERSION)
 #oci_url = registry.hub.docker/v2/repositories/rustropy/game-provider:0.0.1
 #include ../../build/makefiles/provider.mk
 
@@ -16,4 +17,5 @@ test:
 	cargo test -- --nocapture
 
 push:
+	echo "oci_url" $(REMOTE)
 	wash reg push --insecure $(oci_url) built/nats_messaging.par.gz

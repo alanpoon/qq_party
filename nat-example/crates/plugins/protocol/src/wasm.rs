@@ -28,6 +28,8 @@ extern "C" {
     // Multiple arguments too!
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log_many(a: &str, b: &str);
+   
+
 }
 macro_rules! console_log {
   // Note that this is using the `log` function imported above during
@@ -40,7 +42,8 @@ const DEFAULT_CLIENT: ClientName =
 lazy_static! {
     static ref CLIENTS: Mutex<HashMap<ClientName, BoxClient2>> = Mutex::new(HashMap::new());
     static ref CLIENTS_TO_CONNECT: Mutex<HashMap<ClientName,(String,nats::ConnectInfo)>> = 
-    Mutex::new([(ClientName(Cow::Borrowed("default")),(String::from("wss://localhost:9223/"),
+    //Mutex::new([(ClientName(Cow::Borrowed("default")),(String::from("wss://localhost:9223/"),
+    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("wss://{}:9223/", window().location().host().unwrap()),
     nats::ConnectInfo{
       verbose:false,
       pedantic:false,
