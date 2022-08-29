@@ -6,20 +6,22 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.10.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 mkdir ops && cd ops && wget https://raw.githubusercontent.com/alanpoon/qq_party/release/ops/websocket2.conf && wget https://raw.githubusercontent.com/alanpoon/qq_party/release/ops/docker-compose.yml
-sudo scp -r /Users/alan.poon/srv/ ubuntu@ec2-18-142-161-168.ap-southeast-1.compute.amazonaws.com:~/srv
+sudo scp -r /Users/alan.poon/srv/ ubuntu@ec2-3-0-249-223.ap-southeast-1.compute.amazonaws.com:/srv
 mkdir game_client
-sudo scp -r nat-example/public ubuntu@ec2-18-142-161-168.ap-southeast-1.compute.amazonaws.com:~/game_client
+sudo scp -r nat-example/public ubuntu@ec2-3-0-249-223.ap-southeast-1.compute.amazonaws.com:~/game_client
 sed -i 's/Users/home/g' ops/websocket2.conf
 sed -i 's/alan.poon/ubuntu/g' ops/websocket2.conf
 nats-server -c ops/websocket2.conf -js
 nohup nats-server -c ops/websocket2.conf -V -D -js >> nohup_nats.out 2>&1 &
-
+sudo apt install nginx
 docker compose -f ops/docker-compose.yml up -d
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 sudo apt install cmake
 cargo install basic-http-server
 nohup basic-http-server game_client -a 127.0.0.1:4001 >> nohup_web_server.out 2>&1 &
-cd game_client && nohup python3 -m http.server 4001 >> nohup_web_server.out 2>&1 &
-WASMCLOUD_CTL_HOST=18.142.161.168 REMOTE=18.142.161.168 WASMCLOUD_RPC_HOST=18.142.161.168 make build_aws
+nohup python3 -m http.server --directory game_client 4001 >> nohup_web_server.out 2>&1 &
+WASMCLOUD_CTL_HOST=3.0.249.223 REMOTE=3.0.249.223 WASMCLOUD_RPC_HOST=3.0.249.223 make build_aws
 # sudo systemctl restart docker
 #docker exec -it 3e99f752bc0f bash
+nohup python3 -m http.server --directory game_client 4001 >> nohup_web_server.out 2>&1 &
+apt-get 

@@ -43,7 +43,7 @@ lazy_static! {
     static ref CLIENTS: Mutex<HashMap<ClientName, BoxClient2>> = Mutex::new(HashMap::new());
     static ref CLIENTS_TO_CONNECT: Mutex<HashMap<ClientName,(String,nats::ConnectInfo)>> = 
     //Mutex::new([(ClientName(Cow::Borrowed("default")),(String::from("wss://localhost:9223/"),
-    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("wss://{}:9223/", window().location().host().unwrap()),
+    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("wss://{}:9224/", window().location().host().unwrap()),
     nats::ConnectInfo{
       verbose:false,
       pedantic:false,

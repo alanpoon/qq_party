@@ -1,0 +1,41 @@
+# This docker-compose file loads 
+#   host.docker.internal with JetStream enabled
+#   a local OCI registry
+#   redis (for the kvredis capability provider)
+#   grafana + tempo for tracing
+#   wasmcloud_host
+
+version: "4"
+services:
+  registry:
+    image: registry:2.7
+    ports:
+      - "5000:5000"
+  nats:
+    image: nats:2.8.4-alpine
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+      - "9223:9223"
+    volumes:
+      - /home/ubuntu/ops/websocket2.conf:/etc/nats/nats-server.conf
+      - /srv/:/srv
+    command: [ "-js" ]
+ 
+  wasmcloud:
+    image: wasmcloud/wasmcloud_host:latest
+    environment:
+      RUST_LOG: info,hyper=info
+      WASMCLOUD_RPC_HOST: nats
+      WASMCLOUD_CTL_HOST: nats
+      WASMCLOUD_PROV_RPC_HOST: nats
+      WASMCLOUD_HOST_SEED: SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y
+      WASMCLOUD_CLUSTER_SEED: SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E
+      WASMCLOUD_OCI_ALLOWED_INSECURE: host.docker.internal:5000
+#      OTEL_TRACES_EXPORTER: otlp
+#      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:55681
+    ports:
+      - "4000:4000"
+      - "8080-8089:8080-8089" # Allows exposing examples on ports 8080-8089
+    #command: sh -c "curl -v -X GET http://host.docker.internal:5000/v2/_catalog"
