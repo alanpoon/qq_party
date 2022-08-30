@@ -117,6 +117,9 @@ jobs:
           command: make
           args: wasm-bindgen
           working-directory: ./nat-example
+      - name: webpack
+        working-directory: ./nat-example
+        run: npm run build
       - name: cp assets
         run: cp -r nat-example/assets nat-example/public
       - name: serve_ui

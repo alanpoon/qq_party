@@ -43,7 +43,8 @@ lazy_static! {
     static ref CLIENTS: Mutex<HashMap<ClientName, BoxClient2>> = Mutex::new(HashMap::new());
     static ref CLIENTS_TO_CONNECT: Mutex<HashMap<ClientName,(String,nats::ConnectInfo)>> = 
     //Mutex::new([(ClientName(Cow::Borrowed("default")),(String::from("wss://localhost:9223/"),
-    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("wss://{}:9224/", window().location().host().unwrap()),
+    //Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("ws://52.221.222.250:9223/"),
+    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("ws://{}:9223/", window().location().host().unwrap().split(":").collect::<Vec<&str>>().get(0).unwrap()),
     nats::ConnectInfo{
       verbose:false,
       pedantic:false,
@@ -94,7 +95,7 @@ async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
           // });
           if let Some(m)= meta.next().await{
             console_log!("close{:?}",m);
-            delay(3000).await;
+            delay(1000).await;
             local_connect(c_clone,s.clone()).await;
           }
         });

@@ -131,6 +131,21 @@ fn handle_events(
           target_velocity_y -= 1.0;
           pressed = true;
         }
+        for gamepad in gamepads.iter().cloned() {
+          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West)) {
+            target_velocity_x -= 1.0;
+            pressed = true;
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::East)) {
+            target_velocity_x += 1.0;
+            pressed = true;
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::North)){
+            target_velocity_y += 1.0;
+            pressed = true;
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)){
+            target_velocity_y -= 1.0;
+            pressed = true;
+          }
+        }
         if pressed{
           for (ball_id_ingame,v) in balls.iter(){
             let ball_id = (*local_user_info).0.ball_id;
@@ -159,13 +174,7 @@ fn handle_events(
             }
           }
         }
-        for gamepad in gamepads.iter().cloned() {
-          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)) {
-            let ball_id = (*local_user_info).0.ball_id;
-            let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
-            (*commands).push(c);  
-          }
-        }
+        
     }
 }
 use futures::future::ready;
@@ -236,7 +245,7 @@ fn receive_events(mut cmd: Commands,
                             //     }
                             //   }
                             // }
-                            // info!("recv msg!! spawn {:?}",not_init);
+                            info!("ball_bundle!! spawn {:?}",ball_bundle);
                             cmd.spawn_bundle(ball_bundle);
                           }
                           ServerMessage::GameState{ball_bundles,npc_bundles,timestamp,..}=>{

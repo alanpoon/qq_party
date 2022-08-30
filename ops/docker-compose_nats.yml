@@ -20,13 +20,13 @@ services:
       - "9223:9223"
     volumes:
       - /home/ubuntu/ops/websocket2.conf:/etc/nats/nats-server.conf
-      - /srv/:/srv
-    command: [ "-js" ]
+      - /home/ubuntu/srv/:/root/srv
+    command: [ "-js" ,"-c","/etc/nats/nats-server.conf"]
  
   wasmcloud:
     image: wasmcloud/wasmcloud_host:latest
     environment:
-      RUST_LOG: info,hyper=info
+      #RUST_LOG: info,hyper=info
       WASMCLOUD_RPC_HOST: nats
       WASMCLOUD_CTL_HOST: nats
       WASMCLOUD_PROV_RPC_HOST: nats
