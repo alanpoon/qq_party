@@ -49,7 +49,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
       ball_bundles.push(ball_bundle.clone());
       
     }
-    info!("handle_message {:?}",n);
+    // info!("handle_message {:?}",n);
     let server_message = ServerMessage::Welcome{ball_bundle};
     match serde_json::to_vec(&server_message){
       Ok(b)=>{

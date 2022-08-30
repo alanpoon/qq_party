@@ -16,7 +16,7 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
     },
   };
   let mut app = guard;
-  info_(format!("target_velocity_handler guarded{:?}",ball_id));
+  // info_(format!("target_velocity_handler guarded{:?}",ball_id));
     // for (e,b) in q.iter(w){
     //   info_(format!("q.iter {:?}",b));
     //   if b==&ball_id{
@@ -29,7 +29,7 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
   let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
   let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
   let local_ball = query.iter(&app.world).filter(|(_, &_ball_id)| {
-    info_(format!("filter {:?}",_ball_id));
+    // info_(format!("filter {:?}",_ball_id));
     ball_id == _ball_id})
   .next();
   match local_ball {
@@ -37,7 +37,7 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
         app.world.entity_mut(entity).insert(target_velocity);
         app.world.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
         //w.entity_mut(entity).insert(bevy_wasmcloud_time_val);
-        info_(format!("target_velocity_handler can find ball_id {:?}",ball_id));
+        // info_(format!("target_velocity_handler can find ball_id {:?}",ball_id));
         let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
         match serde_json::to_vec(&server_message){
           Ok(b)=>{

@@ -12,7 +12,6 @@ use qq_party_shared::time_interface::TimeInterface;
 pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
   let mut n = String::from("thread_handle_request");
   {
-    info_(format!("perform lock"));
     let mut guard = match map.try_lock() {
       Ok(guard) => Ok(guard),
       Err(poisoned) => {
@@ -41,10 +40,7 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
         }
       // /w.spawn().insert_bundle(arugio_shared::BallBundle);
          app.update();
-        // drop(app);
-        
-        info_(format!("{}",n));
-      
+        // drop(app);      
     }else{
       let split_arr:Vec<String> = start_thread_request.game_id.split("_").map(|x|x.to_string()).collect();
     }

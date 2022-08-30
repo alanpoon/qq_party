@@ -18,8 +18,6 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
     for (npc_id,position,velocity,chase_target) in npc_query.iter(){
       npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:chase_target.clone()});
     }
-    info_(format!("publish gamestate {:?}",npc_bundles.clone()));
-
     let channel_message_back = ServerMessage::GameState{ball_bundles,npc_bundles:npc_bundles,timestamp:(*bevy_wasmcloud_time_val).timestamp};
 
     match serde_json::to_vec(&channel_message_back){
@@ -35,6 +33,6 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
     }
     return
   }
-  info_(format!("bevy_wasmcloud_time delta_seconds {:?} {:?}",(*bevy_wasmcloud_time_val).delta_seconds, (*elapsed_time).elapsed));
+  // info_(format!("bevy_wasmcloud_time delta_seconds {:?} {:?}",(*bevy_wasmcloud_time_val).delta_seconds, (*elapsed_time).elapsed));
   (*elapsed_time).elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
 }

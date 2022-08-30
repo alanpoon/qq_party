@@ -22,3 +22,7 @@ par_insert_linux2:
 	XDG_CACHE_HOME=${HOME}/.cache cross build --release -vv --target aarch64-unknown-linux-gnu
 	cross build --release -vv --target aarch64-unknown-linux-gnu
 #wash par insert --arch aarch64-linux  --binary aarch64-unknown-linux-gnu/release/ build/game-provider.par.gz
+
+push:
+	echo "oci_url" $(REMOTE)
+	wash reg push --insecure $(oci_url) build/game-provider.par.gz

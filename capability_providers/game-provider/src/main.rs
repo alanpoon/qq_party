@@ -116,10 +116,10 @@ impl Thread for ThreadProvider {
                       );
                   }
                   Ok(resp) => {
-                    info!(
-                          "http response received from actor {}",
-                          &ld.actor_id
-                      );
+                    // info!(
+                    //       "http response received from actor {}",
+                    //       &ld.actor_id
+                    //   );
                   }
                   Err(e) => {
                     info!(
@@ -129,7 +129,6 @@ impl Thread for ThreadProvider {
                       );
                   }
                 }
-                info!("end");
               }else{
                 drop(thread_actor);
                 break;
