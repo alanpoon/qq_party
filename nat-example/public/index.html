@@ -72,10 +72,10 @@
   </script> -->
   <script src="bundle.js"></script>
   <body>
-    <img src="./bevy.jpeg" style="width: 10vw;">
+    <img src="./bevy.jpeg" style="width: 10vw;height:50px">
     <img src="./Wasmcloud.png" style="width: 10vw;position: absolute;right:0px">
-    <div><img src="./twitter.png" style="width: 2vw;">@Rustropy_gaming</div>
-
+    <div style="width: 10vw;position: absolute;right:40px"><img src="./twitter.png" style="width: 2vw;">@Rustropy_gaming</div>
+    <button onclick="myFunction()">Gamepad</button>
     <!-- <p>
       <button onclick="handleButtonClick(this)">Connect</button>
       <button onclick="document.querySelector('#events').innerHTML = '';">Clear log</button>
@@ -83,5 +83,15 @@
     <!-- <p id="events">
     </p> -->
   </body>
-  <!-- <script src="./controller.js"></script> -->
+  <script src="./controller.js"></script>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("amdfc-controller");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
 </html>

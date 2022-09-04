@@ -174,7 +174,7 @@ fill: fuchsia;
           gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
         }
       });
-
+      
       element.addEventListener("mouseleave", function (e) {
         element.setAttribute("class", "amdfc-int");
         if (element.id.indexOf("amdfc-button") === 0) {
@@ -206,8 +206,36 @@ fill: fuchsia;
           gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
         }
       });
-
+      element.addEventListener("touchstart", function (e) {
+        element.setAttribute("class", "amdfc-int amdfc-active");
+        if (element.id.indexOf("amdfc-button") === 0) {
+          const index = parseInt(element.id.replace("amdfc-button-", ""));
+          gamepadSimulator.fakeController.buttons[index].pressed = true;
+          gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
+        } else if (element.id.indexOf("amdfc-axe-") === 0) {
+          const axe = parseInt(element.id[10]);
+          const dir = element.id[12];
+          const value = ['u', 'l'].indexOf(dir) > -1 ? -1 : 1;
+          const pos = ['u', 'd'].indexOf(dir) > -1 ? 1 : 0;
+          gamepadSimulator.fakeController.axes[axe * 2 + pos] = value;
+          gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
+        }
+      });
       element.addEventListener("mouseup", function (e) {
+        element.setAttribute("class", "amdfc-int");
+        if (element.id.indexOf("amdfc-button") === 0) {
+          const index = parseInt(element.id.replace("amdfc-button-", ""));
+          gamepadSimulator.fakeController.buttons[index].pressed = false;
+          gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
+        } else if (element.id.indexOf("amdfc-axe-") === 0) {
+          const axe = parseInt(element.id[10]);
+          const dir = element.id[12];
+          const pos = ['u', 'd'].indexOf(dir) > -1 ? 1 : 0;
+          gamepadSimulator.fakeController.axes[axe * 2 + pos] = 0;
+          gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
+        }
+      });
+      element.addEventListener("touchend", function (e) {
         element.setAttribute("class", "amdfc-int");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));

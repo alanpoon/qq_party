@@ -42,6 +42,7 @@ extern "C" {
     // Multiple arguments too!
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log_many(a: &str, b: &str);
+    
 }
 macro_rules! console_log {
   // Note that this is using the `log` function imported above during
@@ -132,16 +133,16 @@ fn handle_events(
           pressed = true;
         }
         for gamepad in gamepads.iter().cloned() {
-          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West)) {
+          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadLeft)) {
             target_velocity_x -= 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::East)) {
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::East))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadRight)) {
             target_velocity_x += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::North)){
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::North)) || button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadUp)){
             target_velocity_y += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South)){
+          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadDown)) {
             target_velocity_y -= 1.0;
             pressed = true;
           }

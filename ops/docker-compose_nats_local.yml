@@ -11,44 +11,19 @@ services:
     image: registry:2.7
     ports:
       - "5000:5000"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.001'
-          memory: 50M
   nats:
     image: nats:2.8.4-alpine
     ports:
       - "4222:4222"
-      - "7083:7083"
+      - "6222:6222"
+      - "8222:8222"
+      - "9223:9223"
     volumes:
-      - /home/ubuntu/ops/websocket2.conf:/etc/nats/nats-server.conf
-      - /home/ubuntu/srv/:/root/srv
+      - /Users/alan.poon/Documents/rust/wascc/qq_party/ops/websocket_lite.conf:/etc/nats/nats-server.conf
     command: [ "-js" ,"-c","/etc/nats/nats-server.conf"]
-    deploy:
-      resources:
-        limits:
-          cpus: '0.01'
-          memory: 50M
-  web:
-    image: danjellz/http-server
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-    volumes:
-      - /home/ubuntu/public:/public
-    deploy:
-      resources:
-        limits:
-          cpus: '0.10'
-          memory: 100M
+ 
   wasmcloud:
     image: wasmcloud/wasmcloud_host:latest
-    deploy:
-      resources:
-        limits:
-          cpus: '0.80'
-          memory: 2000M
     environment:
       #RUST_LOG: info,hyper=info
       WASMCLOUD_RPC_HOST: nats
@@ -61,5 +36,5 @@ services:
 #      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:55681
     ports:
       - "4000:4000"
-      - "8082-8089:8082-8089" # Allows exposing examples on ports 8080-8089
+      - "8080-8089:8080-8089" # Allows exposing examples on ports 8080-8089
     #command: sh -c "curl -v -X GET http://host.docker.internal:5000/v2/_catalog"

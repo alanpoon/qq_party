@@ -4,9 +4,9 @@ labels:
 actors: []
     #- host.docker.internal:5000/v2/game_logic:0.1.0
     #- host.docker.internal:5000/v2/game_logic2:0.1.0
-capabilities:
-    #- image_ref: host.docker.internal:5000/v2/game-provider:0.1.0
-    - image_ref: host.docker.internal:5000/v2/nats-messaging:0.11.5
+capabilities: []
+    # - image_ref: host.docker.internal:5000/v2/game-provider:0.1.0
+    # - image_ref: host.docker.internal:5000/v2/nats-messaging:0.11.5
 links:
   - actor: MCRDNZRWNPXOWL2437IA65NBRJ7J2U6KRUSU2QP44RAX44OWDJIRYQDK
     contract_id: "wasmcloud:messaging"
