@@ -65,11 +65,15 @@
     //   var elem = document.getElementById('events');
     //   elem.scrollTop = elem.scrollHeight;
     // }, 5000);
+    window.game_server = function(){
+      return 'ws://localhost:7083/';
+    }
   </script>
   <!-- <script type="module">
     import init from './desk-client.js'
     init()
   </script> -->
+
   <script src="bundle.js"></script>
   <body>
     <img src="./bevy.jpeg" style="width: 10vw;height:50px">

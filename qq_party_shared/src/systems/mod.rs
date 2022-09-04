@@ -1,9 +1,3 @@
-// #[cfg(feature = "non_actor")]
-// use bevy_ecs::prelude::*;
-// #[cfg(feature = "actor")]
-// use bevy_ecs_wasm::prelude::*;
-// #[cfg(feature = "actor")]
-// use bevy_ecs_wasm::component::Component;
 use bevy_ecs::prelude::*;
 use bevy_rapier2d::prelude::*;
 use crate::systems::nalgebra::Vector2;

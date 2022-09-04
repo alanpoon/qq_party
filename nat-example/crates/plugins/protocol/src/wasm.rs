@@ -26,9 +26,8 @@ extern "C" {
     fn log_u32(a: u32);
 
     // Multiple arguments too!
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_many(a: &str, b: &str);
-   
+    #[wasm_bindgen(js_namespace = window, js_name = game_server)]
+    fn game_server() -> String;
 }
 macro_rules! console_log {
   // Note that this is using the `log` function imported above during
@@ -43,7 +42,8 @@ lazy_static! {
     static ref CLIENTS_TO_CONNECT: Mutex<HashMap<ClientName,(String,nats::ConnectInfo)>> = 
     //Mutex::new([(ClientName(Cow::Borrowed("default")),(String::from("wss://localhost:9223/"),
     //Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("ws://52.221.222.250:9223/"),
-    Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("ws://{}:7083/", window().location().host().unwrap().split(":").collect::<Vec<&str>>().get(0).unwrap()),
+    //Mutex::new([(ClientName(Cow::Borrowed("default")),(format!("ws://{}:7083/", window().location().host().unwrap().split(":").collect::<Vec<&str>>().get(0).unwrap()),
+    Mutex::new([(ClientName(Cow::Borrowed("default")),(game_server(),
     nats::ConnectInfo{
       verbose:false,
       pedantic:false,
@@ -66,6 +66,7 @@ lazy_static! {
 
 pub fn connect_websocket() {
     //let servers=vec![String::from("wss://localhost:9222/")];
+    console_log!("game_server {:?}",game_server());
     let servers = CLIENTS_TO_CONNECT.lock().unwrap();
     let future_arr = servers.iter().map(|(c,s)|{
       local_connect(c.clone(),s.clone())

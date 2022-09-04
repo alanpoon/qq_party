@@ -54,9 +54,9 @@ impl Thread for GameLogicActor{
       .init_resource::<ScoreBoard>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
-      .add_system(systems::sys_bevy_wasmcloud_time.system())
       .add_system(systems::publish::sys_publish_game_state.system())
-      .add_system(systems::sys.system());
+      //.add_system(systems::sys.system())
+      ;
       
     }
     let provider = ThreadSender::new();

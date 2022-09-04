@@ -14,16 +14,6 @@ pub fn spawn_npc_collider(
       position: [position.0.x, position.0.y].into(),
       ..Default::default()
     })
-    // .insert_bundle(ColliderBundle {
-    //   shape: ColliderShapeComponent(ColliderShape::ball(8.0)),
-    //   material: ColliderMaterial {
-    //     restitution: 1.0,
-    //     friction: 0.8,
-    //     ..Default::default()
-    //   }.into(),
-    //   ..Default::default()
-    // })
-    //.insert(ColliderPositionSync::Discrete)
     .insert(RigidBodyPositionSync::Discrete)
     ;
   }
