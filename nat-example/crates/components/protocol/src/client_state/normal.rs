@@ -34,7 +34,7 @@ impl ClientState for Normal {
                 ball_id:BallId(x,0),
               };
               info!("Welcome Welcome");
-              let tv_= serde_json::to_vec(&tv).unwrap();
+              let tv_= rmp_serde::to_vec(&tv).unwrap();
               let n = nats::proto::ClientOp::Pub{
                 subject: String::from("client_handler.hello"),
                 reply_to: None,
@@ -43,6 +43,7 @@ impl ClientState for Normal {
               commands.commands.push(Command::Nats(String::from("default"),n));
               commands.commands.push(Command::StoreLocal(UserInfo{
                 ball_id:BallId(x,0),
+                sub_map:String::from(""),
               }));
               
               info!("normal client_name: {}, {:?}",client_name,s_op);

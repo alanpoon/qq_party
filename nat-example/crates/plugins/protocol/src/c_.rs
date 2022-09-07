@@ -8,7 +8,7 @@ pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f3
     target_velocity:TargetVelocity(Vec2::new(target_velocity_x,target_velocity_y)),
   };
   
-  let tv_= serde_json::to_vec(&tv).unwrap();
+  let tv_= rmp_serde::to_vec(&tv).unwrap();
   let n = nats::proto::ClientOp::Pub{
     subject: String::from("client_handler.hello"),
     reply_to: None,

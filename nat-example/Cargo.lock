@@ -1970,6 +1970,7 @@ dependencies = [
  "lazy_static",
  "log",
  "qq_party_shared",
+ "rmp-serde 1.1.0",
  "serde",
  "serde_json",
  "tokio",
@@ -2007,6 +2008,7 @@ dependencies = [
  "pharos",
  "qq_party_shared",
  "rand 0.8.5",
+ "rmp-serde 1.1.0",
  "serde",
  "serde_bytes",
  "serde_cbor",
@@ -3022,7 +3024,7 @@ checksum = "437f8808009c031df3c1d532c8fd7e3d73239dfe522ebf0b94b5e34d5d01044b"
 dependencies = [
  "async-channel",
  "castaway",
- "crossbeam-utils 0.7.2",
+ "crossbeam-utils 0.8.8",
  "curl",
  "curl-sys",
  "encoding_rs",
@@ -4985,12 +4987,13 @@ checksum = "3582f63211428f83597b51b2ddb88e2a91a9d52d12831f9d08f5e624e8977422"
 
 [[package]]
 name = "rmp"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f55e5fa1446c4d5dd1f5daeed2a4fe193071771a2636274d0d7a3b082aa7ad6"
+checksum = "44519172358fd6d58656c86ab8e7fbc9e1490c3e8f14d35ed78ca0dd07403c9f"
 dependencies = [
  "byteorder",
  "num-traits",
+ "paste",
 ]
 
 [[package]]
@@ -4998,6 +5001,17 @@ name = "rmp-serde"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "723ecff9ad04f4ad92fe1c8ca6c20d2196d9286e9c60727c4cb5511629260e9d"
+dependencies = [
+ "byteorder",
+ "rmp",
+ "serde",
+]
+
+[[package]]
+name = "rmp-serde"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25786b0d276110195fa3d6f3f31299900cf71dfbd6c28450f3f58a0e7f7a347e"
 dependencies = [
  "byteorder",
  "rmp",
@@ -6323,7 +6337,7 @@ dependencies = [
  "pin-utils",
  "ratsio_fork_040",
  "ring",
- "rmp-serde",
+ "rmp-serde 0.15.5",
  "serde",
  "serde_bytes",
  "serde_json",

@@ -9,6 +9,7 @@ mod spawn_;
 mod client_message_handlers;
 mod plugins;
 mod startup;
+mod util;
 use host_call::host_call;
 use std::borrow::Borrow;
 use info_::info_;
@@ -86,7 +87,7 @@ impl Thread for GameLogicActor{
 impl MessageSubscriber for GameLogicActor{
   async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
     if req.subject.contains("client_handler"){
-      let client_message: Result<ClientMessage,_> = serde_json::from_slice(&req.body);
+      let client_message: Result<ClientMessage,_> = rmp_serde::from_slice(&req.body);
       match client_message{
         Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
           let mut map = APP.clone();

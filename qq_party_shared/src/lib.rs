@@ -43,7 +43,7 @@ pub struct LastNPC(pub u32,pub Option<Entity>);
 pub struct Parent(Entity);
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
-    Welcome{ball_bundle:BallBundle},
+    Welcome{ball_bundle:BallBundle,sub_map:String},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
@@ -56,6 +56,7 @@ pub enum ClientMessage {
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
 pub struct UserInfo{
   pub ball_id:BallId,
+  pub sub_map:String,
 }
 #[derive(Component,Default,Debug)]
 pub struct LocalUserInfo(pub UserInfo);

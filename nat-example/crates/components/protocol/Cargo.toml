@@ -27,6 +27,7 @@ log = "0.4"
 qq_party_shared = { path = "../../../../qq_party_shared" }
 serde_json = "1.0.66"
 rand = "0.8.4"
+rmp-serde = "1.1.0"
 
 [dev-dependencies]
 mock-it = "0.3.0"

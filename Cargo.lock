@@ -1185,9 +1185,9 @@ dependencies = [
  "lazy_static",
  "qq_party_shared",
  "rapier2d 0.11.1",
+ "rmp-serde 1.1.0",
  "serde",
  "serde_bytes",
- "serde_json",
  "wasm-bindgen",
  "wasmbus-rpc",
  "wasmcloud-interface-logging",
@@ -1434,7 +1434,7 @@ name = "instant"
 version = "0.1.12"
 dependencies = [
  "cfg-if 1.0.0",
- "rmp-serde",
+ "rmp-serde 0.15.5",
  "serde",
  "thiserror",
 ]
@@ -2646,12 +2646,13 @@ dependencies = [
 
 [[package]]
 name = "rmp"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f55e5fa1446c4d5dd1f5daeed2a4fe193071771a2636274d0d7a3b082aa7ad6"
+checksum = "44519172358fd6d58656c86ab8e7fbc9e1490c3e8f14d35ed78ca0dd07403c9f"
 dependencies = [
  "byteorder",
  "num-traits",
+ "paste",
 ]
 
 [[package]]
@@ -2659,6 +2660,17 @@ name = "rmp-serde"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "723ecff9ad04f4ad92fe1c8ca6c20d2196d9286e9c60727c4cb5511629260e9d"
+dependencies = [
+ "byteorder",
+ "rmp",
+ "serde",
+]
+
+[[package]]
+name = "rmp-serde"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25786b0d276110195fa3d6f3f31299900cf71dfbd6c28450f3f58a0e7f7a347e"
 dependencies = [
  "byteorder",
  "rmp",
@@ -3592,7 +3604,7 @@ dependencies = [
  "pin-utils",
  "ratsio_fork_040",
  "ring",
- "rmp-serde",
+ "rmp-serde 0.15.5",
  "serde",
  "serde_bytes",
  "serde_json",

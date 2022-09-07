@@ -2,6 +2,7 @@ use qq_party_shared::*;
 use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn;
+use crate::util::sub_map_area;
 use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
 use std::collections::HashMap;
 use bevy_app::App;
@@ -15,10 +16,12 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
     info!("handle_message map");
     let x = random_in_range(3300,3800).await?;
     let y = random_in_range(3500,3800).await?;
+    let pos = Position(Vec2::new(x as f32,y as f32));
+    let sa = sub_map_area(pos.clone());
     let mut n = String::from("");
     let ball_bundle = BallBundle{
       ball_id:ball_id,
-      position:Position(Vec2::new(x as f32,y as f32)),
+      position:pos,
       velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
     };
@@ -49,14 +52,14 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
       ball_bundles.push(ball_bundle.clone());
       
     }
-    // info!("handle_message {:?}",n);
-    let server_message = ServerMessage::Welcome{ball_bundle};
-    match serde_json::to_vec(&server_message){
+    info!("game_logic ....{:?}",sa);
+    let server_message = ServerMessage::Welcome{ball_bundle,sub_map:sa};
+    match rmp_serde::to_vec(&server_message){
       Ok(b)=>{
         let pMsg = PubMessage{
           body:b,
           reply_to: None,
-          subject: "game_logic".to_owned()
+          subject: String::from("welcome")
           };
         publish_(pMsg);
       }

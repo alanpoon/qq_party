@@ -14,7 +14,7 @@ impl ClientState for AfterNormal {
           if let Event::Nats(client_name,s_op)=e{
             match s_op{
               nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
-                info!("recv msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
+                info!("recv msg {} payloadlen:{:?}",subject,payload.len());
               }
               _=>{}
             }

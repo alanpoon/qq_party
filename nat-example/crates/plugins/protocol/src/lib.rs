@@ -112,7 +112,10 @@ fn handle_events(
         let ref mut e = *events;
         e.clear();
         e.truncate();//added
-        *commands = context.commands;
+        for c in context.commands.iter(){
+          (*commands).push(c.clone());
+        }
+        //*commands =context.commands ;
         let mut target_velocity_x = 0.0;
         let mut target_velocity_y = 0.0;
         let mut pressed = false;
@@ -182,6 +185,7 @@ use futures::future::ready;
 fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut commands: ResMut<protocol::Commands>,mut events: ResMut<protocol::Events>) {
     if let Some(ref mut client) = *client {
         for command in commands.iter() {
+            info!("send_commands client {:?}", command.clone());
             let command = command.clone();
             let len = client.clients.len();
             let rand_int = get_random_int(0,len as i32);
@@ -213,7 +217,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
   mut events: ResMut<protocol::Events>,
-  user_info: Res<LocalUserInfo>,
+  mut user_info: ResMut<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
@@ -226,8 +230,9 @@ fn receive_events(mut cmd: Commands,
                 if let Event::Nats(client_name,s_op)=event.clone(){
                   match s_op{
                     nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
-                      if subject == String::from("game_logic"){
-                        let server_message: ServerMessage = serde_json::from_slice(&payload).unwrap();
+                      if subject.contains("game_logic"){
+                      //if subject == String::from("game_logic"){
+                        let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
@@ -237,18 +242,7 @@ fn receive_events(mut cmd: Commands,
                               }
                             }
                           }
-                          ServerMessage::Welcome{ball_bundle}=>{
-                            // let mut not_init = vec![];
-                            // for welcome_balls in ball_bundles.iter(){
-                            //   for (_, qball_id) in query.iter_mut(){
-                            //     if &welcome_balls.ball_id!=qball_id{
-                            //       not_init.push(welcome_balls.clone());
-                            //     }
-                            //   }
-                            // }
-                            info!("ball_bundle!! spawn {:?}",ball_bundle);
-                            cmd.spawn_bundle(ball_bundle);
-                          }
+                          
                           ServerMessage::GameState{ball_bundles,npc_bundles,timestamp,..}=>{
                             
                             let utc: DateTime<Utc> = Utc::now();
@@ -262,6 +256,16 @@ fn receive_events(mut cmd: Commands,
                         }
                         
                         continue
+                      }else if subject.contains("welcome"){
+                        let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
+                        match server_message{
+                          ServerMessage::Welcome{ball_bundle,sub_map}=>{
+                            info!("ball_bundle!! spawn {:?}",ball_bundle);
+                            cmd.spawn_bundle(ball_bundle);
+                            //commands.commands.push(Command::Nats(String::from("default"),n))
+                          }
+                          _=>{}
+                        }
                       }
                     }
                     _=>{
