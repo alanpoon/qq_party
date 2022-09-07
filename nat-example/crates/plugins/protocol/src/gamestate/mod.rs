@@ -8,9 +8,9 @@ pub fn spawn_or_update_ball_bundles(
   ){
     let len = ball_bundles.len();
     let mut founds = vec![];
-    for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
+    for i in 0..len{
       let mut found= false;
-      for i in 0..len{
+      for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
         if &ball_bundle.ball_id == ball_id{
           *v = ball_bundle.velocity;
@@ -22,9 +22,10 @@ pub fn spawn_or_update_ball_bundles(
           break;
         }
       }
-      if !found{
-        cmd.entity(entity).despawn();
-      }
+      //move to server_msg_despawn
+      // if !found{
+      //   cmd.entity(entity).despawn();
+      // }
       //}
     }
     for (i,ball_bundle) in ball_bundles.iter().enumerate(){
@@ -41,9 +42,9 @@ pub fn spawn_or_update_npc_bundles(
   ){
     let len = bundles.len();
     let mut founds = vec![];
-    for (entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
+    for i in 0..len{
       let mut found= false;
-      for i in 0..len{
+      for (entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
         let bundle = bundles.get(i).unwrap();
         if &bundle.npc_id == npc_id{
           *v = bundle.velocity;
@@ -55,9 +56,9 @@ pub fn spawn_or_update_npc_bundles(
           break;
         }
       }
-      if !found{
-        cmd.entity(entity).despawn();
-      }
+      // if !found{
+      //   cmd.entity(entity).despawn();
+      // }
     }
     for (i,bundle) in bundles.iter().enumerate(){
       if !founds.contains(&i){

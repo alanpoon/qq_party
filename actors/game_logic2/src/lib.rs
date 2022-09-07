@@ -52,10 +52,12 @@ impl Thread for GameLogicActor{
       
       m.world.spawn_batch(npc_bundles);
       m.init_resource::<Time>()
+      .init_resource::<TimeV2>()
       .init_resource::<ScoreBoard>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
-      .add_system(systems::publish::sys_publish_game_state.system())
+      //.add_system(systems::publish::sys_publish_game_state.system())
+      .add_system(systems::publish::sys_publish_game_state_by_sub_map.system())
       //.add_system(systems::sys.system())
       ;
       
@@ -121,5 +123,22 @@ impl Time{
   pub fn update(&mut self,t:f32){
     self.elapsed = t;
   }
+  pub fn elapsed(&self)->f32{
+    self.elapsed
+  }
 }
+#[derive(Debug, PartialEq, Default)]
+pub struct TimeV2{pub elapsed:HashMap<String,f32>}
+impl TimeV2{
+  pub fn update(&mut self,t:f32,key:String){
+    self.elapsed.insert(key,t);
+  }
+  pub fn elapsed(&self,key:String)->Option<&f32>{
+    self.elapsed.get(&key)
+  }
+}
+// trait TimeAble {
+//   fn update(&mut self,f32);
+//   fn elapsed(&self) -> f32;
+// }
 

@@ -4,7 +4,7 @@ use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
-use crate::Time;
+use crate::{Time,TimeV2};
 use crate::info_::info_;
 use bevy_app::App;
 use bevy_ecs::prelude::*;
@@ -30,6 +30,17 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           //t.update(start_thread_request.elapsed as f32);
         }else{
           app.world.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
+        }
+        if let Some(mut t) = app.world.get_resource_mut::<TimeV2>(){
+          n = String::from("can find time");
+          //t.update(start_thread_request.elapsed as f32);
+        }else{
+          app.world.insert_resource(TimeV2{elapsed:HashMap::from([
+            (String::from("A"),start_thread_request.elapsed as f32),
+            (String::from("B"),(start_thread_request.elapsed + 1000) as f32),
+            (String::from("C"),(start_thread_request.elapsed + 2000) as f32),
+            (String::from("D"),(start_thread_request.elapsed + 3000) as f32),
+          ])});
         }
         if let Some(mut t) = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>(){
           n = String::from("can find time");
