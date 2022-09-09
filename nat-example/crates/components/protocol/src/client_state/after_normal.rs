@@ -8,13 +8,13 @@ pub struct AfterNormal {
 
 impl ClientState for AfterNormal {
     fn handle(&self, commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
-      info!("LZ afternormal{:?}",event);
+      //info!("LZ afternormal{:?}",event);
       match event {
         ClientInput::Event(e) => {
           if let Event::Nats(client_name,s_op)=e{
             match s_op{
               nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
-                info!("recv msg {} payloadlen:{:?}",subject,payload.len());
+                // info!("recv msg {} payloadlen:{:?}",subject,payload.len());
               }
               _=>{}
             }

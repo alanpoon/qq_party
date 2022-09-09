@@ -9,7 +9,7 @@ pub struct BeforeLogin {}
 
 impl ClientState for BeforeLogin {
     fn handle(&self, commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
-      info!("LZ{:?}",event);
+        //info!("LZ{:?}",event);
         match event {
             ClientInput::Event(e) => {
                 if let Event::Nats(client_name,s_op)=e{
@@ -26,7 +26,7 @@ impl ClientState for BeforeLogin {
                     sid:16,
                   };
                   commands.commands.push(Command::Nats(String::from("default"),n));
-                  info!("subscribe welcome client_name {:?} s_op {:?}",client_name,s_op);
+                  //info!("subscribe welcome client_name {:?} s_op {:?}",client_name,s_op);
                   return Normal{
                     
                   }

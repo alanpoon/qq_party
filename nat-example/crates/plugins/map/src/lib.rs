@@ -62,15 +62,25 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut map_query
 //   }
 // }
 fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
-  query: Query<(&Camera, &Transform,&OrthographicProjection)>,scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>
+  query: Query<(&Camera, &Transform,&OrthographicProjection)>,
+  ball_query: Query<(&BallId,&Position)>,
+  scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>
 ){
   for (ball_id,score) in scoreboard.scores.iter(){
     if &userinfo.0.ball_id.0==ball_id{
+      let mut pos = String::from("");
+      for (b,p) in ball_query.iter(){
+        if &b.0 == ball_id{
+          pos.push_str(&p.0.x.to_string());
+          pos.push_str(":");
+          pos.push_str(&p.0.y.to_string());
+        }
+      }
       for (_,t,o) in query.iter(){
         //for (mut text,mut text_t)  in text_query.iter_mut() {
         for (mut text,mut s,mut g)  in text_query.iter_mut() {
           text.sections[0].value = format!(r#"BallId:{:?}, Score:{:?}
-          "#,ball_id,score);
+          pos:{:?}"#,ball_id,score,pos);
         }
       }
     }

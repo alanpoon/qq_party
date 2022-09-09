@@ -11,7 +11,7 @@ pub struct Normal {
 
 impl ClientState for Normal {
     fn handle(&self, commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
-      info!("LZ{:?}",event);
+      //info!("LZ{:?}",event);
       match event {
           ClientInput::Event(e) => {
             if let Event::Nats(client_name,s_op)=e{
@@ -46,11 +46,11 @@ impl ClientState for Normal {
                 sub_map:String::from(""),
               }));
               
-              info!("normal client_name: {}, {:?}",client_name,s_op);
+              //info!("normal client_name: {}, {:?}",client_name,s_op);
               match s_op{
                 nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
-                  info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
-                  info!("pub going to afternormal");
+                  // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
+                  // info!("pub going to afternormal");
                   return AfterNormal{
                     
                   }

@@ -52,7 +52,6 @@ impl Thread for GameLogicActor{
       
       m.world.spawn_batch(npc_bundles);
       m.init_resource::<Time>()
-      .init_resource::<TimeV2>()
       .init_resource::<ScoreBoard>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
@@ -98,6 +97,10 @@ impl MessageSubscriber for GameLogicActor{
         Ok(ClientMessage::Welcome{game_id,ball_id})=>{
           let mut map = APP.clone();
           client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
+        }
+        Ok(ClientMessage::ChangeSubMap{game_id,ball_id,position})=>{
+          let mut map = APP.clone();
+          client_message_handlers::change_sub_map_handler::_fn(map,game_id,ball_id,position);
         }
         _=>{}
       }

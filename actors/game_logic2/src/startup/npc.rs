@@ -17,23 +17,33 @@ pub async fn spawn_npc_bundles()-> RpcResult<Vec<NPCBundle>>{
       for n_y in 0..19{
         for v in 1..(z%3 + 2){
           let sign = z %15;
-          let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2};
           z = z+sign;
-          let x1 = 200*n_x + x+sign*sign +v*sign*sign;
-          let y1 = 200*n_y + y+sign*sign + v*sign*sign;
+          let x1 = 200*n_x;
+          let y1 = 200*n_y;
+          let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2};
           npc_positions_vec.push((Position(Vec2::new(x1 as f32,y1 as f32)),sprite_enum));
-          let sign = z %11;
-          z = z+sign;
-          let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2};
-          let x2 = 200*n_x + x+sign*sign - v*v*sign*sign;
-          let y2 = 200*n_y + y-sign*sign - v*sign*sign;
-          npc_positions_vec.push((Position(Vec2::new(x2 as f32,y2 as f32)),sprite_enum));
-          let sign3 = z %11;
-          z = z + sign3;
-          let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2}; 
-          let x3 = 200*n_x + x - sign3*sign + v*v*sign*sign;
-          let y3 = 200*n_y + y + sign3*sign - v*sign*sign;
-          npc_positions_vec.push((Position(Vec2::new(x3 as f32,y3 as f32)),sprite_enum));
+
+          // let sign = z %15;
+          // let sign2 = z % 10;
+          // let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2};
+          // z = z+sign;
+          // let x1 = 200*n_x + x+sign*sign +v*v*sign2*sign2;
+          // let y1 = 200*n_y + y+sign*sign + v*v*sign2*sign2;
+          // npc_positions_vec.push((Position(Vec2::new(x1 as f32,y1 as f32)),sprite_enum));
+          // let sign = z %11;
+          // let sign2 = z % 10;
+          // z = z+sign;
+          // let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2};
+          // let x2 = 200*n_x + x+sign*sign - v*v*sign2*sign2;
+          // let y2 = 200*n_y + y-sign*sign - v*v*sign2*sign2;
+          // npc_positions_vec.push((Position(Vec2::new(x2 as f32,y2 as f32)),sprite_enum));
+          // let sign3 = z %11;
+          // z = z + sign3;
+          // let sign2 = z % 5;
+          // let sprite_enum = if (z+v)%3 ==0 {0} else if (z+v)%3 ==1 {1 }else {2}; 
+          // let x3 = 200*n_x + x - sign3*sign + v*v*sign2*sign2;
+          // let y3 = 200*n_y + y + sign3*sign - v*v*sign2*sign2;
+          // npc_positions_vec.push((Position(Vec2::new(x3 as f32,y3 as f32)),sprite_enum));
         }
       }
     }

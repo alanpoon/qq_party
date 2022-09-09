@@ -16,3 +16,18 @@ pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f3
   };
   Command::Nats(String::from("default"),n)
 }
+pub fn change_sub_map(ball_id:BallId,position:Position)->Command{
+  let tv = ClientMessage::ChangeSubMap{
+    game_id:String::from("hello"),
+    ball_id:ball_id,
+    position:position
+  };
+  
+  let tv_= rmp_serde::to_vec(&tv).unwrap();
+  let n = nats::proto::ClientOp::Pub{
+    subject: String::from("client_handler.hello"),
+    reply_to: None,
+    payload: tv_,
+  };
+  Command::Nats(String::from("default"),n)
+}

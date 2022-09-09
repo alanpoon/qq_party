@@ -59,6 +59,6 @@ pub fn handle_client_op(client_op:nats::proto::ClientOp)->io::Result<Vec<u8>>{
   let mut writer = BufWriter::with_capacity(BUF_CAPACITY,&mut *bytes);
   nats::proto::encode(&mut writer,client_op.clone())?;
   writer.flush();
-  info!("flush {:?}",client_op);
+  //info!("flush {:?}",client_op);
   Ok(writer.buffer().to_vec())
 }

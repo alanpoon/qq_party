@@ -25,6 +25,7 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
   match local_ball {
     Some((entity, _,position)) => {
         let sa = sub_map_area(position.0.x,position.0.y);
+        info_(format!("tv....{:?} x{:?},y{:?}",sa,position.0.x,position.0.y));
         app.world.entity_mut(entity).insert(target_velocity);
         app.world.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
         let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};

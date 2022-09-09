@@ -1,6 +1,7 @@
 use bevy::{core::Time, input::Input, math::Vec3, prelude::*, render::camera::Camera};
 use qq_party_shared::*;
 use protocol::{Command,nats};
+use crate::c_;
 // A simple camera system for moving and zooming the camera.
 pub fn move_with_local_player(
     mut commands: ResMut<protocol::Commands>,
@@ -31,17 +32,19 @@ pub fn move_with_local_player(
           // Bevy has a specific camera setup and this can mess with how our layers are shown.
           transform.translation.z = z;
           //sub_map
-          let sa = sub_map_area(transform.translation.x,transform.translation.x);
+          let sa = sub_map_area(po.0.x,po.0.y);
           if local_user_info.0.sub_map !=sa{
             //unsub
-            info!("sub game_logic.{}",sa);
-            // if local_user_info.0.sub_map!=String::from(""){
-            //   let n = nats::proto::ClientOp::Unsub{
-            //     sid:17,
-            //     max_msgs:None,
-            //   };
-            //   (*commands).push(Command::Nats(String::from("default"),n));
-            // }
+            info!("We are subing game_logic.{} pos{:?}",sa,po.clone());
+            if local_user_info.0.sub_map!=String::from(""){
+              let n = nats::proto::ClientOp::Unsub{
+                sid:17,
+                max_msgs:None,
+              };
+              (*commands).push(Command::Nats(String::from("default"),n));
+            }
+            let c = c_::change_sub_map(*ball_id,*po);
+            (*commands).push(c);
             //new_sub
             let n = nats::proto::ClientOp::Sub{
               subject:format!("game_logic.{}",sa),

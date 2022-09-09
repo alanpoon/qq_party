@@ -53,6 +53,7 @@ pub enum ServerMessage {
 pub enum ClientMessage {
     Welcome{game_id:String,ball_id:BallId},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
+    ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
 }
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
 pub struct UserInfo{
