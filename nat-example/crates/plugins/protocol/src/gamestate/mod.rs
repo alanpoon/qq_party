@@ -14,7 +14,7 @@ pub fn spawn_or_update_ball_bundles(
         let ball_bundle = ball_bundles.get(i).unwrap();
         if &ball_bundle.ball_id == ball_id{
           *v = ball_bundle.velocity;
-          info!("ball_bundle.velocity.0.x {:?} delta {:?}",ball_bundle.velocity.0.x,delta);
+          //info!("ball_bundle.velocity.0.x {:?} delta {:?}",ball_bundle.velocity.0.x,delta);
           (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
           (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
           *tv = ball_bundle.target_velocity;

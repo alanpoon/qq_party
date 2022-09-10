@@ -53,6 +53,7 @@ impl Plugin for PhysicsPlugin {
             .insert_resource(RapierConfiguration {
               scale: 1.0,
               gravity: Vector2::zeros(),
+              timestep_mode: bevy_rapier2d::physics::TimestepMode::InterpolatedTimestep,
               ..Default::default()
             })
             .init_resource::<timewrapper::TimeWrapper>()
@@ -72,7 +73,7 @@ impl Plugin for PhysicsPlugin {
             //spawn_hierachy
             .add_system(qq_party_shared::systems::physics::spawn_hierachy.system())
             .add_system(qq_party_shared::systems::physics::spawn_joint.system())
-
+            //.add_system(sys_time_debug.system())
             //.init_resource::<bevy_rapier2d::physics::time::Time>()
             .add_system(timewrapper::into_timewrapper.system());
             //.insert_resource(Msaa::default());
@@ -223,6 +224,13 @@ fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
 //     *tv = TargetVelocity(Vec2::ZERO);
 //   }
 // }
+use bevy_rapier2d::physics::time::TimeInterface;
+pub fn sys_time_debug(balls_without_rigid:Query<(&BallId,&Position,&RigidBodyVelocityComponent,&Velocity)>,time:Res<timewrapper::TimeWrapper>){
+  for (ball_id,pos,rv,vel) in balls_without_rigid.iter(){
+    let delta = time.delta_seconds();
+    info!("ball_id {:?} pos {:?} rv {:?} vel{:?} delta {:?}",ball_id,pos,rv.0.linvel,vel,delta);
+  }
+}
 pub fn debug_rigid(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&NPCId,&Position,&ChaseTargetId,&RigidBodyVelocityComponent),Without<BallId>> ){
   // for (q,rb) in query.iter(){
   //   info!("ballid{:?} rb {:?} ",q.0,rb.0);

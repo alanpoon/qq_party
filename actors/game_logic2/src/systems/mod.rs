@@ -6,7 +6,7 @@ use crate::bevy_wasmcloud_time;
 pub mod publish;
 use crate::util::sub_map_area;
 use qq_party_shared::*;
-
+use bevy_rapier2d::prelude::*;
 
 // pub fn sys(mut query: Query<&mut A>,time: Res<Time>) {
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
@@ -17,6 +17,14 @@ use qq_party_shared::*;
 //       a.position = a.position + 1;
 //   }
 // }
+pub fn sys_time_debug(t:Res<bevy_wasmcloud_time::Time>,
+  balls_without_rigid:Query<(&BallId,&Position,&RigidBodyVelocityComponent,&Velocity)>,
+  rapier_parameters: Res<RapierConfiguration>,
+ ){
+  for (ball_id,pos,rv,vel) in balls_without_rigid.iter(){
+    info_(format!("ball_id {:?} pos {:?} rv {:?} Velocity {:?} rapier_parametersscale {:?}",ball_id,pos,rv.0.linvel,vel,rapier_parameters.scale));
+  }
+}
 pub fn sys_ball_bundle_debug(query: Query<&BallId>) {
   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
   for ball_id in query.iter() {
