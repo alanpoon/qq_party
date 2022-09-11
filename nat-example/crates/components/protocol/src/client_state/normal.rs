@@ -1,7 +1,7 @@
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
 use crate::nats;
 use super::after_normal::AfterNormal;
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,UserInfo,ClientMessage,ServerMessage};
+use qq_party_shared::{BallId,UserInfo,ClientMessage};
 use rand::Rng;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
@@ -14,7 +14,7 @@ impl ClientState for Normal {
       //info!("LZ{:?}",event);
       match event {
           ClientInput::Event(e) => {
-            if let Event::Nats(client_name,s_op)=e{
+            if let Event::Nats(_client_name,s_op)=e{
               let p = nats::proto::ClientOp::Pub{
                 subject:String::from("hello"),
                 reply_to:None,
@@ -48,7 +48,7 @@ impl ClientState for Normal {
               
               //info!("normal client_name: {}, {:?}",client_name,s_op);
               match s_op{
-                nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
+                nats::proto::ServerOp::Msg{subject:_,sid:_,reply_to:_,payload:_}=>{
                   // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
                   // info!("pub going to afternormal");
                   return AfterNormal{

@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 use crate::nats;
-use crate::nats::{Headers};
-use log::*;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 //#[serde(tag = "c")] // stands for code

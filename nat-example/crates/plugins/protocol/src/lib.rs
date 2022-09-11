@@ -14,16 +14,10 @@ use native::*;
 use bevy::prelude::*;
 use core::ProtocolSystem;
 use futures::prelude::*;
-use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher,ClientName};
+use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher};
 use protocol::{Command,Event,nats};
 use tracing::error;
-use client_websocket::save_sub;
-use std::borrow::Cow;
-use bevy::math::Vec2;
 use wasm_bindgen::prelude::wasm_bindgen;
-use wasmcloud_interface_messaging::SubMessage;
-use wasmbus_rpc::serialize;
-use serde::{Serialize,Deserialize};
 use chrono::prelude::*;
 pub struct ProtocolPlugin;
 #[wasm_bindgen]
@@ -44,12 +38,12 @@ extern "C" {
     fn log_many(a: &str, b: &str);
     
 }
-macro_rules! console_log {
-  // Note that this is using the `log` function imported above during
-  // `bare_bones`
-  ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ClientMessage,ServerMessage,BallBundle,ChaseTargetId,LocalUserInfo};
+// macro_rules! console_log {
+//   // Note that this is using the `log` function imported above during
+//   // `bare_bones`
+//   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+// }
+use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -99,7 +93,7 @@ fn handle_events(
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    mut balls: Query<(&BallId,&Velocity)>,
+    balls: Query<(&BallId,&Velocity)>,
     
 ) {
     if let Some(ref mut state) = *state {
@@ -182,7 +176,7 @@ fn handle_events(
     }
 }
 use futures::future::ready;
-fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut commands: ResMut<protocol::Commands>,mut events: ResMut<protocol::Events>) {
+fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut commands: ResMut<protocol::Commands>,mut _events: ResMut<protocol::Events>) {
     if let Some(ref mut client) = *client {
         for command in commands.iter() {
             info!("send_commands client {:?}", command.clone());
@@ -217,19 +211,19 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
   mut events: ResMut<protocol::Events>,
-  mut user_info: ResMut<LocalUserInfo>,
+  mut _user_info: ResMut<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
     mut query: Query<(Entity, &BallId)>, ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
-        let rand_int = get_random_int(0,len as i32);
+        let _rand_int = get_random_int(0,len as i32);
         if let Some(vec) = client.clients.get_mut(0).unwrap().poll_once() {
             for event in vec {
-                if let Event::Nats(client_name,s_op)=event.clone(){
+                if let Event::Nats(_client_name,s_op)=event.clone(){
                   match s_op{
-                    nats::proto::ServerOp::Msg{subject,sid,reply_to,payload}=>{
+                    nats::proto::ServerOp::Msg{subject,sid:_,reply_to:_,payload}=>{
                       if subject.contains("game_logic"){
                       //if subject == String::from("game_logic"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
@@ -259,7 +253,7 @@ fn receive_events(mut cmd: Commands,
                       }else if subject.contains("welcome"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
-                          ServerMessage::Welcome{ball_bundle,sub_map}=>{
+                          ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
                             info!("ball_bundle!! spawn {:?}",ball_bundle);
                             cmd.spawn_bundle(ball_bundle);
                             //commands.commands.push(Command::Nats(String::from("default"),n))

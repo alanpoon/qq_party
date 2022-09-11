@@ -1,7 +1,6 @@
 use bevy::prelude::*;
-use qq_party_shared::Position;
+//use qq_party_shared::Position;
 use std::collections::HashMap;
-use bevy::asset::HandleId;
 mod chicken;
 mod npc;
 mod sprite_sheet;

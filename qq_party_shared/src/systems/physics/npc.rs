@@ -1,7 +1,5 @@
 use bevy_rapier2d::prelude::*;
 use bevy_ecs::prelude::*;
-use bevy_rapier2d::prelude::nalgebra::Vector2;
-use bevy_log::info;
 use crate::*;
 pub fn spawn_npc_collider(
   mut cmd: Commands,

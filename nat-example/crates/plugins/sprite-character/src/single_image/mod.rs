@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use std::collections::HashMap;
-pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+pub fn startup(mut _commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
   mut texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>) {
   let worker_crate_texture = asset_server.load("2d/workercrate.png");
   mut_rect(&mut texture_atlases,&mut texture_hashmap,worker_crate_texture,String::from("workercrate"),256.0,128.0);  

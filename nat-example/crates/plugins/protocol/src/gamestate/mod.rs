@@ -9,8 +9,7 @@ pub fn spawn_or_update_ball_bundles(
     let len = ball_bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      let mut found= false;
-      for (entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
+      for (_entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
         if &ball_bundle.ball_id == ball_id{
           *v = ball_bundle.velocity;
@@ -19,7 +18,7 @@ pub fn spawn_or_update_ball_bundles(
           (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
           *tv = ball_bundle.target_velocity;
           founds.push(i);
-          found = true;
+          //found = true;
           break;
         }
       }
@@ -44,8 +43,7 @@ pub fn spawn_or_update_npc_bundles(
     let len = bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      let mut found= false;
-      for (entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
+      for (_entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
         let bundle = bundles.get(i).unwrap();
         if &bundle.npc_id == npc_id{
           *v = bundle.velocity;
@@ -53,7 +51,6 @@ pub fn spawn_or_update_npc_bundles(
           (*pos).0.y = bundle.position.0.y+ bundle.velocity.0.y *delta;
           *ct = bundle.chase_target;
           founds.push(i);
-          found = true;
           break;
         }
       }

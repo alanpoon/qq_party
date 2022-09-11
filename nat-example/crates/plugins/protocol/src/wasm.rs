@@ -4,12 +4,12 @@ use wasm_bindgen::JsCast;
 use client_websocket::connect;
 use futures::future::ready;
 use futures::prelude::*;
-use futures::future::{join_all, ok, err};
+use futures::future::{join_all};
 use lazy_static::lazy_static;
 use protocol::{BoxClient, BoxClient2,ClientName,nats,Client};
 use std::borrow::Cow;
 use std::collections::HashMap;
-use std::sync::{Arc,Mutex};
+use std::sync::{Mutex};
 use tracing::error;
 use wasm_bindgen_futures::spawn_local;
 #[wasm_bindgen]
@@ -71,15 +71,14 @@ pub fn connect_websocket() {
     let future_arr = servers.iter().map(|(c,s)|{
       local_connect(c.clone(),s.clone())
     });
-    let join_ = join_all(future_arr).then(|l|{
+    let join_ = join_all(future_arr).then(|_l|{
       ready(())
     });
     spawn_local(join_);
 }
 async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
   connect(c.clone(),s.0.clone()).then(|cz|{
-    let c_clone = c.clone();
-    let s_clone = s.clone();
+    //let s_clone = s.clone();
     ready(cz
     .map(|(client,mut meta)| {
         let c_clone = c.clone();
@@ -112,7 +111,7 @@ async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
 }
 pub fn set_client(mut client_res: ResMut<Option<BoxClient>>) {
     let mut map = CLIENTS.lock().unwrap();
-    for (k,v) in map.drain(){
+    for (_k,v) in map.drain(){
       if let Some(ref mut c) = *client_res{
         c.clients.push(v);
       } else{
@@ -121,7 +120,7 @@ pub fn set_client(mut client_res: ResMut<Option<BoxClient>>) {
         *client_res = Some(bc);
       }
     }
-    if let Some(ref mut c) = *client_res{
+    if let Some(ref mut _c) = *client_res{
       
     }
 }
@@ -148,7 +147,7 @@ pub async fn delay(timeout_ms: i32)->(){
   let p = js_sys::Promise::new(&mut |resolve, _| {
     let closure = Closure::wrap(Box::new(move || {
       //resolve(&42.into())
-      resolve.call0(&JsValue::NULL);
+      resolve.call0(&JsValue::NULL).unwrap();
     })as Box<dyn FnMut()>);
     
     set_timeout(&closure,timeout_ms);
@@ -156,7 +155,7 @@ pub async fn delay(timeout_ms: i32)->(){
     }
     
   );
- wasm_bindgen_futures::JsFuture::from(p).into_future().await;
+ wasm_bindgen_futures::JsFuture::from(p).into_future().await.unwrap();
  ()
 }
 fn set_timeout(f: &Closure<dyn FnMut()>,timeout_ms: i32) {

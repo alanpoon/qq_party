@@ -1,13 +1,11 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,TargetVelocity,BallId,NPCId};
+use qq_party_shared::{Position,NPCId};
 use std::collections::HashMap;
-use bevy::asset::HandleId;
-use crate::sprite_sheet::{self,_2d_round};
 pub fn snake_translate(
   texture_atlases: Res<Assets<TextureAtlas>>,
   mut texture_atlas: Query<(&mut Position,&mut Transform, &Handle<TextureAtlas>)>,
 ){
-  for (mut po,mut transform, texture_atlas_handle) in texture_atlas.iter_mut() {
+  for (po,mut transform, _texture_atlas_handle) in texture_atlas.iter_mut() {
     //info!("mutating targetV {:?}",tv);
     transform.translation.x = po.0.x;
     transform.translation.y = po.0.y;

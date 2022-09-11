@@ -5,7 +5,6 @@
 use bevy_ecs::prelude::*;
 use bevy_math::{Vec2};
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 mod bundle;
 pub mod systems;
 pub use bundle::*;

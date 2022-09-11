@@ -6,7 +6,7 @@ pub fn movement(
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera), With<Camera>>,
 ) {
-    for (mut transform, mut ortho,mut c) in query.iter_mut() {
+    for (mut transform, mut ortho, c) in query.iter_mut() {
         if c.name != Some("camera_ui".to_string()){
           let mut direction = Vec3::ZERO;
 

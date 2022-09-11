@@ -1,10 +1,5 @@
 use bevy_ecs::prelude::*;
-use bevy_rapier2d::prelude::*;
-use crate::systems::nalgebra::Vector2;
 use crate::*;
-use bevy_log::info;
-use bevy_math::{Vec2};
-use crate::systems::nalgebra::Point2;
 
 pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Position),(Without<BallId>,Without<ChaseTargetId2>)>,
 mut ball_query:Query<(Entity,&BallId,&Position,&mut LastNPC)>,
@@ -28,7 +23,7 @@ query_scoring:Query<(Entity,&Parent,&NPCId),Without<BallId>>,mut res:ResMut<Scor
     };
     
     for (ball_e,ball_id,pos,mut last_npc) in ball_query.iter_mut(){
-      if let Some(s) = speed{
+      if let Some(_) = speed{
         if pos.0.distance(npc_pos.0)<50.0{
           cmd.entity(npc_e).insert(ChaseTargetId2(ball_id.0,Some(ball_e)));
         }
@@ -48,7 +43,7 @@ pub fn spawn_hierachy(
   mut npc_query: Query<(Entity,&NPCId,&Position,&ChaseTargetId2),Changed<ChaseTargetId2>>,
   mut ball_query:Query<(Entity,&BallId,&mut LastNPC)>
 ) {
-  for (npc_e,npc_id,npc_pos, chase_target_id) in npc_query.iter_mut(){
+  for (npc_e,npc_id,_npc_pos, chase_target_id) in npc_query.iter_mut(){
     if chase_target_id.0 !=0{
       for (ball_e,ball_id,mut last_npc) in ball_query.iter_mut(){
         if chase_target_id.0 == ball_id.0{
@@ -69,7 +64,7 @@ pub fn spawn_hierachy(
 pub fn spawn_joint(
   mut cmd: Commands,
   mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&Parent,&ChaseTargetId2)>,
-  mut position_query: Query<&Position>,
+  position_query: Query<&Position>,
   last_npc_query:Query<(Entity,&NPCId,&Parent)>,
   mut ball_query:Query<(&BallId,&mut LastNPC)>
 ){
@@ -84,7 +79,7 @@ pub fn spawn_joint(
           for (ball_id,mut last_npc) in ball_query.iter_mut(){
             if ball_id.0 == chase_target.0{
               if last_npc.0!=0 && last_npc.1.is_some(){
-                if let Ok((ln_e,npc_id_,ln_parent))=last_npc_query.get(last_npc.1.unwrap()){
+                if let Ok((ln_e,_npc_id_,ln_parent))=last_npc_query.get(last_npc.1.unwrap()){
                   *last_npc = LastNPC(last_npc.0,Some(ln_parent.0));
                   //*last_npc.0 = ln_parent.0;
                   cmd.entity(ln_e).despawn(); //despawn last npc

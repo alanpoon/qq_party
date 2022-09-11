@@ -26,15 +26,14 @@ pub fn spawn_player_collider(
   }
 }
 
-pub fn update_state_position_physics<X:time_interface::TimeInterface + Component>(mut query: Query<(&mut Position,&mut RigidBodyPositionComponent)>, time: Res<X>) {
-  let delta = time.delta_seconds();
-  for (mut pos,mut rigid_pos) in query.iter_mut() {
+pub fn update_state_position_physics(mut query: Query<(&mut Position,&mut RigidBodyPositionComponent)>) {
+  for (mut pos,rigid_pos) in query.iter_mut() {
     pos.0.x = rigid_pos.0.position.translation.vector.x;
     pos.0.y = rigid_pos.0.position.translation.vector.y;
   }
 }
 pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut RigidBodyVelocityComponent,&mut Velocity)>) {
-  for (pos,mut v,mut vel) in query.iter_mut() {
+  for (pos,mut v,vel) in query.iter_mut() {
     let mut x=0.0;
     let mut y=0.0;
     if (pos.0.x<=20.0 && vel.0.x >0.0) || (pos.0.x>=3820.0 && vel.0.x <0.0) || (pos.0.x>=20.0 && pos.0.x <= 3820.0){

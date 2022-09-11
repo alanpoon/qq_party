@@ -3,7 +3,6 @@
 // #[cfg(feature = "actor")]
 // use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity,Bundle};
 use bevy_ecs::prelude::*;
-use bevy_rapier2d::prelude::*;
 use crate::*;
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct BallBundle {

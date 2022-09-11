@@ -3,7 +3,6 @@ use tracing::error;
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher, Event,Command};
 use crate::nats;
 use super::normal::Normal;
-use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct BeforeLogin {}
 
@@ -12,7 +11,7 @@ impl ClientState for BeforeLogin {
         //info!("LZ{:?}",event);
         match event {
             ClientInput::Event(e) => {
-                if let Event::Nats(client_name,s_op)=e{
+                if let Event::Nats(_client_name,_s_op)=e{
                   // let n = nats::proto::ClientOp::Sub{
                   //   subject:String::from("hello"),
                   //   queue_group:None,
@@ -32,9 +31,6 @@ impl ClientState for BeforeLogin {
                   }
                   .into()
                 }               
-            }
-            event => {
-                error!("unexpected event: {:?}", event);
             }
         }
        

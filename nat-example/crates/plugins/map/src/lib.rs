@@ -17,7 +17,7 @@ impl Plugin for MapPlugin {
          .add_system(score_display);
   }
 }
-fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut map_query: MapQuery) {
+fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
   commands
   // 2d camera
   .spawn()
@@ -76,9 +76,9 @@ fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransfor
           pos.push_str(&p.0.y.to_string());
         }
       }
-      for (_,t,o) in query.iter(){
+      for (_,_t,_o) in query.iter(){
         //for (mut text,mut text_t)  in text_query.iter_mut() {
-        for (mut text,mut s,mut g)  in text_query.iter_mut() {
+        for (mut text,mut _s,mut _g)  in text_query.iter_mut() {
           text.sections[0].value = format!(r#"BallId:{:?}, Score:{:?}
           pos:{:?}"#,ball_id,score,pos);
         }

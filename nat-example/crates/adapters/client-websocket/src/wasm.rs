@@ -5,10 +5,9 @@ use lazy_static::lazy_static;
 use protocol::futures::channel::mpsc::channel;
 use protocol::futures::future::ready;
 use protocol::futures::prelude::*;
-use protocol::{Client, ClientName, RawCommand, RawEvent,Event,nats,handle_server_op};
+use protocol::{Client, ClientName, RawCommand,Event};
 use std::collections::HashMap;
 use std::sync::Mutex;
-use wasm_bindgen::prelude::*;
 use log::*;
 lazy_static! {
     static ref EVENTS: Mutex<HashMap<ClientName, Vec<Event>>> = Mutex::new(HashMap::default());
@@ -48,8 +47,8 @@ pub async fn connect(
     >,pharos::Events<ws_stream_wasm::WsEvent>),
 > {
     let mut meta = cross_websocket::connect(url.clone()).await?;
-    let client_name_c = client_name.clone();
-    let mut evt:pharos::Events<ws_stream_wasm::WsEvent> = meta.observe_close().await.unwrap();
+    let _client_name_c = client_name.clone();
+    let evt:pharos::Events<ws_stream_wasm::WsEvent> = meta.observe_close().await.unwrap();
     let (tx, rx)= meta.split();
     let (tx_clone, rx_clone) = channel::<Vec<u8>>(32);
     wasm_bindgen_futures::spawn_local(rx_clone.map(Ok)

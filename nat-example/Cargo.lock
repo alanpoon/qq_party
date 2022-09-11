@@ -1988,7 +1988,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bevy",
+ "js-sys",
  "qq_party_shared",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

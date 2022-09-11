@@ -10,7 +10,7 @@ pub fn move_with_local_player(
     mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera), With<Camera>>,
 ) {
   for ( ball_id,po) in ball_query.iter(){
-    for (mut transform, mut ortho,mut c) in query.iter_mut() {
+    for (mut transform, mut _ortho,c) in query.iter_mut() {
       if c.name != Some("camera_ui".to_string()){
         if ball_id == &local_user_info.0.ball_id{
           transform.translation.x = po.0.x;

@@ -68,6 +68,21 @@
     window.game_server = function(){
       return 'ws://localhost:7083/';
     }
+  var url = 'assets/2d/flag32.css';
+
+  fetch(url)
+    .then(function(response) {
+      response.text().then(function(text) {
+        var lines = text.split('\n');
+        var f32_array = []
+        for (var i=0; i<lines.length;i++){
+          var b = lines[i].split("{")[0].split(".f32 ")[1].replace(",","")
+          //var b = lines[i]
+          f32_array.push(b);
+        }
+        window.f32_country_array = f32_array
+      });
+    });
   </script>
   <!-- <script type="module">
     import init from './desk-client.js'

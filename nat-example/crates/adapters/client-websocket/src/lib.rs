@@ -17,9 +17,7 @@ use protocol::futures::future::{ready, Ready};
 use protocol::futures::{prelude::*, Stream};
 use protocol::{unwrap_and_log, RawCommand, RawEvent};
 use protocol::{handle_client_op,handle_server_op};
-use protocol::{nats,ClientName};
 use tracing::error;
-use std::borrow::Cow;
 fn event_receiver(
     rx: impl Stream<Item = Result<Vec<u8>>> + Send + Sync + 'static + Unpin,
 ) -> impl Stream<Item = RawEvent> + Send + Sync + 'static + Unpin {

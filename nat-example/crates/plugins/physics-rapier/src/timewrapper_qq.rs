@@ -8,7 +8,7 @@ impl TimeInterface for TimeWrapper{
   fn delta_seconds(&self)->f32{
     self.time.delta_seconds()
   }
-  fn update_with_timestamp(&mut self, timestamp: u64){
+  fn update_with_timestamp(&mut self, _timestamp: u64){
     self.time.update();
   }
 }

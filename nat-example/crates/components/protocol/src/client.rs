@@ -2,12 +2,11 @@ use std::borrow::Cow;
 
 use futures::Sink;
 
-use crate::{RawCommand, RawEvent,Event};
+use crate::{RawCommand,Event};
 use crate::nats;
 use std::io::{BufReader,BufWriter};
 use std::io::prelude::*;
-use std::io::{self, Error, ErrorKind};
-use log::*;
+use std::io::{self};
 pub trait Client {
     fn sender(&self) -> Box<dyn Sink<RawCommand, Error = String> + Send + Sync + Unpin + 'static>;
     fn poll_once(&mut self) -> Option<Vec<Event>>;
@@ -58,7 +57,9 @@ pub fn handle_client_op(client_op:nats::proto::ClientOp)->io::Result<Vec<u8>>{
   let mut bytes:Vec<u8> = vec![];
   let mut writer = BufWriter::with_capacity(BUF_CAPACITY,&mut *bytes);
   nats::proto::encode(&mut writer,client_op.clone())?;
-  writer.flush();
+  if let Ok(_)= writer.flush(){
+    
+  }
   //info!("flush {:?}",client_op);
   Ok(writer.buffer().to_vec())
 }

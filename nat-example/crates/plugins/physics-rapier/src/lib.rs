@@ -1,22 +1,14 @@
-use core::DeskSystem;
-
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 //use physics::{shape::Shape, widget::WidgetId, DragState, Velocity};
 use qq_party_shared::*;
 pub struct PhysicsPlugin;
-const LINEAR_DAMPING: f32 = 8.0;
-use bevy::math::Vec3;
 #[path = "../src_debug_ui/mod.rs"]
 mod ui;
 mod timewrapper;
 mod timewrapper_qq;
-use ui::DebugUiPlugin;
 use crate::nalgebra::Vector2;
-use std::f32::consts::PI;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use rand::Rng;
 
 #[wasm_bindgen]
 extern "C" {
@@ -35,12 +27,6 @@ extern "C" {
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log_many(a: &str, b: &str);
 }
-macro_rules! console_log {
-  // Note that this is using the `log` function imported above during
-  // `bare_bones`
-  ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-const RAPIER_SCALE: f32 = 20.0;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build PhysicsPlugin");
@@ -63,7 +49,7 @@ impl Plugin for PhysicsPlugin {
             //.add_system(debug_rigid.system())
             //player
             .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
-            .add_system(qq_party_shared::systems::update_state_position_physics::<timewrapper_qq::TimeWrapper>.system())
+            .add_system(qq_party_shared::systems::update_state_position_physics.system())
             .add_system(qq_party_shared::systems::update_state_velocity.system())
             .add_system(qq_party_shared::systems::update_state_velocity_physics.system())
             //npc
@@ -231,22 +217,15 @@ pub fn sys_time_debug(balls_without_rigid:Query<(&BallId,&Position,&RigidBodyVel
     info!("ball_id {:?} pos {:?} rv {:?} vel{:?} delta {:?}",ball_id,pos,rv.0.linvel,vel,delta);
   }
 }
-pub fn debug_rigid(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&NPCId,&Position,&ChaseTargetId,&RigidBodyVelocityComponent),Without<BallId>> ){
-  // for (q,rb) in query.iter(){
-  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
-  // }
-  for (q,pos,rb,v) in npc_query.iter(){
-    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
-  }
-}
-pub fn debug_rigid2(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&Position,&ChaseTargetId,&RigidBodyVelocityComponent),(With<NPCId>,Without<BallId>)> ){
-  // for (q,rb) in query.iter(){
-  //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
-  // }
-  for (pos,rb,v) in npc_query.iter(){
-    //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
-  }
-}
+// pub fn debug_rigid(mut query:Query<(&BallId,&Position)>,mut npc_query:Query<(&NPCId,&Position,&ChaseTargetId,&RigidBodyVelocityComponent),Without<BallId>> ){
+//   // for (q,rb) in query.iter(){
+//   //   info!("ballid{:?} rb {:?} ",q.0,rb.0);
+//   // }
+//   for (q,pos,rb,v) in npc_query.iter(){
+//     //info!("npc{:?} pos {:?} chasetarget{:?} rb vel {:?}",q,pos.0,rb.0,v.0.linvel);
+//   }
+// }
+
 // fn add_ball_mesh_system(
 //   mut cmd: Commands,
 //   balls_without_mesh: Query<(Entity, &BallId,&Position), Without<Transform>>,
