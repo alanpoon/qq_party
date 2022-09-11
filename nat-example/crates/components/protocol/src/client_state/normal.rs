@@ -1,7 +1,7 @@
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
 use crate::nats;
 use super::after_normal::AfterNormal;
-use qq_party_shared::{BallId,UserInfo,ClientMessage};
+use qq_party_shared::*;
 use rand::Rng;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
@@ -32,6 +32,7 @@ impl ClientState for Normal {
               let tv = ClientMessage::Welcome{
                 game_id:String::from("hello"),
                 ball_id:BallId(x,0),
+                ball_label:BallLabel(String::from("hello"),String::from(".sg")),
               };
               info!("Welcome Welcome");
               let tv_= rmp_serde::to_vec(&tv).unwrap();

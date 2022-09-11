@@ -95,9 +95,9 @@ impl MessageSubscriber for GameLogicActor{
           let mut map = APP.clone();
           client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
         }
-        Ok(ClientMessage::Welcome{game_id,ball_id})=>{
+        Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{
           let mut map = APP.clone();
-          client_message_handlers::welcome_handler::_fn(map,game_id,ball_id).await;
+          client_message_handlers::welcome_handler::_fn(map,game_id,ball_id,ball_label).await;
         }
         Ok(ClientMessage::ChangeSubMap{game_id,ball_id,position})=>{
           let mut map = APP.clone();

@@ -28,6 +28,8 @@ pub struct TargetDestination(pub Vec2,pub f32);
 pub struct Time{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub u8);
+#[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
+pub struct BallLabel(pub String,pub String); //Label, Flag
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
@@ -50,7 +52,7 @@ pub enum ServerMessage {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
-    Welcome{game_id:String,ball_id:BallId},
+    Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
 }

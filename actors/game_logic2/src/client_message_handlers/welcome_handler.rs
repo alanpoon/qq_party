@@ -12,7 +12,7 @@ use wasmcloud_interface_logging::{info,error,debug};
 use bevy_math::Vec2;
 use wasmbus_rpc::RpcResult;
 use wasmcloud_interface_numbergen::random_in_range;
-pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult<()>{
+pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:BallLabel)-> RpcResult<()>{
     info!("handle_message map");
     let x = random_in_range(3300,3800).await?;
     let y = random_in_range(3500,3800).await?;
@@ -21,6 +21,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId)-> RpcResult
     let mut n = String::from("");
     let ball_bundle = BallBundle{
       ball_id:ball_id,
+      ball_label:ball_label,
       position:pos,
       velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),

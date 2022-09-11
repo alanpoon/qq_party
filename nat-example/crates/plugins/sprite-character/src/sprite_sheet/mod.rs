@@ -7,12 +7,7 @@ use crate::sprite_sheet::{_2d_round::_fn_chicken,_2d_round::_fn_snake,_2d_round:
 pub struct SpriteInfos {
 	pub _2d_round: (Handle<Image>, Vec2),
 }
-#[wasm_bindgen]
-extern "C" {
-    // Multiple arguments too!
-    #[wasm_bindgen(js_namespace = window, js_name = f32_flags_array)]
-    fn f32_flags_array() -> Array;
-}
+
 pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
   mut texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>) {
   let texture = asset_server.load("2d/round.png");

@@ -7,9 +7,10 @@ use crate::*;
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct BallBundle {
     pub ball_id: BallId,
+    pub ball_label: BallLabel,
     pub position: Position,
     pub velocity: Velocity,
-    pub target_velocity: TargetVelocity,
+    pub target_velocity: TargetVelocity,   
 }
 #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
 pub struct NPCBundle {
