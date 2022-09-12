@@ -8,7 +8,7 @@ use crate::messaging_::publish_;
 use crate::util::sub_map_area;
 use std::collections::HashMap;
 pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
-  query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>,
+  query: Query<(&BallId,&BallLabel,&Position,&Velocity,&TargetVelocity)>,
   npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>) {
   if (*elapsed_time).elapsed > 5.0{
     (*elapsed_time).elapsed = 0.0;
@@ -22,10 +22,10 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
     npc_bundles_hashmap.insert(String::from("B"),vec![]);
     npc_bundles_hashmap.insert(String::from("C"),vec![]);
     npc_bundles_hashmap.insert(String::from("D"),vec![]);
-    for (ball_id,position,velocity,target_velocity) in query.iter(){
+    for (ball_id,ball_label,position,velocity,target_velocity) in query.iter(){
       let sa = sub_map_area(position.clone());
       if let Some(x) = ball_bundles_hashmap.get_mut(&sa) {
-        x.push(BallBundle{ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
+        x.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
       }
     }
     for (npc_id,position,velocity,chase_target) in npc_query.iter(){
@@ -68,17 +68,17 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
   (*elapsed_time).elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
 }
 pub fn sys_publish_game_state_by_sub_map(mut elapsed_time:ResMut<TimeV2>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
-  query: Query<(&BallId,&Position,&Velocity,&TargetVelocity)>,
+  query: Query<(&BallId,&BallLabel,&Position,&Velocity,&TargetVelocity)>,
   npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>) {
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if *elapsed >5.0{
       *elapsed = 0.0;
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
-      for (ball_id,position,velocity,target_velocity) in query.iter(){
+      for (ball_id,ball_label,position,velocity,target_velocity) in query.iter(){
         let sa = sub_map_area(position.clone());
         if &sa ==key{
-          ball_bundles.push(BallBundle{ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
+          ball_bundles.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
         }
       }
       for (npc_id,position,velocity,chase_target) in npc_query.iter(){

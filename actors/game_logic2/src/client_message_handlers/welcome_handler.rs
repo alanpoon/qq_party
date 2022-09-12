@@ -41,10 +41,12 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       n.push_str(&x.to_string());
       n.push_str("y:");
       n.push_str(&y.to_string());
-      let mut query = app.world.query::<(&BallId,&Position, &Velocity,&TargetVelocity)>();
-      for (ball_id,position, velocity,target_velocity) in query.iter(&app.world){
+      let mut query = app.world.query::<(&BallId,&BallLabel,&Position, &Velocity,&TargetVelocity)>();
+      for (ball_id,ball_label,position, velocity,target_velocity) in query.iter(&app.world){
         ball_bundles.push(BallBundle{
-          ball_id:ball_id.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone(),
+          ball_id:ball_id.clone(),
+          ball_label:ball_label.clone(),
+          position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone(),
         });
       }
       spawn(&mut app.world,ball_bundle.clone());

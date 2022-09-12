@@ -14,15 +14,13 @@ use host_call::host_call;
 use std::borrow::Borrow;
 use info_::info_;
 use wasmbus_rpc::actor::prelude::*;
-use wasmbus_rpc::serialize;
-use wasmcloud_interface_logging::{info,error,debug};
+use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_app::{ScheduleRunnerSettings,App};
+use bevy_app::{App};
 use bevy_ecs::prelude::*;
-use bevy_transform::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_utils::Duration;
 use std::collections::HashMap;

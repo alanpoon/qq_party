@@ -11,10 +11,11 @@ license = "MIT OR Apache-2.0"
 bevy = { version = "0.6.0", default-features = false }
 anyhow = { version = "1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared" }
+serde = { version = "1.0.123", features = ["derive"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 js-sys = "0.3.46"
-wasm-bindgen = "=0.2.78"
+wasm-bindgen = {version= "=0.2.78",features = ["serde-serialize"]}
 
 [dependencies.web-sys]
 version = "0.3.50"

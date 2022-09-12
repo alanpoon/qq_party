@@ -14,7 +14,8 @@ impl Plugin for MapPlugin {
          .add_startup_system(layer::start_up_layer)
          .add_system(helpers::texture::set_texture_filters_to_nearest)
          .add_system(helpers::camera::movement)
-         .add_system(score_display);
+         .add_system(score_display)
+         ;
   }
 }
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -47,20 +48,6 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
   }).insert(Position(Vec2::new(0.0 as f32, 0.0 as f32)));
 }
 
-//fn debug(mut text_query: Query<(&mut Text,&mut Transform),With<Transform>>, query: Query<(&Camera, &Transform,&OrthographicProjection)>){
-// fn debug(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, query: Query<(&Camera, &Transform,&OrthographicProjection)>){
-
-//   for (_,t,o) in query.iter(){
-//     //for (mut text,mut text_t)  in text_query.iter_mut() {
-//     for (mut text,mut s,mut g)  in text_query.iter_mut() {
-//       text.sections[0].value = format!(r#"T:{:?}
-//       R:{:?}
-//       S:{:?}
-//       o:{:?}
-//       "#,*t.translation,*t.rotation,*t.scale,o.scale);
-//     }
-//   }
-// }
 fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
   query: Query<(&Camera, &Transform,&OrthographicProjection)>,
   ball_query: Query<(&BallId,&Position)>,

@@ -68,7 +68,11 @@
     window.game_server = function(){
       return 'ws://localhost:7083/';
     }
-  var url = 'assets/2d/flag32.css';
+  var url = 'assets/2d/flag32_simple.txt';
+  var found = [],          // an array to collect the strings that are found
+    rxp = /{([^}]+)}/g,
+    curMatch;
+
 
   fetch(url)
     .then(function(response) {
@@ -76,11 +80,19 @@
         var lines = text.split('\n');
         var f32_array = []
         for (var i=0; i<lines.length;i++){
-          var b = lines[i].split("{")[0].split(".f32 ")[1].replace(",","")
+          var b = lines[i].split("{")[0].split(".f32 ")[1].replace(",","").replace(" ","")
           //var b = lines[i]
-          f32_array.push(b);
+          let found = 0
+          while( curMatch = rxp.exec( lines[i] ) ) {
+              found =  parseInt(curMatch[1])
+              break
+          }
+          f32_array.push({"key":b,"index":found/32});
         }
         window.f32_country_array = f32_array
+        window.f32_flag = function(){
+          return window.f32_country_array
+        }
       });
     });
   </script>

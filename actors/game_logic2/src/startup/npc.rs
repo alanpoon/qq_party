@@ -1,4 +1,3 @@
-use bevy_ecs::prelude::*;
 use wasmbus_rpc::actor::prelude::*;
 use qq_party_shared::*;
 use bevy_math::Vec2;
