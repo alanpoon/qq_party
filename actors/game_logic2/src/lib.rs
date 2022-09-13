@@ -101,7 +101,9 @@ impl MessageSubscriber for GameLogicActor{
           let mut map = APP.clone();
           client_message_handlers::change_sub_map_handler::_fn(map,game_id,ball_id,position);
         }
-        _=>{}
+        Err(e)=>{
+          info!("client_message err {:?}",e);
+        }
       }
     }
     Ok(())

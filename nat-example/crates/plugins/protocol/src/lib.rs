@@ -71,8 +71,8 @@ impl Plugin for ProtocolPlugin {
         app.add_startup_system(connect_websocket.system());
         #[cfg(target_arch = "wasm32")]
         app.add_system(set_client.system());
-        // #[cfg(target_arch = "wasm32")]
-        // app.add_system(dial_loop.system());
+        #[cfg(target_arch = "wasm32")]
+        app.add_system(listen_web_bevy_events.system());
     }
 }
 

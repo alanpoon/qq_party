@@ -14,70 +14,61 @@ impl ClientState for Normal {
       //info!("LZ{:?}",event);
       match event {
           ClientInput::Event(e) => {
-            if let Event::Nats(_client_name,s_op)=e{
-              let p = nats::proto::ClientOp::Pub{
-                subject:String::from("hello"),
-                reply_to:None,
-                payload:b"bbb".to_vec(),
-              };
-              commands.commands.push(Command::Nats(String::from("default"),p));
-              let mut rand_rng = rand::thread_rng();
-              let x = rand_rng.gen_range(10000..99999);
-              let n = nats::proto::ClientOp::Sub{
-                subject: format!("channel.{:?}",x),
-                queue_group:None,
-                sid:18,
-              };
-              commands.commands.push(Command::Nats(String::from("default"),n));
-              let tv = ClientMessage::Welcome{
-                game_id:String::from("hello"),
-                ball_id:BallId(x,0),
-                ball_label:BallLabel(String::from("hello"),String::from(".sg")),
-              };
-              info!("Welcome Welcome");
-              let tv_= rmp_serde::to_vec(&tv).unwrap();
-              let n = nats::proto::ClientOp::Pub{
-                subject: String::from("client_handler.hello"),
-                reply_to: None,
-                payload: tv_,
-              };
-              commands.commands.push(Command::Nats(String::from("default"),n));
-              commands.commands.push(Command::StoreLocal(UserInfo{
-                ball_id:BallId(x,0),
-                sub_map:String::from(""),
-              }));
-              
-              //info!("normal client_name: {}, {:?}",client_name,s_op);
-              match s_op{
-                nats::proto::ServerOp::Msg{subject:_,sid:_,reply_to:_,payload:_}=>{
-                  // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
-                  // info!("pub going to afternormal");
-                  return AfterNormal{
-                    
+            match e{
+              Event::Nats(_client_name,s_op)=>{
+                match s_op{
+                  nats::proto::ServerOp::Msg{subject:_,sid:_,reply_to:_,payload:_}=>{
+                    // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
+                    // info!("pub going to afternormal");
+                    return AfterNormal{
+                      
+                    }
+                    .into()
                   }
-                  .into()
+                  nats::proto::ServerOp::Ping=>{
+                    let p = nats::proto::ClientOp::Pong;
+                    commands.commands.push(Command::Nats(String::from("default"),p));
+                  }
+                 
+                  _=>{}
                 }
-                nats::proto::ServerOp::Ping=>{
-                  let p = nats::proto::ClientOp::Pong;
-                  commands.commands.push(Command::Nats(String::from("default"),p));
+                return AfterNormal{}.into()
+              },
+              Event::NatPubOk(p) =>{
+                if p==&String::from("hello"){
+                  return AfterNormal{}.into()
                 }
-               
-                _=>{}
+              },
+              Event::BevyWeb(json_value) =>{
+                let m: Result<ClientMessage,_> = serde_json::from_value(json_value.clone());
+                match m{
+                  Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{
+                    let tv = ClientMessage::Welcome{
+                      game_id:String::from("hello"),
+                      ball_id:ball_id.clone(),
+                      ball_label:ball_label,
+                    };
+                    info!("Welcome Welcome");
+                    let tv_= rmp_serde::to_vec(&tv).unwrap();
+                    let n = nats::proto::ClientOp::Pub{
+                      subject: String::from("client_handler.hello"),
+                      reply_to: None,
+                      payload: tv_,
+                    };
+                    commands.commands.push(Command::Nats(String::from("default"),n));
+                    commands.commands.push(Command::StoreLocal(UserInfo{
+                      ball_id:ball_id,
+                      sub_map:String::from(""),
+                    }));
+                  }
+                  _=>{}
+                }
               }
-              return AfterNormal{
-                  
-              }
-              .into()
-              } else if &Event::NatPubOk(String::from("hello"))== e{
-                info!("pub going to afternormal");
-                return AfterNormal{
-                  
-                }
-                .into()
+              _=>{}
             }    
           }
-        }
+      }
         
-        self.clone().into()
+      self.clone().into()
     }
 }

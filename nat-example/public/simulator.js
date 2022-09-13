@@ -96,7 +96,7 @@ const gamepadSimulator = {
     timestamp: Math.floor(Date.now() / 1000)
   },
   create: function () {
-    document.querySelector("body").insertAdjacentHTML('beforeend', `<svg viewBox="0 0 600 300" id="amdfc-controller" width="350px" style="position: absolute; z-index: 999999;">
+    document.querySelector("body").insertAdjacentHTML('beforeend', `<svg viewBox="0 0 600 300" id="amdfc-controller" width="350px" style="display:none; position: absolute; z-index: 999999;">
 <style>
 .amdfc-int:hover {
 fill: #bbb;

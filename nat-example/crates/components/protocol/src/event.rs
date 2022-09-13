@@ -8,6 +8,7 @@ pub enum Event {
     WSClose,
     NatSubOk(String),
     NatPubOk(String),
+    BevyWeb(serde_json::Value),
     #[serde(other)]
     Unknown,
 }

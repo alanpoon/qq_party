@@ -12,6 +12,7 @@ use std::collections::HashMap;
 use std::sync::{Mutex};
 use tracing::error;
 use wasm_bindgen_futures::spawn_local;
+use js_sys::{Array};
 #[wasm_bindgen]
 extern "C" {
     // Use `js_namespace` here to bind `console.log(..)` instead of just
@@ -28,6 +29,8 @@ extern "C" {
     // Multiple arguments too!
     #[wasm_bindgen(js_namespace = window, js_name = game_server)]
     fn game_server() -> String;
+    #[wasm_bindgen(js_namespace = window, js_name = web_bevy_events_fn)]
+    fn web_bevy_events_fn() -> Array;
 }
 macro_rules! console_log {
   // Note that this is using the `log` function imported above during
@@ -125,6 +128,16 @@ pub fn set_client(mut client_res: ResMut<Option<BoxClient>>) {
     }
 }
 
+pub fn listen_web_bevy_events(
+  mut events: ResMut<protocol::Events>) {
+  let web_events:Array = web_bevy_events_fn();
+  // Nats(String,nats::proto::ServerOp),//server_name
+  for j in web_events.iter(){
+    if let Ok(j2) = j.into_serde::<serde_json::Value>(){
+      (*events).push(protocol::Event::BevyWeb(j2));
+    }
+  }
+}
 
 pub fn block_on<T>(future: impl Future<Output = T> + 'static) {
     wasm_bindgen_futures::spawn_local(async { future.map(|_| ()).await });

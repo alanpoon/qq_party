@@ -1,0 +1,16 @@
+{
+  "name": "pkg_ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "msgpackr": "^1.7.0-beta1",
+    "nats.ws": "^1.9.0",
+    "rand": "0.0.4"
+  }
+}
