@@ -20,10 +20,10 @@ impl ClientState for Normal {
                   nats::proto::ServerOp::Msg{subject:_,sid:_,reply_to:_,payload:_}=>{
                     // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
                     // info!("pub going to afternormal");
-                    return AfterNormal{
+                    // return AfterNormal{
                       
-                    }
-                    .into()
+                    // }
+                    // .into()
                   }
                   nats::proto::ServerOp::Ping=>{
                     let p = nats::proto::ClientOp::Pong;
@@ -32,7 +32,7 @@ impl ClientState for Normal {
                  
                   _=>{}
                 }
-                return AfterNormal{}.into()
+                //return AfterNormal{}.into()
               },
               Event::NatPubOk(p) =>{
                 if p==&String::from("hello"){
@@ -40,6 +40,7 @@ impl ClientState for Normal {
                 }
               },
               Event::BevyWeb(json_value) =>{
+                info!("--- protocol BevyWeb");
                 let m: Result<ClientMessage,_> = serde_json::from_value(json_value.clone());
                 match m{
                   Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{
@@ -48,7 +49,7 @@ impl ClientState for Normal {
                       ball_id:ball_id.clone(),
                       ball_label:ball_label,
                     };
-                    info!("Welcome Welcome");
+                    info!("--- Welcome");
                     let tv_= rmp_serde::to_vec(&tv).unwrap();
                     let n = nats::proto::ClientOp::Pub{
                       subject: String::from("client_handler.hello"),
@@ -60,8 +61,15 @@ impl ClientState for Normal {
                       ball_id:ball_id,
                       sub_map:String::from(""),
                     }));
+                    return AfterNormal{}.into()
                   }
-                  _=>{}
+                  
+                  Err(e)=>{
+                    info!("---ClientMessage de err{:?}",e);
+                  }
+                  _=>{
+
+                  }
                 }
               }
               _=>{}

@@ -39,7 +39,7 @@ impl Plugin for PhysicsPlugin {
             .insert_resource(RapierConfiguration {
               scale: 1.0,
               gravity: Vector2::zeros(),
-              timestep_mode: bevy_rapier2d::physics::TimestepMode::InterpolatedTimestep,
+              //timestep_mode: bevy_rapier2d::physics::TimestepMode::InterpolatedTimestep,
               ..Default::default()
             })
             .init_resource::<timewrapper::TimeWrapper>()

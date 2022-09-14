@@ -162,10 +162,15 @@
           var b = lines[i].split("{")[0].split(".f32 ")[1].replace(",","").replace(" ","")
           //var b = lines[i]
           let found = 0
-          while( curMatch = rxp.exec( lines[i] ) ) {
-              found =  parseInt(curMatch[1])
-              break
-          }
+          //curMatch = rxp.exec( lines[i])
+          curMatch = lines[i].split("{")[1].split("}")[0]
+          found = parseInt(curMatch)
+          
+          
+          // while( curMatch = rxp.exec( lines[i] ) ) {
+          //     found =  parseInt(curMatch[1])
+          //     break
+          // }
           f32_array.push({"key":b,"index":found/32});
         }
         window.f32_country_array = f32_array

@@ -34,7 +34,7 @@ pub fn add_chicken_sprite_system(
         if let Some(f_handle) = f_handle{
           let text_style = TextStyle {
             font:font_handle.clone(),
-            font_size: 25.0,
+            font_size: 30.0,
             color: Color::BLACK,
           };
           let text_alignment = TextAlignment {
@@ -45,18 +45,22 @@ pub fn add_chicken_sprite_system(
             parent
             .spawn_bundle(SpriteSheetBundle {
               sprite:TextureAtlasSprite{
-                index:*flag_usize,
+                index:flag_usize.clone(),
                 ..Default::default()
               },
               texture_atlas: f_handle.clone(),
-              transform: Transform::from_xyz(200.0,-10.0,3.0).with_scale(Vec3::splat(2.0)),
-              ..Default::default()
-            }).insert_bundle(Text2dBundle {
-              text: Text::with_section(&ball_label.0,text_style.clone(), text_alignment),
-              transform: Transform::from_xyz(0.0,-100.0,3.0),
+              transform: Transform::from_xyz(130.0,-60.0,3.0).with_scale(Vec3::splat(2.0)),
               ..Default::default()
             });
+         
           }
+          parent.spawn_bundle(Text2dBundle {
+            text: Text::with_section(&ball_label.0,text_style.clone(), text_alignment),
+            transform: Transform::from_xyz(0.0,-100.0,3.0),
+            ..Default::default()
+          });
+        }else{
+          info!("cannot find flag {:?}",ball_label.1);
         }
       
        });
