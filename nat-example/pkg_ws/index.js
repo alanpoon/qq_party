@@ -25,6 +25,8 @@ export function init_pkg_ws(){
     var value = "."+e.value.toLowerCase();
     var d_l = ClientMessageWelcome(name,value)
     window.web_bevy_events.push(d_l)
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
   }
 }
 function randomIntFromInterval(min, max) { // min and max included 
