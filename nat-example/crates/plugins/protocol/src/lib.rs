@@ -36,7 +36,8 @@ extern "C" {
     // Multiple arguments too!
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log_many(a: &str, b: &str);
-    
+    #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn)]
+    fn push_web_bevy_events_fn(msg: &str,msg_ago:&str,user:&str);
 }
 // macro_rules! console_log {
 //   // Note that this is using the `log` function imported above during
@@ -208,6 +209,10 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
         commands.clear();
     }
 }
+#[derive(Serialize, Deserialize)]
+pub struct Example {
+    pub field1: HashMap<u32, String>,
+}
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
   mut events: ResMut<protocol::Events>,
@@ -257,6 +262,15 @@ fn receive_events(mut cmd: Commands,
                             info!("ball_bundle!! spawn {:?}",ball_bundle);
                             cmd.spawn_bundle(ball_bundle);
                             //commands.commands.push(Command::Nats(String::from("default"),n))
+                          }
+                          _=>{}
+                        }
+                      }else if subject.contains("chat"){
+                        let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
+                        match server_message{
+                          ServerMessage::Chat{msg,msg_ago,user,user_id:_}=>{
+                            push_web_bevy_events_fn(&msg,&msg_ago,&user);
+                            
                           }
                           _=>{}
                         }

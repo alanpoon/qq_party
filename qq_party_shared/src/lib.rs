@@ -46,6 +46,7 @@ pub struct Parent(Entity);
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Welcome{ball_bundle:BallBundle,sub_map:String},
+    Chat{msg:String,msg_ago:String,user:String,user_id:u32},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
@@ -53,6 +54,7 @@ pub enum ServerMessage {
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
     Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
+    Chat{game_id:String,msg:String},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
 }
