@@ -10,6 +10,11 @@ bash ops/compile.sh ws_gateway,ws_server,wasm_user
 
 
 nats-account-server -c ops/nas_not.conf
+nats-server -c ops/websocket_lite.conf -js
+
+WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 wasmcloud_host start
+sudo systemctl start docker
+
 nohup nats-server -c ops/gateway.conf -V -D nohup.out 2>&1 &
 nats-server -c ops/gateway.conf -V -D
 nats-server -c ops/gateway2.conf -V -D

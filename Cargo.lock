@@ -1169,6 +1169,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "game_chat"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "convert_case",
+ "futures 0.3.21",
+ "instant",
+ "lazy_static",
+ "qq_party_shared",
+ "rmp-serde 1.1.0",
+ "serde",
+ "serde_bytes",
+ "wasm-bindgen",
+ "wasmbus-rpc",
+ "wasmcloud-interface-logging",
+ "wasmcloud-interface-messaging",
+ "wasmcloud-interface-thread",
+]
+
+[[package]]
 name = "game_logic2"
 version = "0.1.0"
 dependencies = [

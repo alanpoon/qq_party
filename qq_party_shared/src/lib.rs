@@ -54,7 +54,6 @@ pub enum ServerMessage {
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
     Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
-    Chat{game_id:String,msg:String},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
 }
