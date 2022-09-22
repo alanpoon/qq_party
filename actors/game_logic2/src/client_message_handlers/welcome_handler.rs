@@ -10,7 +10,7 @@ use std::sync::{Arc, Mutex};
 use bevy_ecs::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
 use bevy_math::Vec2;
-use wasmbus_rpc::RpcResult;
+use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:BallLabel)-> RpcResult<()>{
     info!("handle_message map");

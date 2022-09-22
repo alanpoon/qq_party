@@ -2,6 +2,7 @@ import { connect,ConnectionOptions } from "nats.ws";
 import { unpack, pack } from 'msgpackr';
 //var rand = require('rand');
 import rand from 'rand'
+import {init_chat} from './chat'
 export function init_pkg_ws(){
   // document.getElementById("buttonz").onclick(async function(e){
     
@@ -28,6 +29,7 @@ export function init_pkg_ws(){
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
   }
+  init_chat()
 }
 function randomIntFromInterval(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)

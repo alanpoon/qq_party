@@ -209,10 +209,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
         commands.clear();
     }
 }
-#[derive(Serialize, Deserialize)]
-pub struct Example {
-    pub field1: HashMap<u32, String>,
-}
+
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
   mut events: ResMut<protocol::Events>,

@@ -1,4 +1,4 @@
-# examples/interface/payments/Makefile
+# Makefile for interface thread
 
-include ../../build/makefiles/interface.mk
-	
+include ./interface.mk
+

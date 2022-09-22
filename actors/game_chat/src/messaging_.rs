@@ -1,6 +1,6 @@
-use wasmbus_rpc::serialize;
 use wasmbus_rpc::actor::prelude::*;
-use wasmbus_rpc::RpcError;
+use wasmbus_rpc::error::RpcError;
+use wasmbus_rpc::common::serialize;
 use wasmcloud_interface_messaging::{PubMessage};
 use crate::host_call::host_call;
 use std::borrow::Cow;

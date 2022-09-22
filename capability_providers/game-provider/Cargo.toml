@@ -9,7 +9,7 @@ edition = "2018"
 static_plugin = []
 
 [dependencies]
-wasmbus-rpc = "=0.5.2"
+wasmbus-rpc = "=0.9.2"
 async-trait = "0.1"
 log = "0.4.8"
 env_logger = "0.8.3"
@@ -22,4 +22,5 @@ tokio = { version = "1", features = ["full"] }
 version = "0.1.0"
 
 [patch.crates-io]
-wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="84b71217e9a88b7dd76378715d422da1b5f874c4"}
+wasmbus-rpc= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
+wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}

@@ -1,5 +1,4 @@
-# Example interface for a Thread capability provider
+# Interface for the Factorial service, wasmcloud:example:factorial
 
-This example is used in the 
-[Creating an interfaces](https://wasmcloud.dev/app-dev/create-provider/new-interface/) 
-section of the [developer documentation site](https://wasmcloud.dev/).
+This is an interface for a simple service that calculates
+the fatorial of a whole number.

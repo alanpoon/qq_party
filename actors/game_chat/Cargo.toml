@@ -8,18 +8,16 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wasmbus-rpc = "=0.5.2"
+wasmbus-rpc = "=0.9.2"
 async-trait = "0.1"
 serde_bytes = "0.11"
 serde = { version = "1.0.123", features = ["derive"]}
-#serde_json = "1.0.64"
 futures = "0.3"
-wasmcloud-interface-logging = "0.2.0"
-wasmcloud-interface-messaging = "0.2.0"
-wasmcloud-interface-thread = { path = "../../interfaces/thread/rust"}
+wasmcloud-interface-logging = "=0.6.0"
+wasmcloud-interface-messaging = "=0.6.0"
 convert_case = "0.1.0"
 lazy_static = "1.4.0"
-qq_party_shared = {path = "../../qq_party_shared"}
 instant = "0.1.12"
 wasm-bindgen = "=0.2.78"
 rmp-serde = "1.1.0"
+rustrict = "0.5.1"

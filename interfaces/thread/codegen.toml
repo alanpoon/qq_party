@@ -9,12 +9,15 @@
 # The namespaces(s) that will be generated for this library are indicated
 # in the per-language file settings later in this file.
 [[models]]
-
 path = "."
-files = ["thread.smithy"]
+files = [ "thread.smithy" ]
+
 
 [[models]]
-url = "https://wasmcloud.github.io/models/org.wasmcloud"
+# Location of dependencies may be either a path to a directory, or a url prefix
+# If a relative path is used, it is relative to the location of this codegen.toml
+#path = "/path/to/my-interfaces"
+url = "https://wasmcloud.github.io/interfaces/idl/org.wasmcloud"
 files = [ "wasmcloud-core.smithy", "wasmcloud-model.smithy" ]
 
 
@@ -63,5 +66,4 @@ output_dir = "rust"
 
 [[rust.files]]
 path = "src/thread.rs"
-namespace = "org.wasmcloud.examples.thread"
-
+namespace = "org.example.interfaces.thread"

@@ -1,12 +1,8 @@
 [package]
 name = "wasmcloud-interface-thread"
-version = "0.2.0"
-description = "Sample interface for a thread capability provider"
-repository = "https://github.com/wasmcloud/examples"
-homepage = "https://wasmcloud.dev"
-keywords = ["wasmcloud","webassembly","capability"]
-categories = [ "api-bindings","wasm" ]
-authors = [ "wasmcloud Team" ]
+version = "0.1.0"
+description = "Interface library for the thread thread capability, "
+authors = [ "dev@example.com" ]
 edition = "2021"
 license = "Apache-2.0"
 
@@ -16,20 +12,16 @@ exclude = [ "build.rs" ]
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = []
-
 [dependencies]
 async-trait = "0.1"
-futures = "0.3"
-serde = { version = "1.0" , features = ["derive"] }
-serde_json = "1.0"
-serde_bytes = "0.11"
-wasmbus-rpc = "=0.5.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_bytes = "0.11.5"
+wasmbus-rpc = "=0.9.2"
 
 [dev-dependencies]
 base64 = "0.13"
 
 # build-dependencies needed for build.rs
 [build-dependencies]
-weld-codegen = "0.2.4"
+weld-codegen = "0.4.6"
+

@@ -22,10 +22,11 @@ exclude = ["ui/rust_new","capability_providers"]
 debug = true
 
 [patch.crates-io]
+wasmbus-rpc= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
+wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
 instant = {path="wasmcloud_patches/instant"}
 getrandom = {path="wasmcloud_patches/getrandom"}
 #bevy_app = {path="wasmcloud_patches/bevy_app"}
-wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="84b71217e9a88b7dd76378715d422da1b5f874c4"}
 
 [patch."https://github.com/bevyengine/bevy"]
 bevy_app = {path="wasmcloud_patches/bevy_app"}

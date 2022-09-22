@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
-use wasmbus_rpc::{core::LinkDefinition, provider::HostBridge, RpcError};
+use wasmbus_rpc::{core::LinkDefinition, provider::HostBridge};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use wasmbus_rpc::provider::prelude::*;
 use wasmbus_rpc::provider::ProviderTransport;

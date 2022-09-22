@@ -13,8 +13,7 @@
     <div id="content">
         <div class="p-4 overflow-y-auto">
             <h1 id="org_wasmcloud_core" class="text-2xl font-serif">Namespace org.wasmcloud.core</h1>
-            <div class="table m-4 ml-12">
-            <div class="table-row">
+            <div class="table m-4 ml-12">            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Services
                 </div>
@@ -22,8 +21,7 @@
                     <ul>
 <li class="font-light"><a href="#org_wasmcloud_core_actor"><a href="#actor">Actor</a></a></li>                    </ul>
                 </div>
-            </div>
-            <div class="table-row">
+            </div>            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Operations
                 </div>
@@ -31,8 +29,7 @@
                     <ul>
 <li class="font-light"><a href="#org_wasmcloud_core_health_request"><a href="#health_request">HealthRequest</a></a></li>                    </ul>
                 </div>
-            </div>
-            <div class="table-row">
+            </div>            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Structures
                 </div>
@@ -40,8 +37,7 @@
                     <ul>
 <li class="font-light"><a href="#org_wasmcloud_core_health_check_request"><a href="#health_check_request">HealthCheckRequest</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_health_check_response"><a href="#health_check_response">HealthCheckResponse</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_host_data"><a href="#host_data">HostData</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_invocation"><a href="#invocation">Invocation</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_invocation_response"><a href="#invocation_response">InvocationResponse</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_link_definition"><a href="#link_definition">LinkDefinition</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_wasm_cloud_entity"><a href="#wasm_cloud_entity">WasmCloudEntity</a></a></li>                    </ul>
                 </div>
-            </div>
-            <div class="table-row">
+            </div>            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Lists
                 </div>
@@ -49,8 +45,7 @@
                     <ul>
 <li class="font-light"><a href="#org_wasmcloud_core_actor_links"><a href="#actor_links">ActorLinks</a></a></li>                    </ul>
                 </div>
-            </div>
-            <div class="table-row">
+            </div>            <div class="table-row">
                 <div class="table-cell align-top pr-6 w-28">
                     Maps
                 </div>
@@ -59,8 +54,6 @@
 <li class="font-light"><a href="#org_wasmcloud_core_host_env_values"><a href="#host_env_values">HostEnvValues</a></a></li><li class="font-light"><a href="#org_wasmcloud_core_link_settings"><a href="#link_settings">LinkSettings</a></a></li>                    </ul>
                 </div>
             </div>            </div>
-
-
 
 
     <h2 id="actor" class="mt-8 border-t-2 border-gray-300">
@@ -113,9 +106,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-
-
 
 
 
@@ -142,8 +132,6 @@
                             <td>[object]</td>
                     </tr>            </table>
         </div>
-
-
 
 
     <h2 id="health_check_response" class="mt-8 border-t-2 border-gray-300">
@@ -179,8 +167,6 @@
         </div>
 
 
-
-
     <h2 id="health_request" class="mt-8 border-t-2 border-gray-300">
         <a href="#health_request">HealthRequest</a><span class="text-lg pl-4">(operation)</span>
     </h2><p class="font-light ml-6">Perform health check. Called at regular intervals by host</p>
@@ -204,8 +190,6 @@
                                     </tr>                                </tbody>
                             </table>
                         </div>
-                        
-
 
 
 
@@ -227,6 +211,10 @@
                                         <td><span class="font-light"></span></td>
                                     </tr>                                    <tr>
                                         <td>hostId:</td>
+                                        <td>String</td>
+                                        <td><span class="font-light"></span></td>
+                                    </tr>                                    <tr>
+                                        <td>invocationSeed:</td>
                                         <td>String</td>
                                         <td><span class="font-light"></span></td>
                                     </tr>                                    <tr>
@@ -266,8 +254,6 @@
         </div>
 
 
-
-
     <h2 id="host_env_values" class="mt-8 border-t-2 border-gray-300">
         <a href="#host_env_values">HostEnvValues</a><span class="text-lg pl-4">(map)</span>
     </h2><p class="font-light ml-6">Environment settings for initializing a capability provider</p>
@@ -294,8 +280,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-
 
 
 
@@ -352,8 +336,6 @@
         </div>
 
 
-
-
     <h2 id="invocation_response" class="mt-8 border-t-2 border-gray-300">
         <a href="#invocation_response">InvocationResponse</a><span class="text-lg pl-4">(structure)</span>
     </h2><p class="font-light ml-6">Response to an invocation</p>
@@ -391,11 +373,9 @@
         </div>
 
 
-
-
     <h2 id="link_definition" class="mt-8 border-t-2 border-gray-300">
         <a href="#link_definition">LinkDefinition</a><span class="text-lg pl-4">(structure)</span>
-    </h2><p class="font-light ml-6">Link definition for an actor</p>
+    </h2><p class="font-light ml-6">Link definition for binding actor to provider</p>
                         <div class="ml-12">
                             <table>
                                 <thead>
@@ -438,8 +418,6 @@
         </div>
 
 
-
-
     <h2 id="link_settings" class="mt-8 border-t-2 border-gray-300">
         <a href="#link_settings">LinkSettings</a><span class="text-lg pl-4">(map)</span>
     </h2><p class="font-light ml-6">Settings associated with an actor-provider link</p>
@@ -466,8 +444,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-
 
 
 
@@ -506,7 +482,6 @@
                             <td>[object]</td>
                     </tr>            </table>
         </div>
-
         </div>
     </div></body>
 </html>

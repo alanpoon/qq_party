@@ -23,18 +23,20 @@ window.chat_append =function(user,user_id,msg,msg_id,msg_ago){
   $("#chat_window").append($item)
   
 }
+var USER_KEY="tello"
+// window.chat_send =function(e){
+//   var dataObj = {
+//     "Chat":{
+      
+//       "msg":e[0].value,
+//       "user_key":USER_KEY
+//     }
+//   }
+//   // window.web_bevy_events.push(dataObj)
+//   // console.log("chat_send",e[0].value)
+//   e[0].value=""
+// }
+// window.push_web_bevy_events_fn =function(msg,msg_ago,user){
+//   window.chat_append(user,0,msg,0,msg_ago);
+// }
 
-window.chat_send =function(e){
-  var dataObj = {
-    "Chat":{
-      "game_id":"hello",
-      "msg":e[0].value,
-    }
-  }
-  window.web_bevy_events.push(dataObj)
-  console.log("chat_send",e[0].value)
-  e[0].value=""
-}
-window.push_web_bevy_events_fn =function(msg,msg_ago,user){
-  window.chat_append(user,0,msg,0,msg_ago);
-}

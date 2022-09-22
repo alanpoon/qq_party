@@ -1,9 +1,10 @@
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
-use wasmbus_rpc::{core::LinkDefinition, provider::HostBridge, RpcError};
+use wasmbus_rpc::{core::LinkDefinition, provider::HostBridge};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use wasmbus_rpc::provider::prelude::*;
 use wasmbus_rpc::provider::ProviderTransport;
+use wasmbus_rpc::actor::prelude::Context;
 use std::thread::sleep;
 use std::{collections::HashMap, time::Duration, time::Instant};
 use std::sync::{Arc, Mutex};
@@ -106,7 +107,7 @@ impl Thread for ThreadProvider {
                 let read_guard = inner.read().await;
                 let bridge = read_guard.bridge;
                 let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
-                let ctx = wasmbus_rpc::Context::default();
+                let ctx = Context::default();
                 let actor = ThreadSender::via(tx);
                 match actor.handle_request(&ctx, &m).await {
                   Err(RpcError::Timeout(_)) => {
@@ -162,7 +163,7 @@ impl Thread for ThreadProvider {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // handle lattice control messages and forward rpc to the provider dispatch
   // returns when provider receives a shutdown control message
-  provider_main(ThreadProvider::default())?;
+  provider_main(ThreadProvider::default(),None)?;
 
   eprintln!("Thread provider exiting");
   Ok(())
