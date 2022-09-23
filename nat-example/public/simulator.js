@@ -261,7 +261,7 @@ fill: fuchsia;
       });
       
       element.addEventListener("mouseleave", function (e) {
-        element.setAttribute("class", "amdfc-simple");
+        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].touched = false;
@@ -277,7 +277,7 @@ fill: fuchsia;
       });
 
       element.addEventListener("mousedown", function (e) {
-        element.setAttribute("class", "amdfc-simple amdfc-active");
+        element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -292,7 +292,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("touchstart", function (e) {
-        element.setAttribute("class", "amdfc-simple amdfc-active");
+        element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -307,7 +307,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("mouseup", function (e) {
-        element.setAttribute("class", "amdfc-simple");
+        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;
@@ -321,7 +321,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("touchend", function (e) {
-        element.setAttribute("class", "amdfc-simple");
+        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;

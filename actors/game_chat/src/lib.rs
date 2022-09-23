@@ -19,11 +19,13 @@ struct ChatActor {}
 #[async_trait]
 impl MessageSubscriber for ChatActor{
   async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
+    info_(format!("some chat msg"));
     if req.subject.contains("chat_handler"){
       let mut client_message:Result<ChatMsg,_>= rmp_serde::from_slice(&req.body);
       match client_message{
         Ok(mut cm)=>{
           cm.data = cm.data.censor();
+          info_(format!("some chat msg--{:?}",cm.data.clone()));
           let pMsg = PubMessage{
             body:rmp_serde::to_vec(&cm).unwrap(),
             reply_to: None,
@@ -31,7 +33,9 @@ impl MessageSubscriber for ChatActor{
           };
           publish_(pMsg);
         },
-        Err(e)=>{}
+        Err(e)=>{
+          info_(format!("game_chat{:?}",e));
+        }
       }
     }
     Ok(())
@@ -39,5 +43,6 @@ impl MessageSubscriber for ChatActor{
 }
 #[derive(Serialize,Deserialize)]
 pub struct ChatMsg{
+  pub user:String,
   pub data:String
 }

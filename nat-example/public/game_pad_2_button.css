@@ -35,3 +35,6 @@
   left:50%;
   transform:translateX(-50%);
 }
+.amdfc-active{
+  background-color: rgb(184, 208, 243) !important;
+}

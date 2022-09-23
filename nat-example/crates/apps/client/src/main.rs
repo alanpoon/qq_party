@@ -19,6 +19,7 @@ pub fn main() {
           width: 1280.0,
           height: 720.0,
           title: String::from("qq_party"),
+          canvas:Some(String::from("#qq_party_canvas")),
           ..Default::default()
         })
         .add_plugins(DefaultPlugins)

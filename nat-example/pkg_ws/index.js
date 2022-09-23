@@ -22,6 +22,7 @@ export function init_pkg_ws(){
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
     var name = document.getElementById("name").value
+    window.user = name;
     var e = document.getElementById("country")
     var value = "."+e.value.toLowerCase();
     var d_l = ClientMessageWelcome(name,value)
