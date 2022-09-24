@@ -27,13 +27,13 @@ pub struct TargetDestination(pub Vec2,pub f32);
 #[derive(Component,Debug, PartialEq, Default)]
 pub struct Time{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct BallId(pub u32,pub u8);
+pub struct BallId(pub u32,pub i16);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct BallLabel(pub String,pub String); //Label, Flag
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct ChaseTargetId2(pub u32, pub Option<Entity>);//ball, npc, speed
+pub struct ChaseTargetId2(pub u32, pub Option<Entity>,pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
@@ -50,6 +50,7 @@ pub enum ServerMessage {
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
+    Scores{scoreboard:ScoreBoard}
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {

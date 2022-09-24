@@ -38,6 +38,8 @@ extern "C" {
     fn log_many(a: &str, b: &str);
     #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn)]
     fn push_web_bevy_events_fn(msg: &str,msg_ago:&str,user:&str);
+    #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn2)]
+    fn push_web_bevy_events_fn2(msg: &str);
 }
 // macro_rules! console_log {
 //   // Note that this is using the `log` function imported above during
@@ -247,6 +249,15 @@ fn receive_events(mut cmd: Commands,
                             gamestate::spawn_or_update_ball_bundles(&mut cmd,&mut v_query,delta,ball_bundles);
                             gamestate::spawn_or_update_npc_bundles(&mut cmd,&mut npc_query,delta,npc_bundles);
 
+                          }
+                          ServerMessage::Scores{scores,..}=>{
+                            match serde_json::to_string(&ServerMessage::Scores{scores}){
+                              Ok(j)=>{
+                                push_web_bevy_events_fn2(&j);
+                              }
+                              _=>{}
+                            }
+                            
                           }
                           _=>{}
                         }

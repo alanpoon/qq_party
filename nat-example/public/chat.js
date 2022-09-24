@@ -36,7 +36,7 @@ var USER_KEY="tello"
 //   // console.log("chat_send",e[0].value)
 //   e[0].value=""
 // }
-// window.push_web_bevy_events_fn =function(msg,msg_ago,user){
-//   window.chat_append(user,0,msg,0,msg_ago);
-// }
+window.push_web_bevy_events_fn =function(msg,msg_ago,user){
+  window.chat_append(user,0,msg,0,msg_ago);
+}
 

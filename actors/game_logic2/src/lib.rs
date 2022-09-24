@@ -55,7 +55,7 @@ impl Thread for GameLogicActor{
       .add_plugin(PhysicsPlugin)
       //.add_system(systems::publish::sys_publish_game_state.system())
       .add_system(systems::publish::sys_publish_game_state_by_sub_map.system())
-     // .add_system(systems::sys_time_debug.system())
+      //.add_system(systems::publish::sys_publish_score.system())
       //.add_system(systems::sys.system())
       ;
       

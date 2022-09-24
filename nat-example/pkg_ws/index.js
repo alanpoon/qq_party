@@ -31,6 +31,14 @@ export function init_pkg_ws(){
     modal.style.display = "none";
   }
   init_chat()
+  window.push_web_bevy_events_fn2 =function(msg){
+    var event = JSON.parse(msg);
+    if (typeof event["scores"]!="undefined"){
+      console.log("scores events",event);
+      //window.leaderboard = [{"name":"hello","score":12414,"flag":"cn"},{"name":"tello","score":22,"flag":"cn"}]
+
+    }
+  }
 }
 function randomIntFromInterval(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)

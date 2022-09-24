@@ -58,11 +58,12 @@ export async function init_chat(){
     console.log("chat from server subscription closed");
     })();
     setInterval(function(){
-      // do your thing
+      // update chat ago
       $(".posttime").each(function(){
         var posttime = $(this).data("time");
         $(this).text(moment.unix(posttime).fromNow());
       })
-      
+     
     }, 10000);
+    
 }

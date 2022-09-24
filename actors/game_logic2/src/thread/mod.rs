@@ -40,6 +40,7 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
             (String::from("B"),(start_thread_request.elapsed + 1000) as f32),
             (String::from("C"),(start_thread_request.elapsed + 2000) as f32),
             (String::from("D"),(start_thread_request.elapsed + 3000) as f32),
+            (String::from("scoreboard"),(start_thread_request.elapsed + 100) as f32),
           ])});
         }
         if let Some(mut t) = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>(){

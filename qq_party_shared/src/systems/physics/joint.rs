@@ -23,9 +23,9 @@ query_scoring:Query<(Entity,&Parent,&NPCId),Without<BallId>>,mut res:ResMut<Scor
     };
     
     for (ball_e,ball_id,pos,mut last_npc) in ball_query.iter_mut(){
-      if let Some(_) = speed{
+      if let Some(s) = speed{
         if pos.0.distance(npc_pos.0)<50.0{
-          cmd.entity(npc_e).insert(ChaseTargetId2(ball_id.0,Some(ball_e)));
+          cmd.entity(npc_e).insert(ChaseTargetId2(ball_id.0,Some(ball_e),s));
         }
       }else if is_crate{
         if let Some(last_npc_e) = last_npc.1{ 

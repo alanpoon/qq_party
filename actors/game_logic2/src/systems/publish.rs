@@ -67,12 +67,41 @@ pub fn sys_publish_game_state(mut elapsed_time:ResMut<Time>,bevy_wasmcloud_time_
   // info_(format!("bevy_wasmcloud_time delta_seconds {:?} {:?}",(*bevy_wasmcloud_time_val).delta_seconds, (*elapsed_time).elapsed));
   (*elapsed_time).elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
 }
+
 pub fn sys_publish_game_state_by_sub_map(mut elapsed_time:ResMut<TimeV2>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
   query: Query<(&BallId,&BallLabel,&Position,&Velocity,&TargetVelocity)>,
-  npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>) {
+  npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>,
+  scoreboard:Res<ScoreBoard>) {
+  let mut once = true;
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if *elapsed >5.0{
       *elapsed = 0.0;
+      
+      if key =="scoreboard"{
+          info_(format!("sys_publish_score scores {:?}",(*scoreboard).clone()));
+          let msg = ServerMessage::Scores{scoreboard:scoreboard.clone()};
+
+        //if scores.len() >0{
+        //   if scores.len() >10{
+        //     scores.clone().split_off(10);
+        //   }
+        // }
+        
+          match rmp_serde::to_vec(&msg){
+            Ok(b)=>{
+              let pMsg = PubMessage{
+                body:b,
+                reply_to: None,
+                subject: String::from("game_logic.scores"),
+              };
+              publish_(pMsg);
+            }
+            Err(e)=>{
+              info_(format!("m iter ....error{}",e));
+            }
+          }
+        continue;
+      }
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
       for (ball_id,ball_label,position,velocity,target_velocity) in query.iter(){
@@ -80,11 +109,13 @@ pub fn sys_publish_game_state_by_sub_map(mut elapsed_time:ResMut<TimeV2>,bevy_wa
         if &sa ==key{
           ball_bundles.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
         }
+        
       }
+      
       for (npc_id,position,velocity,chase_target) in npc_query.iter(){
         let sa = sub_map_area(position.clone());
         if &sa ==key{
-          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:chase_target.clone()});
+          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0)});
         }
       }
       for (i,npc_chunck) in npc_bundles.chunks(20).enumerate(){
