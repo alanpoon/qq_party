@@ -250,8 +250,8 @@ fn receive_events(mut cmd: Commands,
                             gamestate::spawn_or_update_npc_bundles(&mut cmd,&mut npc_query,delta,npc_bundles);
 
                           }
-                          ServerMessage::Scores{scores,..}=>{
-                            match serde_json::to_string(&ServerMessage::Scores{scores}){
+                          ServerMessage::Scores{scoreboard,..}=>{
+                            match serde_json::to_string(&ServerMessage::Scores{scoreboard}){
                               Ok(j)=>{
                                 push_web_bevy_events_fn2(&j);
                               }
