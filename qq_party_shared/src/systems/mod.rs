@@ -16,22 +16,3 @@ pub fn update_state_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity
     *tv = TargetVelocity(Vec2::ZERO);
   }
 }
-pub fn update_state_velocity_npc(mut npc_query: Query<(&Position,&mut Velocity,&ChaseTargetId2),(With<NPCId>,Without<BallId>)>,
-  ball_query:Query<(&BallId,&Position,&Velocity)>){
-  for (npc_pos,mut v,chase_target_id) in npc_query.iter_mut(){
-    if chase_target_id.0 !=0{
-      for (ball_id,pos,velocity) in ball_query.iter(){
-        if chase_target_id.0 == ball_id.0{
-          if chase_target_id.2 ==0{
-            let unit_vec = (pos.0+2.0*velocity.0-npc_pos.0).normalize_or_zero();    
-            v.0.x = unit_vec.x *chase_target_id.2 as f32 *unit_vec.length_recip();
-            v.0.y = unit_vec.y *chase_target_id.2 as f32 *unit_vec.length_recip();
-            break;
-          }else{
-            
-          }
-        }
-      }
-    }
-  }
-}

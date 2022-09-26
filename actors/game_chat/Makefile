@@ -14,8 +14,8 @@ PUSH_REG_CMD = wash reg push --insecure $(REG_URL)
 
 include ../../build/makefiles/actor.mk
 
-ACTOR_ID=$(shell make actor_id 2>/dev/null | tail -1)
-CALL_ALIAS = game_logic2
+ACTOR_ID=$(shell make --silent actor_id )
+CALL_ALIAS = game_chat
 # messaging provider id from wasmcloud.azurecr.io/nats
 # If you built it from source, get the provider id with `make inspect` in the source folder
 MESSAGING_PROVIDER_ID = VADNMSIML2XGO2X4TPIONTIC55R2UUQGPPDZPAVSC2QD7E76CR77SPW7

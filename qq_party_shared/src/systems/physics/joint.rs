@@ -93,6 +93,14 @@ pub fn spawn_joint(
       }
       v.0.x = unit_vec.x *factor *unit_vec.length_recip();
       v.0.y = unit_vec.y  *factor *unit_vec.length_recip();
+      
+    }
+    if let Some(ball_entity) = chase_target.1{
+      if let Ok((ball_id,last_npc))= ball_query.get(ball_entity){
+        if last_npc.1.is_none(){
+          cmd.entity(npc_e).despawn();
+        }
+      }
     }
   }
 }
