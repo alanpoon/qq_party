@@ -4,10 +4,6 @@ import { unpack, pack } from 'msgpackr';
 import rand from 'rand'
 import {init_chat} from './chat'
 export function init_pkg_ws(){
-  // document.getElementById("buttonz").onclick(async function(e){
-    
-  //   await ClientMessageWelcome("l","k")
-  // })
   window.web_bevy_events=[]
   window.web_bevy_events_fn = function(){
     var copy = []
@@ -19,9 +15,18 @@ export function init_pkg_ws(){
   }
   var hello_btn = document.getElementById("hello_button");
   hello_btn.onclick = function(event){
-    var modal = document.getElementById("myModal");
-    modal.style.display = "none";
     var name = document.getElementById("name").value
+    $('input').blur(function(event) {
+       console.log(event.target.checkValidity());
+    }).bind('invalid', function(event) {
+        setTimeout(function() { $(event.target).focus();}, 50);
+    });
+    // var form = document.querySelector('form')
+    // console.log(" form.reportValidity()", form.reportValidity())
+    if (name.length <5){
+    //  alert("Enter name than 5 characters")
+      return
+    }
     window.user = name;
     var e = document.getElementById("country")
     var value = "."+e.value.toLowerCase();
