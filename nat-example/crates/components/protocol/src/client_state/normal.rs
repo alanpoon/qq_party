@@ -11,19 +11,14 @@ pub struct Normal {
 
 impl ClientState for Normal {
     fn handle(&self, commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
-      //info!("LZ{:?}",event);
+
       match event {
           ClientInput::Event(e) => {
             match e{
               Event::Nats(_client_name,s_op)=>{
                 match s_op{
                   nats::proto::ServerOp::Msg{subject:_,sid:_,reply_to:_,payload:_}=>{
-                    // info!("msg {} payload:{}",subject,std::str::from_utf8(payload).unwrap());
-                    // info!("pub going to afternormal");
-                    // return AfterNormal{
-                      
-                    // }
-                    // .into()
+                 
                   }
                   nats::proto::ServerOp::Ping=>{
                     let p = nats::proto::ClientOp::Pong;
@@ -40,7 +35,6 @@ impl ClientState for Normal {
                 }
               },
               Event::BevyWeb(json_value) =>{
-                info!("--- protocol BevyWeb");
                 let m: Result<ClientMessage,_> = serde_json::from_value(json_value.clone());
                 match m{
                   Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{

@@ -133,10 +133,8 @@ pub fn listen_web_bevy_events(
   let web_events:Array = web_bevy_events_fn();
   // Nats(String,nats::proto::ServerOp),//server_name
   for j in web_events.iter(){
-    info!("--- listen_web_bevy_events{:?}",j);
     match j.into_serde::<serde_json::Value>(){
       Ok(j2)=>{
-        info!("--- BevyWeb{:?}",j2);
         (*events).push(protocol::Event::BevyWeb(j2));
       }
       Err(e)=>{

@@ -21,7 +21,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
     let mut n = String::from("");
     let ball_bundle = BallBundle{
       ball_id:ball_id,
-      ball_label:ball_label,
+      ball_label:ball_label.clone(),
       position:pos,
       velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
@@ -51,7 +51,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       }
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
-      init_score(ball_id.0,&mut scoreboard.scores);
+      init_score(ball_id.0,ball_label,&mut scoreboard.scores);
       ball_bundles.push(ball_bundle.clone());
       
     }
@@ -71,6 +71,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
     Ok(())
 }
 
-pub fn init_score(ball_id:u32,mut scores:&mut HashMap<u32,i16>){
-  scores.insert(ball_id,0);
+pub fn init_score(ball_id:u32,ball_label:BallLabel,mut scores:&mut HashMap<u32,(i16,BallLabel)>){
+  scores.insert(ball_id,(0,ball_label));
 }

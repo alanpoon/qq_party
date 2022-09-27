@@ -14,6 +14,7 @@ function descending(a, b) { return a.percent_change_24h < b.percent_change_24h ?
 function reposition() {
     var height = $("#cryptocurrencies .cryptocurrency").height();
     var y = height;
+    console.log("cryptocurrencies reposition",cryptocurrencies);
     for(var i = 0; i < cryptocurrencies.length; i++) {
         cryptocurrencies[i].$item.css("top", y + "px");
         y += height;			

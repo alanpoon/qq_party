@@ -5,10 +5,10 @@ use crate::*;
 
 pub fn spawn_player_collider(
   mut cmd: Commands,
-  balls_without_rigid: Query<(Entity, &BallId,&Position), Without<RigidBodyPositionComponent>>,
+  balls_without_rigid: Query<(Entity, &BallId,&BallLabel,&Position), Without<RigidBodyPositionComponent>>,
   mut scoreboard:ResMut<ScoreBoard>
 ) {
-  for (entity, ball_id,position) in balls_without_rigid.iter() {
+  for (entity, ball_id,ball_label,position) in balls_without_rigid.iter() {
     cmd.entity(entity)
     .insert_bundle(RigidBodyBundle{
       mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
@@ -22,7 +22,7 @@ pub fn spawn_player_collider(
     .insert(RigidBodyPositionSync::Discrete)
     .insert(LastNPC(0,None))
     ;
-    scoreboard.scores.insert(ball_id.0,0);
+    scoreboard.scores.insert(ball_id.0,(0,ball_label.clone()));
   }
 }
 

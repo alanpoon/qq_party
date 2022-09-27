@@ -25,6 +25,12 @@ impl ClientState for BeforeLogin {
                     sid:16,
                   };
                   commands.commands.push(Command::Nats(String::from("default"),n));
+                  let n = nats::proto::ClientOp::Sub{
+                    subject:String::from("game_logic.scores"),
+                    queue_group:None,
+                    sid:19,
+                  };
+                  commands.commands.push(Command::Nats(String::from("default"),n.clone()));
                   //info!("subscribe welcome client_name {:?} s_op {:?}",client_name,s_op);
                   return Normal{
                     

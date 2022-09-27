@@ -33,10 +33,21 @@ export function init_pkg_ws(){
   init_chat()
   window.push_web_bevy_events_fn2 =function(msg){
     var event = JSON.parse(msg);
-    if (typeof event["scores"]!="undefined"){
-      console.log("scores events",event);
-      //window.leaderboard = [{"name":"hello","score":12414,"flag":"cn"},{"name":"tello","score":22,"flag":"cn"}]
-
+    if (typeof event["Scores"]!="undefined"){
+      var unsorted = [];
+      if (typeof event["Scores"]["scoreboard"]!="undefined"){
+        
+        var scores = event["Scores"]["scoreboard"];
+        for (var p=0; p< scores.length;p++){
+          var score = scores[p][0];
+          var label = scores[p][1];
+          var name = label[0]
+          var flag = label[1].replace(".","");
+          unsorted.push({"name":name,"score":score,"flag":flag});
+        }
+      }
+  
+      window.leaderboard_new_data(unsorted)
     }
   }
 }

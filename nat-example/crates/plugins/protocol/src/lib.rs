@@ -182,7 +182,6 @@ use futures::future::ready;
 fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut commands: ResMut<protocol::Commands>,mut _events: ResMut<protocol::Events>) {
     if let Some(ref mut client) = *client {
         for command in commands.iter() {
-            info!("send_commands client {:?}", command.clone());
             let command = command.clone();
             let len = client.clients.len();
             let rand_int = get_random_int(0,len as i32);
@@ -196,7 +195,6 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
                   });
                   //save_sub(b.subject,ClientName(Cow::Borrowed("default")));
                   //delay(10000).await;
-                  info!("after 10 secsend{:?}",b);
                   ready(b_clone)
                 });
               },
@@ -255,7 +253,9 @@ fn receive_events(mut cmd: Commands,
                               Ok(j)=>{
                                 push_web_bevy_events_fn2(&j);
                               }
-                              _=>{}
+                              Err(e)=>{
+                                info!("push_web_bevy_events_fn2 error {:?}",e);
+                              }
                             }
                             
                           }
@@ -267,7 +267,6 @@ fn receive_events(mut cmd: Commands,
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
-                            info!("ball_bundle!! spawn {:?}",ball_bundle);
                             cmd.spawn_bundle(ball_bundle);
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }

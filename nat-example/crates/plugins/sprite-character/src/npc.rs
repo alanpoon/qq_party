@@ -6,7 +6,6 @@ pub fn snake_translate(
   mut texture_atlas: Query<(&mut Position,&mut Transform, &Handle<TextureAtlas>)>,
 ){
   for (po,mut transform, _texture_atlas_handle) in texture_atlas.iter_mut() {
-    //info!("mutating targetV {:?}",tv);
     transform.translation.x = po.0.x;
     transform.translation.y = po.0.y;
   }

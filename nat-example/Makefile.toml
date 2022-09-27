@@ -19,10 +19,15 @@ command = "wasm-bindgen"
 args = ["--out-dir", "pkg", "--target", "web", "target/wasm32-unknown-unknown/release/desk-client.wasm"]
 dependencies = ["build-wasm"]
 
+[tasks.webpack]
+command = "npm"
+args = ["run", "build"]
+dependencies = ["wasm-bindgen"]
+
 [tasks.wasm-serve]
 command = "nohup"
 args = ["basic-http-server", "public","-a","127.0.0.1:4001"]
-dependencies = ["wasm-bindgen"]
+dependencies = ["webpack"]
 
 [tasks.check]
 command = "cargo"

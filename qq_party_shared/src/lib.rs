@@ -50,7 +50,7 @@ pub enum ServerMessage {
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
-    Scores{scoreboard:ScoreBoard}
+    Scores{scoreboard:Vec<(i16,BallLabel)>}
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {

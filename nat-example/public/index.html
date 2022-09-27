@@ -138,6 +138,7 @@
     <link rel="stylesheet" href="/leaderboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/game_pad_2_button.css">
+    <link rel="stylesheet" href="/awesome.css">
     <link rel="stylesheet" href="/assets/2d/flag32.css">
     <link rel="stylesheet" href="/chat.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -205,29 +206,40 @@
     </script> -->
   <body>
     <div style="display:flex;height:100%;flex-flow:column;">
-      <div style="flex: 0 1 auto;">
+      <div style="display:flex;">
         <img src="./bevy.jpeg" style="width: 10vw;height:50px;">
-        <button onclick="myFunction()" style="flex:0 2 auto;">Gamepad</button>
-        <button onclick="chatFunction()" style="flex:0 3 auto;">Chat</button>
+        <div><a class="large blue awesome" onclick="myFunction()"  style="flex:0 2 auto;">Gamepad</a></div>
+        <div><a class="large magenta awesome" onclick="chatFunction()" style="flex:0 2 auto;">Chat</a></div>
+        <!-- <button onclick="myFunction()" style="flex:0 2 auto;">Gamepad</button>
+        <button onclick="chatFunction()" style="flex:0 3 auto;">Chat</button> -->
+        <div style="flex:0 6 auto"></div>
+        <img src="./Wasmcloud.png" style="width: 10vw;flex:0 2 auto;margin-left: auto;">
+        <p style="flex:0 2 auto;">
+          <img src="./twitter.png" style="width: 2vw;float: left;">
+          <a href="https://twitter.com/rustropy_gaming" target="_blank">@Rustropy_gaming</a>
+        </p>
+        <div style="flex:0 6 auto;width:15%"></div>
       </div>
-      <img src="./Wasmcloud.png" style="width: 10vw;position: absolute;right:0px">
       <div style="width: 15vw;position: absolute;right:0px;display:flex;flex-flow:column;height:100%;">
         <!-- <p>
           <img src="./twitter.png" style="width: 2vw;float: left;">
           <a href="https://twitter.com/rustropy_gaming" target="_blank">@Rustropy_gaming</a>
         </p> -->
         <div id="leaderboard_div" style="flex: 0 1 auto;">
-          <table class="table is-narrow is-hoverable" id="leaderboard">
-            <thead>
-              <tr>
-                <th class="rank"><abbr title="Position" style="font-size:0.5vw">Rank</abbr></th>
-                <th class="name" style="font-size:0.8vw">Name</th>
-                <th class="score" style="font-size:0.8vw">Score</th>
-              </tr>
-            </thead>
-            <tbody id="cryptocurrencies">
-            </tbody>
-          </table>
+          <div class="demo">
+            <table class="table is-narrow is-hoverable" id="table">
+                <thead>
+                    <tr>
+                      <th class="rank anim:update anim:number"><abbr title="Position" style="font-size:0.6vw">Rank</abbr></th>   
+                      <th class="score anim:update anim:sort anim:number" style="font-size:0.8vw">Score</th>
+                      <th class="name anim:id" style="font-size:0.8vw">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            </div>            
+        
         </div>
         Chat:
         <textarea id="chat_text_area" style="flex: 1 1 auto;height:100%;" readonly></textarea>
@@ -682,7 +694,8 @@
       }
     })
   </script>
-  <script src="/leaderboard2.js"></script>
+  <!-- <script src="/leaderboard2.js"></script> -->
+  <script src="/leaderboard3.js"></script>
   <script src="/chat.js"></script>
   <script src="bundle.js"></script>
 </html>

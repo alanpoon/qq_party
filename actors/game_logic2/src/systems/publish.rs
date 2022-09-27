@@ -78,28 +78,32 @@ pub fn sys_publish_game_state_by_sub_map(mut elapsed_time:ResMut<TimeV2>,bevy_wa
       *elapsed = 0.0;
       
       if key =="scoreboard"{
-          info_(format!("sys_publish_score scores {:?}",(*scoreboard).clone()));
-          let msg = ServerMessage::Scores{scoreboard:scoreboard.clone()};
-
-        //if scores.len() >0{
-        //   if scores.len() >10{
-        //     scores.clone().split_off(10);
-        //   }
-        // }
-        
-          match rmp_serde::to_vec(&msg){
-            Ok(b)=>{
-              let pMsg = PubMessage{
-                body:b,
-                reply_to: None,
-                subject: String::from("game_logic.scores"),
-              };
-              publish_(pMsg);
-            }
-            Err(e)=>{
-              info_(format!("m iter ....error{}",e));
-            }
+        let mut score_vec:Vec<(i16,BallLabel)> = vec![];
+        for (k,v) in (*scoreboard).scores.iter(){
+          score_vec.push(v.clone());
+        }
+        score_vec.sort_by(|a,b|{
+          b.0.cmp(&a.0)
+        });
+         if score_vec.len() >0{
+          if score_vec.len() >10{
+            score_vec.clone().split_off(10);
           }
+        }
+        let msg = ServerMessage::Scores{scoreboard:score_vec};
+        match rmp_serde::to_vec(&msg){
+          Ok(b)=>{
+            let pMsg = PubMessage{
+              body:b,
+              reply_to: None,
+              subject: String::from("game_logic.scores"),
+            };
+            publish_(pMsg);
+          }
+          Err(e)=>{
+            info_(format!("m iter ....error{}",e));
+          }
+        }
         continue;
       }
       let mut ball_bundles =vec![];

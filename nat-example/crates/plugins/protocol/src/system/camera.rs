@@ -52,6 +52,7 @@ pub fn move_with_local_player(
               sid:17,
             };
             (*commands).push(Command::Nats(String::from("default"),n.clone()));
+          
             info!("after_push..{:?}",n);
             local_user_info.0.sub_map = sa;
           }

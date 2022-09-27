@@ -23,7 +23,6 @@ pub fn add_chicken_sprite_system(
   if let Some(t_handle)= texture_hashmap.get("chicken"){
     let f_handle= texture_hashmap.get("flags");
     for (entity, _,ball_label,position) in balls_without_mesh.iter() {
-      info!("balls_without_mesh");
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
         texture_atlas: t_handle.clone(),
         transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.2)),

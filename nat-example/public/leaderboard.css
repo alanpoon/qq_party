@@ -10,7 +10,7 @@
 #leaderboard #cryptocurrencies tr {
   /* display:block;
   clear: both; */
-  /* position: absolute; */
+   position: absolute; 
   -moz-transition-duration: 1s;
   -webkit-transition-duration: 1s;
   -ms-transition-duration: 1s;
