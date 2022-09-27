@@ -23,7 +23,7 @@ export function init_pkg_ws(){
     });
     // var form = document.querySelector('form')
     // console.log(" form.reportValidity()", form.reportValidity())
-    if (name.length <5){
+    if (name.length <=5){
     //  alert("Enter name than 5 characters")
       return
     }
