@@ -32,5 +32,14 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   let flags_atlas = TextureAtlas::from_grid(flags_texture, Vec2::new(32.0, 32.0), 1, 248);
   let flags_atlas_handle = texture_atlases.add(flags_atlas);
   texture_hashmap.insert(String::from("flags"),flags_atlas_handle);
+  let egg_texture = asset_server.load("2d/egg.png");
+  let egg_atlas = TextureAtlas::from_grid(egg_texture,Vec2::new(206.0,258.0),1,1);
+  let egg_atlas_handler = texture_atlases.add(egg_atlas);
+  texture_hashmap.insert(String::from("egg"),egg_atlas_handler);
+  let stick_texture = asset_server.load("2d/egg.png");
+  let stick_atlas = TextureAtlas::from_grid(stick_texture,Vec2::new(512.0,512.0),1,1);
+  let stick_atlas_handler = texture_atlases.add(stick_atlas);
+  texture_hashmap.insert(String::from("stick"),stick_atlas_handler);
+
   info!("texture_hashmap end ");
 }

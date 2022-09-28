@@ -24,7 +24,7 @@ pub struct TargetVelocity(pub Vec2);
 pub struct TargetDestination(pub Vec2,pub f32);
 
 //x:1.0,y:1.0->move to its right,x:0.0,y:1.0->move forward
-#[derive(Component,Debug, PartialEq, Default)]
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
 pub struct Time{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub i16);
@@ -34,6 +34,10 @@ pub struct BallLabel(pub String,pub String); //Label, Flag
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId2(pub u32, pub Option<Entity>,pub u8);//ball, npc, speed
+#[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
+pub struct FireId(pub u32); //sprite_enum
+#[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
+pub struct Hit;
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
@@ -45,18 +49,20 @@ pub struct LastNPC(pub u32,pub Option<Entity>);
 pub struct Parent(Entity);
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
-    Welcome{ball_bundle:BallBundle,sub_map:String},
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
+    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
+    Fire{ball_id:BallId,velocity:Velocity,sprite_enum:u32,timestamp:u64},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
-    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
-    Scores{scoreboard:Vec<(i16,BallLabel)>}
+    Scores{scoreboard:Vec<(i16,BallLabel)>},
+    Welcome{ball_bundle:BallBundle,sub_map:String},
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
-    Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
-    TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
+    Fire{ball_id:BallId,velocity:Velocity,sprite_enum:u32},
+    TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
+    Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
 }
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
 pub struct UserInfo{

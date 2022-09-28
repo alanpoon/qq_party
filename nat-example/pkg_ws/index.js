@@ -16,11 +16,11 @@ export function init_pkg_ws(){
   var hello_btn = document.getElementById("hello_button");
   hello_btn.onclick = function(event){
     var name = document.getElementById("name").value
-    $('input').blur(function(event) {
-       console.log(event.target.checkValidity());
-    }).bind('invalid', function(event) {
-        setTimeout(function() { $(event.target).focus();}, 50);
-    });
+    // $('input').blur(function(event) {
+    //    console.log(event.target.checkValidity());
+    // }).bind('invalid', function(event) {
+    //     setTimeout(function() { $(event.target).focus();}, 50);
+    // });
     // var form = document.querySelector('form')
     // console.log(" form.reportValidity()", form.reportValidity())
     if (name.length <=5){

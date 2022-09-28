@@ -13,7 +13,6 @@ use bevy_math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:BallLabel)-> RpcResult<()>{
-    info!("handle_message map");
     let x = random_in_range(3300,3800).await?;
     let y = random_in_range(3500,3800).await?;
     let pos = Position(Vec2::new(x as f32,y as f32));
@@ -55,7 +54,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       ball_bundles.push(ball_bundle.clone());
       
     }
-    info!("game_logic ....{:?}",sa);
     let server_message = ServerMessage::Welcome{ball_bundle,sub_map:sa};
     match rmp_serde::to_vec(&server_message){
       Ok(b)=>{

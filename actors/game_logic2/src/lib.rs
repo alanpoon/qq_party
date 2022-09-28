@@ -89,18 +89,25 @@ impl MessageSubscriber for GameLogicActor{
     if req.subject.contains("client_handler"){
       let client_message: Result<ClientMessage,_> = rmp_serde::from_slice(&req.body);
       match client_message{
+        Ok(ClientMessage::ChangeSubMap{game_id,ball_id,position})=>{
+          let mut map = APP.clone();
+          client_message_handlers::change_sub_map_handler::_fn(map,game_id,ball_id,position);
+        }
+        Ok(ClientMessage::Fire{ball_id,velocity,sprite_enum})=>{
+          let mut map = APP.clone();
+          info_(format!("fire"));
+          client_message_handlers::fire_handler::_fn2(map,ball_id,velocity,sprite_enum);
+        }
         Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
           let mut map = APP.clone();
+          info_(format!("tv"));
           client_message_handlers::target_velocity_handler::_fn(map,game_id,ball_id,target_velocity);  
         }
         Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{
           let mut map = APP.clone();
           client_message_handlers::welcome_handler::_fn(map,game_id,ball_id,ball_label).await;
         }
-        Ok(ClientMessage::ChangeSubMap{game_id,ball_id,position})=>{
-          let mut map = APP.clone();
-          client_message_handlers::change_sub_map_handler::_fn(map,game_id,ball_id,position);
-        }
+        
         Err(e)=>{
           info!("client_message err {:?}",e);
         }

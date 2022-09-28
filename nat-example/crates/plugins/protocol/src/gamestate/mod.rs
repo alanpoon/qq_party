@@ -63,3 +63,9 @@ pub fn spawn_or_update_npc_bundles(
       }
     }
 }
+pub fn spawn_fire_bundle(
+  mut cmd: &mut Commands,
+  bundle:FireBundle
+  ){
+    cmd.spawn_bundle(bundle);
+}

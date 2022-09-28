@@ -25,7 +25,8 @@ impl Plugin for PhysicsPlugin {
           //.add_system(qq_party_shared::systems::update_state_velocity_npc.system())
           .add_system(qq_party_shared::systems::physics::spawn_hierachy.system())
           .add_system(qq_party_shared::systems::physics::spawn_joint.system())
-          //.add_system(qq_party_shared::systems::joint::spawn_joint.system())
+          //fire
+          .add_system(qq_party_shared::systems::physics::spawn_fire_collider.system())
           ;
   }
 }

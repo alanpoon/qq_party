@@ -46,7 +46,7 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo};
+use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -132,6 +132,19 @@ fn handle_events(
           target_velocity_y -= 1.0;
           pressed = true;
         }
+        if keyboard_input.pressed(KeyCode::Space){
+          info!("space pressed");
+          for (ball_id_ingame,v) in balls.iter(){
+            let ball_id = (*local_user_info).0.ball_id;
+            if ball_id_ingame==&ball_id{
+              info!("space pressed-- fire");
+              let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
+              (*commands).push(c);
+              break;
+            }
+          }
+      
+        }
         for gamepad in gamepads.iter().cloned() {
           if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadLeft)) {
             target_velocity_x -= 1.0;
@@ -146,7 +159,8 @@ fn handle_events(
             target_velocity_y -= 1.0;
             pressed = true;
           }
-        }
+        }  
+        
         if pressed{
           for (ball_id_ingame,v) in balls.iter(){
             let ball_id = (*local_user_info).0.ball_id;
@@ -169,8 +183,8 @@ fn handle_events(
               if send{
                 let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
                 (*commands).push(c);
-              }else{
               }
+            
               break;
             }
           }
@@ -217,7 +231,8 @@ fn receive_events(mut cmd: Commands,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
-    mut query: Query<(Entity, &BallId)>, ) {
+    mut query: Query<(Entity, &BallId)>,
+  res:Res<Time> ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
         let _rand_int = get_random_int(0,len as i32);
@@ -230,6 +245,20 @@ fn receive_events(mut cmd: Commands,
                       //if subject == String::from("game_logic"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
+                          ServerMessage::Fire{ball_id,velocity,sprite_enum,timestamp}=>{  
+                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
+                              if ball_id ==*qball_id{
+                                let fire_bundle = FireBundle{
+                                  fire_id:qq_party_shared::FireId(sprite_enum),
+                                  owner:ball_id,
+                                  position:pos.clone(),
+                                  velocity:Velocity(vel.0*1.3),
+                                  start:qq_party_shared::Time{elapsed:timestamp as f32},
+                                };
+                                gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);
+                              }
+                            }                          
+                          }
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
                             for (entity, qball_id) in query.iter_mut(){
