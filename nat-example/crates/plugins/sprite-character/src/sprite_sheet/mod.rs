@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 use js_sys::Array;
-use crate::sprite_sheet::{_2d_round::_fn_chicken,_2d_round::_fn_snake,_2d_round::_fn_chick,self};
+use crate::sprite_sheet::{_2d_round::_fn_chicken,_2d_round::_fn_snake,_2d_round::_fn_chick,_2d_round::_fn_bear,self};
 pub struct SpriteInfos {
 	pub _2d_round: (Handle<Image>, Vec2),
 }
@@ -21,6 +21,9 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   let mut texture_atlas = _fn_chicken((sprite_infos)._2d_round.clone());
   let chicken_handle = texture_atlases.add(texture_atlas.clone());
   texture_hashmap.insert(String::from("chicken"),chicken_handle);
+  texture_atlas = _fn_bear((sprite_infos)._2d_round.clone());
+  let bear_handle = texture_atlases.add(texture_atlas.clone());
+  texture_hashmap.insert(String::from("bear"),bear_handle);
   texture_atlas = _fn_chick((sprite_infos)._2d_round.clone());
   let chick_handle = texture_atlases.add(texture_atlas.clone());
   texture_hashmap.insert(String::from("chick"),chick_handle);

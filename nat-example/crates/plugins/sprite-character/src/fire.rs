@@ -4,10 +4,9 @@ use std::collections::HashMap;
 pub fn add_fire_sprite_system(
   mut cmd: Commands,
   fires_without_mesh: Query<(Entity, &FireId,&Position), Without<Transform>>,
-  texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>
+  texture_hashmap:Res<HashMap<String,Handle<TextureAtlas>>>
 ) {
   for (entity, fire_id,position) in fires_without_mesh.iter() {
-    info!("fire position {:?}",position.clone());
     let sprite_name = match fire_id.1{
       0=>{
         String::from("egg")
