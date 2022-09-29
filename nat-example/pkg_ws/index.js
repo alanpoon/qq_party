@@ -16,14 +16,14 @@ export function init_pkg_ws(){
   var hello_btn = document.getElementById("hello_button");
   hello_btn.onclick = function(event){
     var name = document.getElementById("name").value
-    // $('input').blur(function(event) {
-    //    console.log(event.target.checkValidity());
-    // }).bind('invalid', function(event) {
-    //     setTimeout(function() { $(event.target).focus();}, 50);
-    // });
+    $('input').blur(function(event) {
+       console.log(event.target.checkValidity());
+    }).bind('invalid', function(event) {
+        setTimeout(function() { $(event.target).focus();}, 50);
+    });
     // var form = document.querySelector('form')
     // console.log(" form.reportValidity()", form.reportValidity())
-    if (name.length <=5){
+    if (name.length <5){
     //  alert("Enter name than 5 characters")
       return
     }
@@ -31,14 +31,27 @@ export function init_pkg_ws(){
     var user_type = $("input:radio[name ='user']:checked").val();
     var ball_id_sprite_enum = 0
     if (user_type=="github"){
-      ball_id_sprite_enum =1
+      $.get("https://api.github.com/repos/alanpoon/qq_party/stargazers",function(data){
+       for(var i=0;i<=data.length;i++){
+        if (data[i].login==name){
+          ball_id_sprite_enum =1
+          break;
+        }
+       }
+       var d_l = ClientMessageWelcome(ball_id_sprite_enum,name)
+        window.web_bevy_events.push(d_l)
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+      })
+    }else{
+      var d_l = ClientMessageWelcome(ball_id_sprite_enum,name)
+      window.web_bevy_events.push(d_l)
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
     }
-    var e = document.getElementById("country")
-    var value = "."+e.value.toLowerCase();
-    var d_l = ClientMessageWelcome(ball_id_sprite_enum,name,value)
-    window.web_bevy_events.push(d_l)
-    var modal = document.getElementById("myModal");
-    modal.style.display = "none";
+
+   
+   
   }
   init_chat()
   window.push_web_bevy_events_fn2 =function(msg){
@@ -64,13 +77,12 @@ export function init_pkg_ws(){
 function randomIntFromInterval(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
-function ClientMessageWelcome(ball_id_sprite_enum,label_0,label_1){
-  console.log("ClientMessageWelcome",label_0,label_1)
-  // const conn =  await connect(
-  //   {
-  //     servers: ['ws://localhost:7083/'],
-  //   },
-  // );
+function ClientMessageWelcome(ball_id_sprite_enum,label_0){
+  console.log("ball_id_sprite_enum",ball_id_sprite_enum);
+  var e = document.getElementById("country")
+  var value = "."+e.value.toLowerCase();
+  var label_1 = value
+
   let ball_id = randomIntFromInterval(10000,99999);
   var dataObj = {
       "Welcome":{

@@ -13,3 +13,7 @@ wash reg push --insecure localhost:5000/v2/nats-messaging:"0.11.5" built/nats_me
 [K⢂⠀  Pushing built/nats_messaging.par.gz to localhost:5000/v2/nats-messaging:0.11.5 ...
 
 wash 0.9.1
+
+curl \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/alanpoon/qq_party/stargazers
