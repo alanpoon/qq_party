@@ -15,6 +15,7 @@ pub fn spawn_fire_collider(
             ccd_enabled: true,
             ..Default::default()
         }.into(),
+        velocity:RigidBodyVelocityComponent(RigidBodyVelocity { linvel: Vector2::new(0.0, 0.0), angvel: 0.2 }),
         position: [position.0.x, position.0.y].into(),
         ..Default::default()
       })
