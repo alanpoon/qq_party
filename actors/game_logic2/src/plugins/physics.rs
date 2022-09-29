@@ -27,6 +27,7 @@ impl Plugin for PhysicsPlugin {
           .add_system(qq_party_shared::systems::physics::spawn_joint.system())
           //fire
           .add_system(qq_party_shared::systems::physics::spawn_fire_collider.system())
+          .add_system(qq_party_shared::systems::physics::fire_collision.system())
           .add_system(qq_party_shared::systems::physics::despawn_fire.system())
 
           ;
