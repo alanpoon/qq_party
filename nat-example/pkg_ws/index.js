@@ -28,9 +28,14 @@ export function init_pkg_ws(){
       return
     }
     window.user = name;
+    var user_type = $("input:radio[name ='user']:checked").val();
+    var ball_id_sprite_enum = 0
+    if (user_type=="github"){
+      ball_id_sprite_enum =1
+    }
     var e = document.getElementById("country")
     var value = "."+e.value.toLowerCase();
-    var d_l = ClientMessageWelcome(name,value)
+    var d_l = ClientMessageWelcome(ball_id_sprite_enum,name,value)
     window.web_bevy_events.push(d_l)
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
@@ -59,7 +64,7 @@ export function init_pkg_ws(){
 function randomIntFromInterval(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
-function ClientMessageWelcome(label_0,label_1){
+function ClientMessageWelcome(ball_id_sprite_enum,label_0,label_1){
   console.log("ClientMessageWelcome",label_0,label_1)
   // const conn =  await connect(
   //   {
@@ -70,7 +75,7 @@ function ClientMessageWelcome(label_0,label_1){
   var dataObj = {
       "Welcome":{
         "game_id":"hello",
-        "ball_id":[ball_id,0],
+        "ball_id":[ball_id,ball_id_sprite_enum],
         "ball_label":[label_0,label_1]
       }
   }

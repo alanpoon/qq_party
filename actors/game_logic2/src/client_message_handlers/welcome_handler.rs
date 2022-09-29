@@ -18,6 +18,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
     let pos = Position(Vec2::new(x as f32,y as f32));
     let sa = sub_map_area(pos.clone());
     let mut n = String::from("");
+    info_(format!("welcome ball_id {:?}",ball_id));
     let ball_bundle = BallBundle{
       ball_id:ball_id,
       ball_label:ball_label.clone(),

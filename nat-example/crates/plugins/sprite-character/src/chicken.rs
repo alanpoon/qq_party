@@ -20,11 +20,15 @@ pub fn add_chicken_sprite_system(
   flag_usize_map:Res<H>,
   font_handle: Res<Handle<Font>>
 ) {
-  if let Some(t_handle)= texture_hashmap.get("chicken"){
+  if let (Some(t_handle),Some(bear_handle)) = (texture_hashmap.get("chicken"),texture_hashmap.get("bear")){
     let f_handle= texture_hashmap.get("flags");
-    for (entity, _,ball_label,position) in balls_without_mesh.iter() {
+    for (entity, ball_id,ball_label,position) in balls_without_mesh.iter() {
+      let mut ta_handle = t_handle.clone();
+      if ball_id.1==1{
+        ta_handle = bear_handle.clone();
+      }
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-        texture_atlas: t_handle.clone(),
+        texture_atlas: ta_handle,
         transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.2)),
         ..Default::default()
       }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)))
