@@ -243,7 +243,7 @@ fn receive_events(mut cmd: Commands,
                             for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
                                 let fire_bundle = FireBundle{
-                                  fire_id:qq_party_shared::FireId(ball_id.0,sprite_enum,Some(pos.0.clone())),
+                                  fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some(pos.0.clone())),
                                   position:pos.clone(),
                                   velocity:velocity,
                                   start:qq_party_shared::Time{elapsed:timestamp as f32},
