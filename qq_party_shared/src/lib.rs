@@ -34,8 +34,8 @@ pub struct BallLabel(pub String,pub String); //Label, Flag
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId2(pub u32, pub Option<Entity>,pub u8);//ball, npc, speed
-#[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
-pub struct FireId(pub u32); //sprite_enum
+#[derive(Component,Serialize, Deserialize, Default, Clone, Debug)]
+pub struct FireId(pub u32,pub u32,pub Option<Vec2>); //owner, sprite_enum, StartPosition
 #[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct Hit;
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]

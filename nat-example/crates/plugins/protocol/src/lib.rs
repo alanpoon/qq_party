@@ -92,7 +92,7 @@ fn handle_events(
     mut state: ResMut<Option<ClientStateDispatcher>>,
     mut commands: ResMut<protocol::Commands>,
     mut events: ResMut<protocol::Events>,
-    keyboard_input: Res<Input<KeyCode>>,
+    mut keyboard_input: ResMut<Input<KeyCode>>,
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
@@ -116,35 +116,29 @@ fn handle_events(
         let mut target_velocity_x = 0.0;
         let mut target_velocity_y = 0.0;
         let mut pressed = false;
-        if keyboard_input.pressed(KeyCode::Left){
+        if keyboard_input.just_pressed(KeyCode::Left){
           target_velocity_x -= 1.0;
           pressed = true;
         }
-        if keyboard_input.pressed(KeyCode::Right){
+        if keyboard_input.just_pressed(KeyCode::Right){
           target_velocity_x += 1.0;
           pressed = true;
         }
-        if keyboard_input.pressed(KeyCode::Up){
+        if keyboard_input.just_pressed(KeyCode::Up){
           target_velocity_y += 1.0;
           pressed = true;
         }
-        if keyboard_input.pressed(KeyCode::Down){
+        if keyboard_input.just_pressed(KeyCode::Down){
           target_velocity_y -= 1.0;
           pressed = true;
         }
-        if keyboard_input.pressed(KeyCode::Space){
-          info!("space pressed");
-          for (ball_id_ingame,v) in balls.iter(){
-            let ball_id = (*local_user_info).0.ball_id;
-            if ball_id_ingame==&ball_id{
-              info!("space pressed-- fire");
-              let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
-              (*commands).push(c);
-              break;
-            }
-          }
-      
+        if keyboard_input.just_pressed(KeyCode::Space){
+          let ball_id = (*local_user_info).0.ball_id;
+          info!("space pressed-- fire");
+          let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
+          (*commands).push(c);
         }
+        keyboard_input.clear();
         for gamepad in gamepads.iter().cloned() {
           if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadLeft)) {
             target_velocity_x -= 1.0;
@@ -249,10 +243,9 @@ fn receive_events(mut cmd: Commands,
                             for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
                                 let fire_bundle = FireBundle{
-                                  fire_id:qq_party_shared::FireId(sprite_enum),
-                                  owner:ball_id,
+                                  fire_id:qq_party_shared::FireId(ball_id.0,sprite_enum,Some(pos.0.clone())),
                                   position:pos.clone(),
-                                  velocity:Velocity(vel.0*1.3),
+                                  velocity:velocity,
                                   start:qq_party_shared::Time{elapsed:timestamp as f32},
                                 };
                                 gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);

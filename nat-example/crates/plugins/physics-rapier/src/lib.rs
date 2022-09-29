@@ -58,6 +58,7 @@ impl Plugin for PhysicsPlugin {
             //fire
             .add_system(qq_party_shared::systems::physics::spawn_fire_collider.system())
             .add_system(qq_party_shared::systems::physics::fire_collision.system())
+            .add_system(qq_party_shared::systems::physics::despawn_fire.system())
             .add_system(timewrapper::into_timewrapper.system());
          
     }

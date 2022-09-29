@@ -96,7 +96,7 @@ impl MessageSubscriber for GameLogicActor{
         Ok(ClientMessage::Fire{ball_id,velocity,sprite_enum})=>{
           let mut map = APP.clone();
           info_(format!("fire"));
-          client_message_handlers::fire_handler::_fn2(map,ball_id,velocity,sprite_enum);
+          client_message_handlers::fire_handler::_fn(map,ball_id,velocity,sprite_enum);
         }
         Ok(ClientMessage::TargetVelocity{game_id,ball_id,target_velocity})=>{
           let mut map = APP.clone();

@@ -8,7 +8,7 @@ pub fn add_fire_sprite_system(
 ) {
   for (entity, fire_id,position) in fires_without_mesh.iter() {
     info!("fire position {:?}",position.clone());
-    let sprite_name = match fire_id.0{
+    let sprite_name = match fire_id.1{
       0=>{
         String::from("egg")
       }

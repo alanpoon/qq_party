@@ -22,7 +22,6 @@ pub struct NPCBundle {
 #[derive(Bundle,Clone,Debug)]
 pub struct FireBundle {
     pub fire_id:FireId,
-    pub owner: BallId,
     pub position: Position,
     pub velocity: Velocity,
     pub start: Time,
