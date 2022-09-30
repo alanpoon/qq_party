@@ -2,7 +2,7 @@ use wasmbus_rpc::actor::prelude::*;
 use qq_party_shared::*;
 use bevy_math::Vec2;
 use crate::info_::info_;
-pub async fn spawn_npc_bundles_debug()-> RpcResult<Vec<NPCBundle>>{
+pub async fn spawn_npc_bundles()-> RpcResult<Vec<NPCBundle>>{
   let mut i = 0;
   let mut npc_bundles:Vec<NPCBundle> = vec![];
   let mut z = 0;

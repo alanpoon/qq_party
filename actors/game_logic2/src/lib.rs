@@ -42,7 +42,7 @@ struct GameLogicActor {}
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     info!("start_thread----");
-    let npc_bundles = startup::npc_debug::spawn_npc_bundles_debug().await?;
+    let npc_bundles = startup::npc::spawn_npc_bundles().await?;
 
     {
       let mut map = APP.clone();

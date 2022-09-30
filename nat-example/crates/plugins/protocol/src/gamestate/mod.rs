@@ -11,11 +11,11 @@ pub fn spawn_or_update_ball_bundles(
     for i in 0..len{
       for (_entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
-        if &ball_bundle.ball_id == ball_id{
+        if ball_bundle.ball_id.0 == ball_id.0{
           *v = ball_bundle.velocity;
           (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
           (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
-          *tv = ball_bundle.target_velocity;
+          //*tv = ball_bundle.target_velocity;
           founds.push(i);
           //found = true;
           break;
@@ -29,7 +29,9 @@ pub fn spawn_or_update_ball_bundles(
     }
     for (i,ball_bundle) in ball_bundles.iter().enumerate(){
       if !founds.contains(&i){
-        cmd.spawn_bundle(ball_bundle.clone());
+        let mut ball_bundle_c = ball_bundle.clone();
+        ball_bundle_c.target_velocity = TargetVelocity(Vec2::new(0.0,0.0));
+        cmd.spawn_bundle(ball_bundle_c);
       }
     }
 }
@@ -44,7 +46,7 @@ pub fn spawn_or_update_npc_bundles(
     for i in 0..len{
       for (_entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
         let bundle = bundles.get(i).unwrap();
-        if &bundle.npc_id == npc_id{
+        if bundle.npc_id.id == npc_id.id{
           *v = bundle.velocity;
           (*pos).0.x = bundle.position.0.x+ bundle.velocity.0.x *delta;
           (*pos).0.y = bundle.position.0.y+ bundle.velocity.0.y *delta;
@@ -59,7 +61,9 @@ pub fn spawn_or_update_npc_bundles(
     }
     for (i,bundle) in bundles.iter().enumerate(){
       if !founds.contains(&i){
-        cmd.spawn_bundle(bundle.clone());
+        let mut bundle_c = bundle.clone();
+        bundle_c.chase_target = ChaseTargetId(0,0);
+        cmd.spawn_bundle(bundle_c);
       }
     }
 }

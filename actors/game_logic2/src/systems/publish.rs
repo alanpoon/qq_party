@@ -74,7 +74,7 @@ pub fn sys_publish_game_state_by_sub_map(mut elapsed_time:ResMut<TimeV2>,bevy_wa
   scoreboard:Res<ScoreBoard>) {
   let mut once = true;
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
-    if *elapsed >5.0{
+    if *elapsed >60.0{
       *elapsed = 0.0;
       
       if key =="scoreboard"{
