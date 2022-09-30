@@ -35,7 +35,7 @@ link:
 start-thread:
 	echo actor_id $(ACTOR_ID)
 	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
-		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":100}'
+		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":30}'
 
 start-thread3:
 	echo $(ACTOR_ID)

@@ -48,7 +48,7 @@ pub fn spawn_or_update_npc_bundles(
           *v = bundle.velocity;
           (*pos).0.x = bundle.position.0.x+ bundle.velocity.0.x *delta;
           (*pos).0.y = bundle.position.0.y+ bundle.velocity.0.y *delta;
-          *ct = bundle.chase_target;
+          //*ct = bundle.chase_target;
           founds.push(i);
           break;
         }
