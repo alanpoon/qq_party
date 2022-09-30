@@ -23,6 +23,7 @@ impl Plugin for SpriteCharacterPlugin {
       .init_resource::<Handle<Font>>()
       .add_system(timewrapper::into_timewrapper.system())
       .add_system(chicken::add_chicken_sprite_system.system())
+      .add_system(chicken::hit_chicken_sprite_system.system())
       .add_system(npc::add_npc_sprite_system.system())
       .add_system(fire::add_fire_sprite_system.system())
       .add_startup_system(sprite_sheet::startup)

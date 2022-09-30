@@ -55,6 +55,12 @@ impl ClientState for Normal {
                       ball_id:ball_id,
                       sub_map:String::from(""),
                     }));
+                    let n = nats::proto::ClientOp::Sub{
+                      subject: format!("game_logic_specify.{}",ball_id.0),
+                      queue_group:None,
+                      sid:21,
+                    };
+                    commands.commands.push(Command::Nats(String::from("default"),n));
                     return AfterNormal{}.into()
                   }
                   

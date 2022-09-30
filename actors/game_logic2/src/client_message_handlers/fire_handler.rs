@@ -28,7 +28,7 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:Velocity,sprite_enum:u32
     let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
     let fire_bundle = match local_ball {
       Some((entity, ball_id,position,vel)) => {
-          let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,None),position:position.clone(),
+          let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some(position.0.clone())),position:position.clone(),
             velocity:Velocity(vel.0*2.0),start:Time{elapsed:bevy_wasmcloud_time_val_clone.timestamp as f32}};
           
           Some(fire_bundle)

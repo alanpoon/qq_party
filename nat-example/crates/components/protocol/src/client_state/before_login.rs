@@ -31,6 +31,7 @@ impl ClientState for BeforeLogin {
                     sid:19,
                   };
                   commands.commands.push(Command::Nats(String::from("default"),n.clone()));
+                  
                   //info!("subscribe welcome client_name {:?} s_op {:?}",client_name,s_op);
                   return Normal{
                     

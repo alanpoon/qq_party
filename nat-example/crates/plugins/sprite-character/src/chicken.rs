@@ -55,7 +55,6 @@ pub fn add_chicken_sprite_system(
               transform: Transform::from_xyz(130.0,-60.0,3.0).with_scale(Vec3::splat(2.0)),
               ..Default::default()
             });
-         
           }
           parent.spawn_bundle(Text2dBundle {
             text: Text::with_section(&ball_label.0,text_style.clone(), text_alignment),
@@ -72,4 +71,14 @@ pub fn add_chicken_sprite_system(
     }
   }
   
+}
+pub fn hit_chicken_sprite_system(
+  //mut balls_with_hit: Query<(Entity, &BallId,&mut Sprite), Changed<Hit>>,
+  mut balls_with_hit: Query<(Entity, &BallId,&mut TextureAtlasSprite), Changed<Hit>>,
+){
+    for (entity, ball_id,mut sprite) in balls_with_hit.iter_mut() {
+      info!("target hitted");
+      sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
+    
+    }
 }

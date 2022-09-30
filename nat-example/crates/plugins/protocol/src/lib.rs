@@ -289,6 +289,7 @@ fn receive_events(mut cmd: Commands,
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
+                            info!("welcome_ ball_bundle {:?}",ball_bundle.clone());
                             cmd.spawn_bundle(ball_bundle);
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }

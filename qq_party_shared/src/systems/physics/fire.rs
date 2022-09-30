@@ -24,18 +24,21 @@ pub fn spawn_fire_collider(
     }
 }
 pub fn fire_collision(mut cmd:Commands,mut fire_query: Query<(Entity,&FireId,&Position),Without<Hit>>,
-  mut ball_query:Query<(Entity,&BallId,&Position,&mut LastNPC)>,
+  mut ball_query:Query<(Entity,&BallId,&Position)>,
   mut res:ResMut<ScoreBoard>){
   for (e,fire_id,fire_pos) in fire_query.iter_mut(){
-    if fire_pos.0.distance(fire_id.2.unwrap())>200.0{
-      cmd.entity(e).insert(Hit);
+    if let Some(fire_original_pos) = fire_id.2{
+      if fire_pos.0.distance(fire_original_pos)>200.0{
+        cmd.entity(e).insert(Hit);
+      }
     }
-    for (ball_e,ball_id,pos,mut last_npc) in ball_query.iter_mut(){
+    for (ball_e,ball_id,pos) in ball_query.iter_mut(){
       if ball_id.0 != fire_id.0{
-        if pos.0.distance(fire_pos.0)<10.0{
+        if pos.0.distance(fire_pos.0)<50.0{
           cmd.entity(e).insert(Hit);
+          cmd.entity(ball_e).insert(Hit);
           if let Some(v) = (*res).scores.get_mut(&ball_id.0) {
-              v.0-=10;
+              v.0-=40;
               if v.0<0{
                 v.0 = 0
               }
