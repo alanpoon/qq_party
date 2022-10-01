@@ -1990,6 +1990,7 @@ dependencies = [
  "bevy",
  "js-sys",
  "qq_party_shared",
+ "rand 0.8.5",
  "serde",
  "wasm-bindgen",
  "web-sys",

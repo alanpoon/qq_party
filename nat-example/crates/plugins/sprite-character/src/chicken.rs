@@ -72,13 +72,48 @@ pub fn add_chicken_sprite_system(
   }
   
 }
+
+#[derive(Component, Clone, Debug)]
+pub struct ChickenHit(pub bevy::utils::Instant); //timestamp of hit
 pub fn hit_chicken_sprite_system(
-  //mut balls_with_hit: Query<(Entity, &BallId,&mut Sprite), Changed<Hit>>,
+  mut cmd: Commands,
   mut balls_with_hit: Query<(Entity, &BallId,&mut TextureAtlasSprite), Changed<Hit>>,
+  time: Res<bevy::prelude::Time>
 ){
     for (entity, ball_id,mut sprite) in balls_with_hit.iter_mut() {
-      info!("target hitted");
+      if let Some(instant_)= (*time).last_update(){
+        cmd.entity(entity).insert(ChickenHit(instant_));
+      }
+      info!("previous sprite color {:?}",sprite.color);
       sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
     
+    }
+}
+pub fn remove_hit_chicken_sprite_system(
+  mut cmd: Commands,
+  mut balls_with_hit: Query<(Entity, &BallId,&ChickenHit,&mut TextureAtlasSprite)>,
+  time: Res<bevy::prelude::Time>
+){
+    for (entity, ball_id,chicken_hit,mut sprite) in balls_with_hit.iter_mut() {
+      let chicken_hit_instant =  chicken_hit.0;
+      let elapsed = chicken_hit_instant.elapsed().as_millis();
+      if elapsed <= 250 && elapsed>100{
+        sprite.color = Color::rgba(1.0, 0.0, 0.0, 0.3);
+      } else if elapsed <= 500{
+        sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
+      } else if elapsed <= 750{
+        sprite.color = Color::rgba(1.0, 0.0, 0.0, 0.3);
+      } else if elapsed <= 1000{
+        sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
+      } else if elapsed <= 1250{
+        sprite.color = Color::rgba(1.0, 0.0, 0.0, 0.3);
+      } else if elapsed <= 1500{
+        sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
+      } else if elapsed <= 1750{
+        sprite.color = Color::rgba(1.0, 0.0, 0.0, 0.3);
+      } else if elapsed >2000{
+        sprite.color = Color::rgba(1.0, 1.0, 1.0, 1.0);
+        cmd.entity(entity).remove::<ChickenHit>();
+      }
     }
 }

@@ -45,6 +45,15 @@ pub struct NPCId{
 }
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct LastNPC(pub u32,pub Option<Entity>);
+#[derive(Component, Clone, Debug)]
+pub struct SpecialEffectId(pub String);// special effect texture
+
+#[derive(Component, Clone, Debug,Bundle)]
+pub struct SpecialEffectBundle{
+  pub id:SpecialEffectId,
+  pub position:Position,
+  pub velocity: Velocity,
+}
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct Parent(Entity);
 #[derive(Serialize, Deserialize, Clone)]

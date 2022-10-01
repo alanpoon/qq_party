@@ -20,3 +20,5 @@ docker run -d -p 5000:5000 --restart always --name registry registry
 https://opengameart.org/content/wooden-stick
 
 https://lashkar.in/how-to-make-an-egg-shape
+
+storm https://raw.githubusercontent.com/tiandaye/phaser_projects/master/example-games/legendofwolf/assets/sprites/storm.png
