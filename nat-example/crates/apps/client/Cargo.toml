@@ -22,6 +22,7 @@ license = "MIT OR Apache-2.0"
 plugin-core = { package = "desk-plugin-core", path = "../../plugins/core", version = "0.1.0" }
 plugin-protocol = { package = "desk-plugin-protocol", path = "../../plugins/protocol", version = "0.1.0" }
 #plugin-wasm-target = { package = "desk-plugin-wasm-target", path = "../../plugins/wasm-target", optional = true, version = "0.1.0" }
+plugin-lyon = { package = "desk-plugin-lyon", path = "../../plugins/lyon", version = "0.1.0" }
 plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../plugins/physics-rapier", version = "0.1.0" }
 plugin-map = { package = "desk-plugin-map", path = "../../plugins/map", version = "0.1.0" }
 plugin-sprite-character = { package = "desk-plugin-sprite-character", path = "../../plugins/sprite-character", version = "0.1.0" }

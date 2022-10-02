@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use eyre::Result;
 use protocol::futures::channel::mpsc::channel;
-
+use protocol::{Client, ClientName, RawCommand,Event};
 use protocol::futures::{prelude::*, Sink, Stream};
 use protocol::{Client, Command, Event};
 
@@ -16,10 +16,10 @@ pub struct WebSocketClient<Tx, Rx> {
 #[async_trait]
 impl<Tx, Rx> Client for WebSocketClient<Tx, Rx>
 where
-    Tx: Sink<Command, Error = String> + Clone + Send + Sync + Unpin + 'static,
+    Tx: Sink<RawCommand, Error = String> + Clone + Send + Sync + Unpin + 'static,
     Rx: Stream<Item = Event> + Send + Sync + Unpin + 'static,
 {
-    fn sender(&self) -> Box<dyn Sink<Command, Error = String> + Send + Sync + Unpin + 'static> {
+    fn sender(&self) -> Box<dyn Sink<RawCommand, Error = String> + Send + Sync + Unpin + 'static> {
         Box::new(self.command_sender.clone())
     }
 

@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::utils::Duration;
 use bevy::app::ScheduleRunnerSettings;
+use plugin_lyon::LyonPlugin;
 use plugin_protocol::ProtocolPlugin;
 use plugin_physics_rapier::PhysicsPlugin;
 use plugin_map::MapPlugin;
@@ -23,6 +24,7 @@ pub fn main() {
           ..Default::default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(LyonPlugin)
         .add_plugin(PhysicsPlugin)
         .add_plugin(ProtocolPlugin)
         .add_plugin(MapPlugin)
