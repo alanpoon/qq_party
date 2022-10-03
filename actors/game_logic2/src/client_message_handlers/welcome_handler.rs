@@ -39,15 +39,16 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
       init_score(ball_id.0,ball_label,&mut scoreboard.scores);
+      let storm_timing = app.world.get_resource::<StormTiming>().unwrap().clone();
       let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
-          let pMsg = PubMessage{
+          let p_msg = PubMessage{
             body:b,
             reply_to: None,
             subject: String::from("welcome")
             };
-          publish_(pMsg);
+          publish_(p_msg);
         }
         _=>{}
       }
@@ -74,17 +75,18 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       for (i,npc_chunck) in npc_bundles.chunks(20).enumerate(){
         let mut bb= vec![];
         if i==0{
-          bb = ball_bundles.clone();    
+          bb = ball_bundles.clone();
         }
-        let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),timestamp:bevy_wasmcloud_time_val_clone.timestamp};
+        let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
+          storm_timing:storm_timing.clone(),timestamp:bevy_wasmcloud_time_val_clone.timestamp};
         match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
-            let pMsg = PubMessage{
+            let p_msg = PubMessage{
               body:b,
               reply_to: None,
               subject: format!("game_logic_specify.{}",ball_id.0)
             };
-            publish_(pMsg);
+            publish_(p_msg);
           }
           Err(e)=>{
             info_(format!("m iter ....error{}",e));

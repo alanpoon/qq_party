@@ -1962,6 +1962,7 @@ dependencies = [
  "anyhow",
  "bevy",
  "bevy_ecs_tilemap",
+ "chrono",
  "qq_party_shared",
  "tiled",
 ]

@@ -9,7 +9,7 @@ pub fn spawn_or_update_ball_bundles(
     let len = ball_bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      for (_entity, ball_id,mut pos, mut v,mut tv) in v_query.iter_mut(){
+      for (_entity, ball_id,mut pos, mut v,mut _tv) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
         if ball_bundle.ball_id.0 == ball_id.0{
           *v = ball_bundle.velocity;
@@ -44,7 +44,7 @@ pub fn spawn_or_update_npc_bundles(
     let len = bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      for (_entity, npc_id,mut pos, mut v,mut ct) in v_query.iter_mut(){
+      for (_entity, npc_id,mut pos, mut v,mut _ct) in v_query.iter_mut(){
         let bundle = bundles.get(i).unwrap();
         if bundle.npc_id.id == npc_id.id{
           *v = bundle.velocity;
@@ -72,4 +72,20 @@ pub fn spawn_fire_bundle(
   bundle:FireBundle
   ){
     cmd.spawn_bundle(bundle);
+}
+pub fn spawn_or_delete_storm_rings_bundles(
+  mut cmd: &mut Commands,
+  mut v_query:&mut Query<Entity,With<StormRingId>>,
+  bundles:Vec<StormRingId>
+  ){
+    let len = bundles.len();
+    if len==0{
+      for e in v_query.iter(){
+        cmd.entity(e).despawn_recursive();
+      }
+    }else{
+      for storm in bundles.iter(){
+        cmd.spawn().insert(storm.clone());
+      }
+    }
 }

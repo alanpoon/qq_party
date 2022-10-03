@@ -8,6 +8,7 @@ mod ui;
 mod timewrapper;
 mod timewrapper_qq;
 mod special_effects;
+mod storm_ring;
 use crate::nalgebra::Vector2;
 use wasm_bindgen::prelude::*;
 
@@ -32,7 +33,6 @@ impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build PhysicsPlugin");
         app.add_plugin(RapierPhysicsPlugin::<NoUserData,timewrapper::TimeWrapper>::default())
-
             .add_startup_system(enable_physics_profiling.system())
             .insert_resource(RapierConfiguration {
               scale: 1.0,
@@ -62,10 +62,12 @@ impl Plugin for PhysicsPlugin {
             .add_system(qq_party_shared::systems::physics::despawn_fire.system())
             //special_effects
             .add_system(special_effects::spawn_special_effect_collider.system())
+            //storm_ring
+            .add_system(storm_ring::spawn_storm_ring_collider.system())
             .add_system(timewrapper::into_timewrapper.system());
          
+        }
     }
-}
 fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
   pipeline.counters.enable()
 }

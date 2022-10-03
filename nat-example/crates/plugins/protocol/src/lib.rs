@@ -46,7 +46,7 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo};
+use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -56,6 +56,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
             .init_resource::<qq_party_shared::Time>()
+            .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
             .add_system(add_client_state.system())
             .add_system(receive_events.system().label(ProtocolSystem::ReceiveEvents))
@@ -225,8 +226,10 @@ fn receive_events(mut cmd: Commands,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
-    mut query: Query<(Entity, &BallId)>,
-  res:Res<Time> ) {
+  mut query: Query<(Entity, &BallId)>,
+  mut storm_query: Query<Entity,With<StormRingId>>,
+  mut storm_timing_res: ResMut<StormTiming>
+  ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
         let _rand_int = get_random_int(0,len as i32);
@@ -240,7 +243,7 @@ fn receive_events(mut cmd: Commands,
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
                           ServerMessage::Fire{ball_id,velocity,sprite_enum,timestamp}=>{  
-                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
+                            for (_entity, qball_id,pos,_vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
                                 let fire_bundle = FireBundle{
                                   fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some(pos.0.clone())),
@@ -261,14 +264,14 @@ fn receive_events(mut cmd: Commands,
                             }
                           }
                           
-                          ServerMessage::GameState{ball_bundles,npc_bundles,timestamp,..}=>{
+                          ServerMessage::GameState{ball_bundles,npc_bundles,storm_timing,timestamp,..}=>{
                             
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
                             let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;
                             gamestate::spawn_or_update_ball_bundles(&mut cmd,&mut v_query,delta,ball_bundles);
                             gamestate::spawn_or_update_npc_bundles(&mut cmd,&mut npc_query,delta,npc_bundles);
-
+                            *storm_timing_res = storm_timing;
                           }
                           ServerMessage::Scores{scoreboard,..}=>{
                             match serde_json::to_string(&ServerMessage::Scores{scoreboard}){
@@ -280,6 +283,12 @@ fn receive_events(mut cmd: Commands,
                               }
                             }
                             
+                          }
+                          ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
+                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,storm_rings);
+                            if let Some(storm_timing) = next_storm_timing{
+                              *storm_timing_res = storm_timing;
+                            }
                           }
                           _=>{}
                         }

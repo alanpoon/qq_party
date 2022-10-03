@@ -26,12 +26,12 @@ impl MessageSubscriber for ChatActor{
         Ok(mut cm)=>{
           cm.data = cm.data.censor();
           info_(format!("some chat msg--{:?}",cm.data.clone()));
-          let pMsg = PubMessage{
+          let p_msg = PubMessage{
             body:rmp_serde::to_vec(&cm).unwrap(),
             reply_to: None,
             subject: String::from("chat_from_server")
           };
-          publish_(pMsg);
+          publish_(p_msg);
         },
         Err(e)=>{
           info_(format!("game_chat{:?}",e));

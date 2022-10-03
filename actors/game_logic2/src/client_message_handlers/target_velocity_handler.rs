@@ -30,12 +30,12 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
         let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
         match rmp_serde::to_vec(&server_message){
           Ok(b)=>{
-            let pMsg = PubMessage{
+            let p_msg = PubMessage{
               body:b,
               reply_to: None,
               subject: format!("game_logic.{}",sa)
               };
-              publish_(pMsg);
+              publish_(p_msg);
           }
           _=>{
 

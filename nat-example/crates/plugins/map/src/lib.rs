@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
+use chrono::prelude::*;
 mod helpers;
 mod layer;
 mod tiled;
@@ -51,23 +52,29 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
   query: Query<(&Camera, &Transform,&OrthographicProjection)>,
   ball_query: Query<(&BallId,&Position)>,
-  scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>
+  scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>,
+  res:Res<bevy::prelude::Time>,
+  storm_timing:Res<StormTiming>
 ){
+  let now: DateTime<Utc> = Utc::now();
+  let storm_utc = Utc.timestamp((storm_timing.0 /1000) as i64, (storm_timing.0 % 1000) as u32 * 1000000);
+  let mut delta =  storm_utc.signed_duration_since(now).num_milliseconds() as f32 / 1000.0;
+  let mut storm_text = String::from("storm is coming in");
+  let mut reverse_delta = STORM_INTERVAL as f32 + delta;
+  if reverse_delta<0.0{
+    storm_text = String::from("storm ends in");
+    let storm_utc = Utc.timestamp(((storm_timing.0  ) /1000) as i64 + storm_timing.1 as i64, (storm_timing.0 % 1000) as u32 * 1000000);
+    delta =  storm_utc.signed_duration_since(now).num_milliseconds() as f32 / 1000.0;
+    // let storm_utc = Utc.timestamp((storm_timing.0 /1000) as i64, (storm_timing.0 % 1000) as u32 * 1000000);
+    // let mut delta =  storm_utc.signed_duration_since(now).num_milliseconds() as f32 / 1000.0;
+    reverse_delta = STORM_INTERVAL as f32 + delta;
+  }
   for (ball_id,score) in scoreboard.scores.iter(){
     if &userinfo.0.ball_id.0==ball_id{
-      let mut pos = String::from("");
-      for (b,p) in ball_query.iter(){
-        if &b.0 == ball_id{
-          pos.push_str(&p.0.x.to_string());
-          pos.push_str(":");
-          pos.push_str(&p.0.y.to_string());
-        }
-      }
       for (_,_t,_o) in query.iter(){
-        //for (mut text,mut text_t)  in text_query.iter_mut() {
         for (mut text,mut _s,mut _g)  in text_query.iter_mut() {
           text.sections[0].value = format!(r#"BallId:{:?}, Score:{:?}
-          pos:{:?}"#,ball_id,score,pos);
+          {:?} {:?}sec"#,ball_id,score,storm_text,reverse_delta.floor());
         }
       }
     }

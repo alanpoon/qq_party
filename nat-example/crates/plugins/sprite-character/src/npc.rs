@@ -1,15 +1,6 @@
 use bevy::prelude::*;
 use qq_party_shared::{Position,NPCId};
 use std::collections::HashMap;
-pub fn snake_translate(
-  texture_atlases: Res<Assets<TextureAtlas>>,
-  mut texture_atlas: Query<(&mut Position,&mut Transform, &Handle<TextureAtlas>)>,
-){
-  for (po,mut transform, _texture_atlas_handle) in texture_atlas.iter_mut() {
-    transform.translation.x = po.0.x;
-    transform.translation.y = po.0.y;
-  }
-}
 pub fn add_npc_sprite_system(
   mut cmd: Commands,
   balls_without_mesh: Query<(Entity, &NPCId,&Position), Without<Transform>>,

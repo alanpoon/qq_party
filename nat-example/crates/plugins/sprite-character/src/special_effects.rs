@@ -76,7 +76,6 @@ pub fn apply_special_effect_sprite_system(
           
           vel.0.x = rng.gen_range(-50..50) as f32;
           vel.0.y = rng.gen_range(-50..50) as f32;
-          info!("special_effect {:?}",vel.0);
       }
   }
 }

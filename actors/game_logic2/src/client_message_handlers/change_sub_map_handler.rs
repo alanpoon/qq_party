@@ -24,7 +24,6 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,position:Position)
   .next();
   match local_ball {
     Some((entity, _)) => {
-        info_(format!("change position {:?}",position));
         app.world.entity_mut(entity).insert(position);
     }
     None => {

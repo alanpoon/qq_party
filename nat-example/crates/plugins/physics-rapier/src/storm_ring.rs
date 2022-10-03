@@ -1,23 +1,23 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use qq_party_shared::*;
-pub fn spawn_special_effect_collider(
+pub fn spawn_storm_ring_collider(
     mut cmd: Commands,
-    without_rigid: Query<(Entity, &Position), (With<SpecialEffectId>,Without<RigidBodyPositionComponent>)>
+    without_rigid: Query<(Entity, &StormRingId), Without<RigidBodyPositionComponent>>
   ) {
-    for (entity, position) in without_rigid.iter() {
+    for (entity, storm_ring_id) in without_rigid.iter() {
       let collider1 = ColliderBundle {
-        shape: ColliderShapeComponent(ColliderShape::cuboid(20.0, 20.0)),
+        shape: ColliderShapeComponent(ColliderShape::cuboid(storm_ring_id.1 as f32 , storm_ring_id.1 as f32)),
         ..Default::default()
       };
       cmd.entity(entity)
       .insert_bundle(RigidBodyBundle{
-        mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
+        mass_properties: RigidBodyMassPropsFlags::TRANSLATION_LOCKED.into(),
         ccd: RigidBodyCcd {
             ccd_enabled: true,
             ..Default::default()
         }.into(),
-        position: [position.0.x, position.0.y].into(),
+        position: [storm_ring_id.0.x, storm_ring_id.0.y].into(),
         ..Default::default()
       })
       .insert(RigidBodyPositionSync::Discrete)

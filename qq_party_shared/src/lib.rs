@@ -56,13 +56,16 @@ pub struct SpecialEffectBundle{
 }
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct Parent(Entity);
+#[derive(Serialize, Deserialize, Default,Clone)]
+pub struct StormTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
-    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,timestamp:u64},
+    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     Fire{ball_id:BallId,velocity:Velocity,sprite_enum:u32,timestamp:u64},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
+    StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
     Scores{scoreboard:Vec<(i16,BallLabel)>},
     Welcome{ball_bundle:BallBundle,sub_map:String},
 }
@@ -80,3 +83,7 @@ pub struct UserInfo{
 }
 #[derive(Component,Default,Debug)]
 pub struct LocalUserInfo(pub UserInfo);
+#[derive(Component,Default,Debug,Serialize, Deserialize, Clone)]
+pub struct StormRingId(pub Vec2,pub i16); //pos,radius
+pub const STORM_INTERVAL :u64 = 10;
+pub const STORM_DURATION :u64 = 10;

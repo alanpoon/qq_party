@@ -28,8 +28,6 @@ use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use std::boxed::Box;
 use qq_party_shared::*;
-use std::io::Write;
-use std::borrow::Cow;
 use crate::plugins::physics::PhysicsPlugin;
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
@@ -49,8 +47,10 @@ impl Thread for GameLogicActor{
       let mut m = map.lock().unwrap();
       
       m.world.spawn_batch(npc_bundles);
+      m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
       m.init_resource::<Time>()
       .init_resource::<ScoreBoard>()
+      .init_resource::<StormTiming>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       //.add_system(systems::publish::sys_publish_game_state.system())
@@ -146,8 +146,3 @@ impl TimeV2{
     self.elapsed.get(&key)
   }
 }
-// trait TimeAble {
-//   fn update(&mut self,f32);
-//   fn elapsed(&self) -> f32;
-// }
-

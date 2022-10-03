@@ -42,12 +42,12 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:Velocity,sprite_enum:u32
       let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:fire_bundle.velocity.clone(),sprite_enum,timestamp:bevy_wasmcloud_time_val_clone.timestamp};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
-          let pMsg = PubMessage{
+          let p_msg = PubMessage{
             body:b,
             reply_to: None,
             subject: format!("game_logic.{}",sa)
             };
-          publish_(pMsg);
+          publish_(p_msg);
         }
         _=>{}
       }

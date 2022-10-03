@@ -61,6 +61,13 @@ impl ClientState for Normal {
                       sid:21,
                     };
                     commands.commands.push(Command::Nats(String::from("default"),n));
+                    let n = nats::proto::ClientOp::Sub{
+                      subject: String::from("game_logic_storm_rings"),
+                      queue_group:None,
+                      sid:22,
+                    };
+                    commands.commands.push(Command::Nats(String::from("default"),n));
+                    
                     return AfterNormal{}.into()
                   }
                   

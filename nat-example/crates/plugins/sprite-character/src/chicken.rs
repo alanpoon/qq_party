@@ -2,16 +2,6 @@ use bevy::prelude::*;
 use qq_party_shared::*;
 use std::collections::HashMap;
 use crate::H;
-pub fn chicken_translate(
-  _texture_atlases: Res<Assets<TextureAtlas>>,
-  mut texture_atlas: Query<(&mut Position,&mut Transform, &Handle<TextureAtlas>)>,
-){
-  for (po,mut transform, texture_atlas_handle) in texture_atlas.iter_mut() {
-    //info!("mutating targetV {:?}",tv);
-    transform.translation.x = po.0.x;
-    transform.translation.y = po.0.y;
-  }
-}
 pub fn add_chicken_sprite_system(
   mut cmd: Commands,
   balls_without_mesh: Query<(Entity, &BallId,&BallLabel,&Position), Without<TextureAtlasSprite>>,
@@ -84,7 +74,6 @@ pub fn hit_chicken_sprite_system(
       if let Some(instant_)= (*time).last_update(){
         cmd.entity(entity).insert(ChickenHit(instant_));
       }
-      info!("previous sprite color {:?}",sprite.color);
       sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
     
     }
