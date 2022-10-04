@@ -16,7 +16,7 @@ body {height: 100%}
 /** awesome buttons from ZURB.com **/
 
 .awesome, .awesome:visited {
-    background: #222 url(http://whisperstorm.com/tests/rotating_buttons/alert-overlay.png) repeat-x; 
+    background: #222 repeat-x; 
     display: inline-block; 
     padding: 5px 10px 6px; 
     color: #fff; 

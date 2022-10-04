@@ -30,6 +30,8 @@ impl Plugin for PhysicsPlugin {
           .add_system(qq_party_shared::systems::physics::fire_collision.system())
           .add_system(qq_party_shared::systems::physics::despawn_fire.system())
           //storm_ring
+          .add_system(qq_party_shared::systems::physics::despawn_fire.system())
+          .add_system(qq_party_shared::systems::physics::outside_storm_ring_damage::<bevy_wasmcloud_time::Time>.system())
           ;
   }
 }

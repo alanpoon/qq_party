@@ -38,7 +38,7 @@ pub fn fire_collision(mut cmd:Commands,mut fire_query: Query<(Entity,&FireId,&Po
           cmd.entity(e).insert(Hit);
           cmd.entity(ball_e).insert(Hit);
           if let Some(v) = (*res).scores.get_mut(&ball_id.0) {
-              v.0-=40;
+              v.0-=10;
               if v.0<0{
                 v.0 = 0
               }

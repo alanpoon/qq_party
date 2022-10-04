@@ -34,6 +34,7 @@ impl Plugin for PhysicsPlugin {
         info!("build PhysicsPlugin");
         app.add_plugin(RapierPhysicsPlugin::<NoUserData,timewrapper::TimeWrapper>::default())
             .add_startup_system(enable_physics_profiling.system())
+            .add_startup_system(qq_party_shared::systems::physics::add_damage_timer.system())
             .insert_resource(RapierConfiguration {
               scale: 1.0,
               gravity: Vector2::zeros(),
@@ -41,6 +42,7 @@ impl Plugin for PhysicsPlugin {
             })
             .init_resource::<timewrapper::TimeWrapper>()
             .init_resource::<timewrapper_qq::TimeWrapper>()
+            .init_resource::<DamageCountdown>()
             .init_resource::<qq_party_shared::scoreboard::ScoreBoard>()
             .add_system(timewrapper_qq::into_timewrapper.system())
             //.add_system(debug_rigid.system())
@@ -64,6 +66,8 @@ impl Plugin for PhysicsPlugin {
             .add_system(special_effects::spawn_special_effect_collider.system())
             //storm_ring
             .add_system(storm_ring::spawn_storm_ring_collider.system())
+            .add_system(qq_party_shared::systems::physics::outside_storm_ring_damage::<timewrapper_qq::TimeWrapper>.system())
+            //.add_system(outside_storm_ring_damage::<timewrapper_qq::TimeWrapper>.system())
             .add_system(timewrapper::into_timewrapper.system());
          
         }

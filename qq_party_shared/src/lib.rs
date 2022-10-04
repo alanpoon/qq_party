@@ -9,10 +9,11 @@ mod bundle;
 pub mod systems;
 pub use bundle::*;
 pub mod time_interface;
+pub use time_interface::Timer;
 pub mod scoreboard;
 pub mod sub_map;
 pub use scoreboard::*;
-
+pub use time_interface::DamageCountdown;
 
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
 pub struct Position(pub Vec2);
@@ -87,3 +88,11 @@ pub struct LocalUserInfo(pub UserInfo);
 pub struct StormRingId(pub Vec2,pub i16); //pos,radius
 pub const STORM_INTERVAL :u64 = 10;
 pub const STORM_DURATION :u64 = 10;
+#[derive(Component,Clone,Debug)]
+pub struct TimerV2{
+  
+}
+#[derive(Component,Clone,Debug)]
+pub struct AnimationTimerV2(TimerV2);
+#[derive(Component,Clone,Debug)]
+pub struct DamageTimer(time_interface::timer::Timer);
