@@ -65,14 +65,33 @@ pub fn add_chicken_sprite_system(
 
 #[derive(Component, Clone, Debug)]
 pub struct ChickenHit(pub bevy::utils::Instant); //timestamp of hit
+#[derive(Component, Clone, Debug)]
+pub struct HitTextAsChild(); 
 pub fn hit_chicken_sprite_system(
   mut cmd: Commands,
   mut balls_with_hit: Query<(Entity, &BallId,&mut TextureAtlasSprite), Changed<Hit>>,
-  time: Res<bevy::prelude::Time>
+  time: Res<bevy::prelude::Time>,
+  font_handle: Res<Handle<Font>>
 ){
+    let text_style = TextStyle {
+      font:font_handle.clone(),
+      font_size: 30.0,
+      color: Color::RED,
+    };
+    let text_alignment = TextAlignment {
+      vertical: VerticalAlign::Center,
+      horizontal: HorizontalAlign::Center,
+    };
     for (entity, ball_id,mut sprite) in balls_with_hit.iter_mut() {
       if let Some(instant_)= (*time).last_update(){
         cmd.entity(entity).insert(ChickenHit(instant_));
+        cmd.entity(entity).with_children(|parent| {
+          parent.spawn_bundle(Text2dBundle {
+            text: Text::with_section("hit -10",text_style.clone(), text_alignment.clone()),
+            transform: Transform::from_xyz(0.0,80.0,3.0),
+            ..Default::default()
+          }).insert(HitTextAsChild());
+        });
       }
       sprite.color = Color::rgba(0.0, 1.0, 0.0, 0.3);
     
@@ -80,10 +99,11 @@ pub fn hit_chicken_sprite_system(
 }
 pub fn remove_hit_chicken_sprite_system(
   mut cmd: Commands,
-  mut balls_with_hit: Query<(Entity, &BallId,&ChickenHit,&mut TextureAtlasSprite)>,
+  mut balls_with_hit: Query<(Entity, &BallId,&ChickenHit,&mut TextureAtlasSprite,&Children)>,
+  hit_test_as_child_query: Query<(Entity,&HitTextAsChild)>,
   time: Res<bevy::prelude::Time>
 ){
-    for (entity, ball_id,chicken_hit,mut sprite) in balls_with_hit.iter_mut() {
+    for (entity, ball_id,chicken_hit,mut sprite,children) in balls_with_hit.iter_mut() {
       let chicken_hit_instant =  chicken_hit.0;
       let elapsed = chicken_hit_instant.elapsed().as_millis();
       if elapsed <= 250 && elapsed>100{
@@ -103,6 +123,11 @@ pub fn remove_hit_chicken_sprite_system(
       } else if elapsed >2000{
         sprite.color = Color::rgba(1.0, 1.0, 1.0, 1.0);
         cmd.entity(entity).remove::<ChickenHit>();
+        for child in children.iter(){
+          if let Ok((e,_)) = hit_test_as_child_query.get(*child){
+            cmd.entity(e).despawn();
+          }
+        }
       }
     }
 }
