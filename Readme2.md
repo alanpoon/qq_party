@@ -22,3 +22,10 @@ https://opengameart.org/content/wooden-stick
 https://lashkar.in/how-to-make-an-egg-shape
 
 storm https://raw.githubusercontent.com/tiandaye/phaser_projects/master/example-games/legendofwolf/assets/sprites/storm.png
+
+thunder JonathanShaw https://opengameart.org/content/thunder-very-close-rain-01
+
+BG TeFox opengameart
+Cracking sound Hansjorg Malthaner
+
+https://v6p9d9t4.ssl.hwcdn.net/html/6421126/index.html

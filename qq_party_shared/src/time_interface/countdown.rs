@@ -1,6 +1,5 @@
-use super::{timer::Timer,TimeInterface};
+use super::{timer::Timer};
 use bevy_ecs::prelude::*;
-use std::time::Duration;
 #[derive(Component, Clone, Debug)]
 pub struct DamageCountdown  {
     pub main_timer: Timer,

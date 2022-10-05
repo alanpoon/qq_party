@@ -46,7 +46,7 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming};
+use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -228,7 +228,8 @@ fn receive_events(mut cmd: Commands,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
   mut query: Query<(Entity, &BallId)>,
   mut storm_query: Query<Entity,With<StormRingId>>,
-  mut storm_timing_res: ResMut<StormTiming>
+  mut storm_timing_res: ResMut<StormTiming>,
+  mut audioable: ResMut<AudioAble>,
   ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
@@ -300,6 +301,7 @@ fn receive_events(mut cmd: Commands,
                           ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
                             info!("welcome_ ball_bundle {:?}",ball_bundle.clone());
                             cmd.spawn_bundle(ball_bundle);
+                            audioable.0 = true;
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }
                           _=>{}

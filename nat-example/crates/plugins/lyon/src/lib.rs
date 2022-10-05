@@ -36,9 +36,9 @@ pub fn add_storm_ring_sprite_system(
     mut cmd: Commands,
     without_shape: Query<(Entity, &StormRingId), Without<Shape>>
 ){
-    
-    
+
     for (e,storm_ring_id) in without_shape.iter(){
+        info!("adding shape {:?}",e);
         let shape = shapes::RegularPolygon {
             sides: 6,
             feature: shapes::RegularPolygonFeature::Radius(storm_ring_id.1 as f32),

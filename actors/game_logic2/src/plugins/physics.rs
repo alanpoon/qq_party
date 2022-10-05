@@ -13,6 +13,7 @@ impl Plugin for PhysicsPlugin {
             timestep_mode: bevy_rapier2d::physics::TimestepMode::InterpolatedTimestep,
             ..Default::default()
           })
+          .add_startup_system(qq_party_shared::systems::physics::add_damage_timer.system())
           //player
           .add_system(qq_party_shared::systems::physics::spawn_player_collider.system())
           .add_system(qq_party_shared::systems::update_state_position_physics.system())

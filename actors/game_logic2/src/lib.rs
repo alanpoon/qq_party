@@ -51,7 +51,6 @@ impl Thread for GameLogicActor{
       m.init_resource::<Time>()
       .init_resource::<ScoreBoard>()
       .init_resource::<StormTiming>()
-      .init_resource::<DamageCountdown>()
       .init_resource::<bevy_wasmcloud_time::Time>()
       .add_plugin(bevy_transform::TransformPlugin::default())
       .add_plugin(PhysicsPlugin)

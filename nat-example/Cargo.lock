@@ -406,6 +406,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "atomic"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b88d82667eca772c4aa12f0f1348b3ae643424c8876448f3f7bd5787032e234c"
+dependencies = [
+ "autocfg 1.1.0",
+]
+
+[[package]]
 name = "atomic-counter"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -487,6 +496,12 @@ checksum = "67a99c239d0c7e77c85dddfa9cebce48704b3c49550fcd3b84dd637e4484899f"
 dependencies = [
  "base64 0.13.0",
 ]
+
+[[package]]
+name = "basedrop"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47611e530cf21bb89fbfe322aa8b1feae1ace33ff65f8ebf40fe3b4b99b7c9a2"
 
 [[package]]
 name = "basic-cookies"
@@ -751,6 +766,18 @@ dependencies = [
  "bevy_window",
  "bevy_winit",
  "ndk-glue 0.5.1",
+]
+
+[[package]]
+name = "bevy_kira_audio"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ef3977fecb8f4d82b77f8c0bb415f59917c86923d5f5be688ef7099c8e9b98e"
+dependencies = [
+ "anyhow",
+ "bevy",
+ "kira",
+ "parking_lot 0.11.2",
 ]
 
 [[package]]
@@ -1907,6 +1934,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "console_log",
+ "desk-plugin-audio",
  "desk-plugin-core",
  "desk-plugin-lyon",
  "desk-plugin-map",
@@ -1936,6 +1964,15 @@ dependencies = [
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "ws_stream_wasm",
+]
+
+[[package]]
+name = "desk-plugin-audio"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_kira_audio",
+ "qq_party_shared",
 ]
 
 [[package]]
@@ -3164,6 +3201,25 @@ checksum = "8c2352bd1d0bceb871cb9d40f24360c8133c11d7486b68b5381c1dd1a32015e3"
 dependencies = [
  "libc",
  "libloading",
+]
+
+[[package]]
+name = "kira"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e7a756bb5de5a0dea42a6f514037db18736b56c9e2313928746025721f9cca0"
+dependencies = [
+ "atomic",
+ "basedrop",
+ "cpal",
+ "getrandom 0.2.5",
+ "indexmap",
+ "instant",
+ "lewton",
+ "rand 0.8.5",
+ "ringbuf",
+ "thiserror",
+ "uuid",
 ]
 
 [[package]]
@@ -5055,6 +5111,15 @@ dependencies = [
  "untrusted",
  "web-sys",
  "winapi",
+]
+
+[[package]]
+name = "ringbuf"
+version = "0.2.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f65af18d50f789e74aaf23bbb3f65dcd22a3cb6e029b5bced149f6bd57c5c2a2"
+dependencies = [
+ "cache-padded",
 ]
 
 [[package]]
