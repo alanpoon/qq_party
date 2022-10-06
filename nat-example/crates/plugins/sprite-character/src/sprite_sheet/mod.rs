@@ -60,4 +60,10 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   let rattan_atlas_handler = texture_atlases.add(rattan_atlas);
   texture_hashmap.insert(String::from("rattan"),rattan_atlas_handler);
   info!("texture_hashmap end ");
+  if let Some(el) = web_sys::window().unwrap().document().unwrap().get_element_by_id("loader"){
+    el.set_attribute("style","display:none;");
+  }
+  if let Some(el) = web_sys::window().unwrap().document().unwrap().get_element_by_id("hello_button"){
+    el.set_attribute("style","display:block;");
+  }
 }

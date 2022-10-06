@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,Velocity,NPCId,SpecialEffectBundle,SpecialEffectId};
+use qq_party_shared::{Position,Velocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId};
 use std::collections::HashMap;
 use rand::Rng;
 use crate::AnimationTimer;
@@ -31,26 +31,52 @@ pub fn onstart(mut cmd: Commands){
 }
 pub fn add_special_effect_sprite_system(
   mut cmd: Commands,
-  effects_without_mesh: Query<(Entity, &SpecialEffectId,&Position), Without<Transform>>,
+  effects_with_mesh: Query<(Entity, &SpecialEffectId,&Position,&TextureAtlasSprite)>,
+  mut effects_without_mesh: Query<(Entity, &SpecialEffectId,&mut Position), Without<TextureAtlasSprite>>,
+  storm_rings_query: Query<(Entity, &StormRingId)>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
-  
 ) {
-  for (entity, effect_id,position) in effects_without_mesh.iter() {
-    let sprite_name = effect_id.0.clone();
-    if let Some(t_handle)= texture_hashmap.get(&sprite_name){
-      cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-        texture_atlas: t_handle.clone(),
-        transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0)
-        .with_scale(Vec3::splat(1.0)),
-        ..Default::default()
-      }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)))
-      .insert(Velocity(Vec2::new(0.0, 0.0)))
-      .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
-      .insert(MoveTimer(Timer::from_seconds(4.0,true)));
-    }else{
-      info!("cannot find {:?}",sprite_name);
+  let mut found_storm_rings = false;
+  for (_,storm_ring) in storm_rings_query.iter(){
+    found_storm_rings= true;
+    break;
+  }
+  if found_storm_rings{
+    for (entity, effect_id,mut pos) in effects_without_mesh.iter_mut() {
+      let sprite_name = effect_id.0.clone();
+      let mut found_inside = false;
+      for (_,storm_ring_id) in storm_rings_query.iter(){
+        if pos.0.distance_squared(storm_ring_id.0) < (storm_ring_id.1*storm_ring_id.1) as f32{
+          found_inside = true;
+          break;
+        }
+      }
+      if found_inside{
+        pos.0.x = 1800.0;
+        pos.0.y = 200.0;
+      }
+      if let Some(t_handle)= texture_hashmap.get(&sprite_name){
+        cmd.entity(entity).insert_bundle(SpriteSheetBundle {
+          texture_atlas: t_handle.clone(),
+          transform: Transform::from_xyz(pos.0.x as f32,pos.0.y as f32,2.0)
+          .with_scale(Vec3::splat(1.0)),
+          ..Default::default()
+        }).insert(Position(Vec2::new(pos.0.x as f32, pos.0.y as f32)))
+        .insert(Velocity(Vec2::new(0.0, 0.0)))
+        .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
+        .insert(MoveTimer(Timer::from_seconds(4.0,true)));
+      }else{
+        info!("cannot find {:?}",sprite_name);
+      }
+    }
+  }else{
+
+    for (entity, effect_id,_,_) in effects_with_mesh.iter() {
+      let sprite_name = effect_id.0.clone();
+      cmd.entity(entity).remove_bundle::<SpriteSheetBundle>();
     }
   }
+  
 }
 pub fn apply_special_effect_sprite_system(
   mut cmd: Commands,
