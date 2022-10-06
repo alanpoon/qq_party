@@ -1,7 +1,14 @@
 use bevy::{core::Time, input::Input, math::Vec3, prelude::*, render::camera::Camera};
 use qq_party_shared::*;
 use protocol::{Command,nats};
+use serde_json::json;
 use crate::c_;
+use wasm_bindgen::prelude::wasm_bindgen;
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn2)]
+    fn push_web_bevy_events_fn2(msg: &str);
+}
 // A simple camera system for moving and zooming the camera.
 pub fn move_with_local_player(
     mut commands: ResMut<protocol::Commands>,
@@ -15,6 +22,8 @@ pub fn move_with_local_player(
         if ball_id == &local_user_info.0.ball_id{
           transform.translation.x = po.0.x;
           transform.translation.y = po.0.y;
+          let event= json!({"Ball":[po.0.x,po.0.y]});
+          push_web_bevy_events_fn2(&event.to_string());
           if transform.translation.x >3700.0{
             transform.translation.x = 3700.0;
           }

@@ -49,9 +49,6 @@ export function init_pkg_ws(){
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
     }
-
-   
-   
   }
   init_chat()
   window.push_web_bevy_events_fn2 =function(msg){
@@ -69,8 +66,12 @@ export function init_pkg_ws(){
           unsorted.push({"name":name,"score":score,"flag":flag});
         }
       }
-  
       window.leaderboard_new_data(unsorted)
+    }else if (typeof event["StormRings"]!="undefined"){
+      console.log("nn",event["StormRings"]);
+      window.storm_rings = event["StormRings"]["storm_rings"];
+    }else if (typeof event["Ball"]!="undefined"){
+      window.local_ball = event["Ball"];
     }
   }
 }

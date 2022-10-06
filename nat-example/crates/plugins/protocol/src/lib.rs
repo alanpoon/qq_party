@@ -286,9 +286,17 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
-                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,storm_rings);
-                            if let Some(storm_timing) = next_storm_timing{
+                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,storm_rings.clone());
+                            if let Some(storm_timing) = next_storm_timing.clone(){
                               *storm_timing_res = storm_timing;
+                            }
+                            match serde_json::to_string(&ServerMessage::StormRings{storm_rings,next_storm_timing}){
+                              Ok(j)=>{
+                                push_web_bevy_events_fn2(&j);
+                              }
+                              Err(e)=>{
+                                info!("push_web_bevy_events_fn2 error {:?}",e);
+                              }
                             }
                           }
                           _=>{}
