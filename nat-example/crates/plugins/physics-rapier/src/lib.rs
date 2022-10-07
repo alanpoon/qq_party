@@ -64,6 +64,7 @@ impl Plugin for PhysicsPlugin {
             .add_system(qq_party_shared::systems::physics::despawn_fire.system())
             //special_effects
             .add_system(special_effects::spawn_special_effect_collider.system())
+            .add_system(special_effects::move_special_effect_closer_to_user_system.system())
             //storm_ring
             .add_system(storm_ring::spawn_storm_ring_collider.system())
             .add_system(qq_party_shared::systems::physics::outside_storm_ring_damage::<timewrapper_qq::TimeWrapper>.system())
