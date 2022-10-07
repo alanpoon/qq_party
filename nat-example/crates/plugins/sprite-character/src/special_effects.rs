@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,Velocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId};
+use qq_party_shared::{Position,Velocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId,LocalUserInfo,BallId};
 use std::collections::HashMap;
 use rand::Rng;
 use crate::AnimationTimer;
@@ -8,33 +8,39 @@ use crate::AnimationTimer;
 pub struct MoveTimer(Timer);
 
 pub fn onstart(mut cmd: Commands){
-  let bundles = vec![
-    SpecialEffectBundle{
-      id:SpecialEffectId(String::from("storm")),
-      position: Position(Vec2::new(3600.0,3620.0)),
-      velocity: Velocity(Vec2::new(-20.0,20.0)),
-    },SpecialEffectBundle{
-      id:SpecialEffectId(String::from("ice")),
-      position: Position(Vec2::new(3500.0,3700.0)),
-      velocity: Velocity(Vec2::new(20.0,40.0)),
-    },SpecialEffectBundle{
-      id:SpecialEffectId(String::from("stone")),
-      position: Position(Vec2::new(3700.0,3600.0)),
-      velocity: Velocity(Vec2::new(-24.0,40.0)),
-    },SpecialEffectBundle{
-      id:SpecialEffectId(String::from("rattan")),
-      position: Position(Vec2::new(3570.0,3400.0)),
-      velocity: Velocity(Vec2::new(20.0,-50.0)),
-    },
-  ];
+  let mut rng = rand::thread_rng();
+  let mut bundles = vec![];
+  let special_effects = vec![String::from("storm"),String::from("ice"),String::from("stone"),String::from("rattan")];
+  for _ in 0..8{
+    let b = rng.gen_range(0..40) as f32;
+    for s_e in special_effects.iter(){
+      let tv_x = if rng.gen_bool(0.5){
+        1.0 * b
+      }else{
+        -1.0 * b
+      };
+      let tv_y = if rng.gen_bool(0.5){
+        1.0 * b
+      }else{
+        -1.0 * b
+      };
+      bundles.push(SpecialEffectBundle{
+        id:SpecialEffectId(s_e.clone()),
+        position: Position(Vec2::new(3600.0,3620.0)),
+        velocity: Velocity(Vec2::new(tv_x,tv_y)),
+      });
+    }
+  }
   cmd.spawn_batch(bundles);
 }
 pub fn add_special_effect_sprite_system(
   mut cmd: Commands,
+  mut ball_query: Query<(&BallId,&Position)>,
   effects_with_mesh: Query<(Entity, &SpecialEffectId,&Position,&TextureAtlasSprite)>,
-  mut effects_without_mesh: Query<(Entity, &SpecialEffectId,&mut Position), Without<TextureAtlasSprite>>,
+  mut effects_without_mesh: Query<(Entity, &SpecialEffectId), Without<TextureAtlasSprite>>,
   storm_rings_query: Query<(Entity, &StormRingId)>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
+  local_user_info: Res<LocalUserInfo>
 ) {
   let mut found_storm_rings = false;
   for (_,storm_ring) in storm_rings_query.iter(){
@@ -42,9 +48,22 @@ pub fn add_special_effect_sprite_system(
     break;
   }
   if found_storm_rings{
-    for (entity, effect_id,mut pos) in effects_without_mesh.iter_mut() {
+    
+    for (entity, effect_id) in effects_without_mesh.iter_mut() {
+      let mut ball_pos =  Position(Vec2::new(0.0,0.0));
+      for ( ball_id,po) in ball_query.iter(){
+        if ball_id == &local_user_info.0.ball_id{
+          ball_pos = po.clone();
+        }
+      }
+      let mut rng = rand::thread_rng();
       let sprite_name = effect_id.0.clone();
       let mut found_inside = false;
+      //spawn special effect near userspace
+      let mut pos =  Position(Vec2::new(0.0,0.0));
+
+      pos.0.x = rng.gen_range(-400..400) as f32 + ball_pos.0.x;
+      pos.0.y = rng.gen_range(-400..400) as f32 + ball_pos.0.y;
       for (_,storm_ring_id) in storm_rings_query.iter(){
         if pos.0.distance_squared(storm_ring_id.0) < (storm_ring_id.1*storm_ring_id.1) as f32{
           found_inside = true;
@@ -55,6 +74,7 @@ pub fn add_special_effect_sprite_system(
         pos.0.x = 1800.0;
         pos.0.y = 200.0;
       }
+      //info!("special effect pos {:?}",pos);
       if let Some(t_handle)= texture_hashmap.get(&sprite_name){
         cmd.entity(entity).insert_bundle(SpriteSheetBundle {
           texture_atlas: t_handle.clone(),
@@ -62,7 +82,7 @@ pub fn add_special_effect_sprite_system(
           .with_scale(Vec3::splat(1.0)),
           ..Default::default()
         }).insert(Position(Vec2::new(pos.0.x as f32, pos.0.y as f32)))
-        .insert(Velocity(Vec2::new(0.0, 0.0)))
+        //.insert(Velocity(Vec2::new(0.0, 0.0)))
         .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
         .insert(MoveTimer(Timer::from_seconds(4.0,true)));
       }else{
