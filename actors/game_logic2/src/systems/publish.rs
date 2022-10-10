@@ -1,6 +1,6 @@
 use wasmcloud_interface_messaging::PubMessage;
-use bevy_ecs::prelude::*;
-use bevy_math::Vec2;
+use bevy::prelude::*;
+use bevy::math::Vec2;
 use qq_party_shared::*;
 use crate::info_::info_;
 use crate::{Time,TimeV2};
@@ -10,8 +10,8 @@ use crate::util::sub_map_area;
 use std::collections::HashMap;
 
 pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMut<TimeV2>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
-  query: Query<(&BallId,&BallLabel,&Position,&Velocity,&TargetVelocity)>,
-  npc_query: Query<(&NPCId,&Position,&Velocity,&ChaseTargetId)>,
+  query: Query<(&BallId,&BallLabel,&Position,&QQVelocity,&TargetVelocity)>,
+  npc_query: Query<(&NPCId,&Position,&QQVelocity,&ChaseTargetId)>,
   storm_ring_query: Query<(Entity,&StormRingId)>,
   scoreboard:Res<ScoreBoard>,
   mut storm_timing:ResMut<StormTiming>) {

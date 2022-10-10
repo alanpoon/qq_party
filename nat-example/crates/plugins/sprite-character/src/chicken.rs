@@ -47,7 +47,7 @@ pub fn add_chicken_sprite_system(
             });
           }
           parent.spawn_bundle(Text2dBundle {
-            text: Text::with_section(&ball_label.0,text_style.clone(), text_alignment),
+            text: Text::from_section(&ball_label.0,text_style.clone()),
             transform: Transform::from_xyz(0.0,-100.0,3.0),
             ..Default::default()
           });
@@ -78,16 +78,16 @@ pub fn hit_chicken_sprite_system(
       font_size: 30.0,
       color: Color::RED,
     };
-    let text_alignment = TextAlignment {
-      vertical: VerticalAlign::Center,
-      horizontal: HorizontalAlign::Center,
-    };
+    // let text_alignment = TextAlignment {
+    //   vertical: VerticalAlign::Center,
+    //   horizontal: HorizontalAlign::Center,
+    // };
     for (entity, ball_id,mut sprite) in balls_with_hit.iter_mut() {
       if let Some(instant_)= (*time).last_update(){
         cmd.entity(entity).insert(ChickenHit(instant_));
         cmd.entity(entity).with_children(|parent| {
           parent.spawn_bundle(Text2dBundle {
-            text: Text::with_section("hit -10",text_style.clone(), text_alignment.clone()),
+            text: Text::from_section("hit -10",text_style.clone()),
             transform: Transform::from_xyz(0.0,80.0,3.0),
             ..Default::default()
           }).insert(HitTextAsChild());

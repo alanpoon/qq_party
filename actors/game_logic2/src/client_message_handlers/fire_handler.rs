@@ -5,14 +5,13 @@ use crate::spawn_::spawn_fire;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
 use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
 use std::collections::HashMap;
-use bevy_app::App;
+use bevy::prelude::*;
 use std::sync::{Arc, Mutex};
-use bevy_ecs::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
-use bevy_math::Vec2;
+use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 
-pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:Velocity,sprite_enum:u32)-> RpcResult<()>{
+pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32)-> RpcResult<()>{
   let mut guard = match map.lock() {
       Ok(guard) => guard,
       Err(poisoned) => {
@@ -20,7 +19,7 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:Velocity,sprite_enum:u32
       },
     };
     let mut app = guard;
-    let mut query = app.world.query::<(Entity, &BallId,&Position,&Velocity)>();
+    let mut query = app.world.query::<(Entity, &BallId,&Position,&QQVelocity)>();
     let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_,_)| {
       ball_id == _ball_id})
     .next();
@@ -29,7 +28,9 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:Velocity,sprite_enum:u32
     let fire_bundle = match local_ball {
       Some((entity, ball_id,position,vel)) => {
           let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some(position.0.clone())),position:position.clone(),
-            velocity:Velocity(vel.0*2.0),start:Time{elapsed:bevy_wasmcloud_time_val_clone.timestamp as f32}};
+            velocity:QQVelocity(vel.0*2.0),
+            //start:Time{elapsed:bevy_wasmcloud_time_val_clone.timestamp as f32  }
+          };
           
           Some(fire_bundle)
       }

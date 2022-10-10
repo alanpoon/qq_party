@@ -1,25 +1,27 @@
 use bevy_rapier2d::prelude::*;
-use bevy_ecs::prelude::*;
-use bevy_rapier2d::prelude::nalgebra::Vector2;
+use bevy::prelude::*;
+use bevy_rapier2d::math::Vect;
 use crate::*;
 
 pub fn spawn_fire_collider(
     mut cmd: Commands,
-    fires_without_rigid: Query<(Entity, &FireId,&Position), Without<RigidBodyPositionComponent>>
+    fires_without_rigid: Query<(Entity, &FireId,&Position), Without<Transform>>
   ) {
     for (entity, fire_id,position) in fires_without_rigid.iter() {
       cmd.entity(entity)
-      .insert_bundle(RigidBodyBundle{
-        //mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
-        ccd: RigidBodyCcd {
-            ccd_enabled: true,
-            ..Default::default()
-        }.into(),
-        velocity:RigidBodyVelocityComponent(RigidBodyVelocity { linvel: Vector2::new(0.0, 0.0), angvel: 0.5 }),
-        position: [position.0.x, position.0.y].into(),
-        ..Default::default()
-      })
-      .insert(RigidBodyPositionSync::Discrete)
+      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 0.0)))
+      .insert(RigidBody::Dynamic)
+      .insert(Velocity::angular(0.5))
+      // .insert_bundle(RigidBodyBundle{
+      //   //mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
+      //   ccd: RigidBodyCcd {
+      //       ccd_enabled: true,
+      //       ..Default::default()
+      //   }.into(),
+      //   velocity:RigidBodyVelocityComponent(RigidBodyVelocity { linvel: Vect::new(0.0, 0.0), angvel: 0.5 }),
+      //   position: [position.0.x, position.0.y].into(),
+      //   ..Default::default()
+      // })
       ;
     }
 }

@@ -6,8 +6,7 @@ use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
 use crate::{Time,TimeV2};
 use crate::info_::info_;
-use bevy_app::App;
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use qq_party_shared::time_interface::TimeInterface;
 pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
   let mut n = String::from("thread_handle_request");

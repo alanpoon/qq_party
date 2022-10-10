@@ -5,11 +5,10 @@ use crate::spawn_::spawn;
 use crate::util::sub_map_area;
 use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
 use std::collections::HashMap;
-use bevy_app::App;
+use bevy::prelude::*;
 use std::sync::{Arc, Mutex};
-use bevy_ecs::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
-use bevy_math::Vec2;
+use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:BallLabel)-> RpcResult<()>{
@@ -23,7 +22,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       ball_id:ball_id,
       ball_label:ball_label.clone(),
       position:pos,
-      velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
+      velocity:QQVelocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
     };
     let mut ball_bundles:Vec<BallBundle> = vec![];
@@ -56,7 +55,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       let mut npc_bundles = vec![];
       let bevy_wasmcloud_time_val = app.world.get_resource::<crate::bevy_wasmcloud_time::Time>().unwrap();
       let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
-      let mut query = app.world.query::<(&BallId,&BallLabel,&Position, &Velocity,&TargetVelocity)>();
+      let mut query = app.world.query::<(&BallId,&BallLabel,&Position, &QQVelocity,&TargetVelocity)>();
       for (ball_id,ball_label,position,velocity,target_velocity) in query.iter(&app.world){
         let sa = sub_map_area(position.clone());
         if sa ==key{
@@ -64,7 +63,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         }
         
       }
-      let mut npc_query = app.world.query::<(&NPCId,&Position,&Velocity,&ChaseTargetId)>();
+      let mut npc_query = app.world.query::<(&NPCId,&Position,&QQVelocity,&ChaseTargetId)>();
 
       for (npc_id,position,velocity,chase_target) in npc_query.iter(&app.world){
         let sa = sub_map_area(position.clone());

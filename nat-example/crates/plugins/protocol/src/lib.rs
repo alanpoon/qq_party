@@ -46,7 +46,7 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,FireBundle,TargetVelocity,Velocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble};
+use qq_party_shared::{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -55,28 +55,28 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<BoxClient>>()
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
-            .init_resource::<qq_party_shared::Time>()
+            //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
-            .add_system(add_client_state.system())
-            .add_system(receive_events.system().label(ProtocolSystem::ReceiveEvents))
+            .add_system(add_client_state)
+            .add_system(receive_events.label(ProtocolSystem::ReceiveEvents))
             .add_system(
                 handle_events
-                    .system()
+                    
                     .label(ProtocolSystem::HandleEvents)
                     .after(ProtocolSystem::ReceiveEvents)
                     .before(ProtocolSystem::SendCommands),
             )
-            .add_system(timewrapper::into_timewrapper.system())
-            //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>.system())
-            .add_system(system::camera::move_with_local_player.system())
-            .add_system(send_commands.system().label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
-            //.add_system(send_commands.system());
-        app.add_startup_system(connect_websocket.system());
+            .add_system(timewrapper::into_timewrapper)
+            //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>)
+            .add_system(system::camera::move_with_local_player)
+            .add_system(send_commands.label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
+            //.add_system(send_commands);
+        app.add_startup_system(connect_websocket);
         #[cfg(target_arch = "wasm32")]
-        app.add_system(set_client.system());
+        app.add_system(set_client);
         #[cfg(target_arch = "wasm32")]
-        app.add_system(listen_web_bevy_events.system());
+        app.add_system(listen_web_bevy_events);
     }
 }
 
@@ -97,7 +97,7 @@ fn handle_events(
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    balls: Query<(&BallId,&Velocity)>,
+    balls: Query<(&BallId,&QQVelocity)>,
     
 ) {
     if let Some(ref mut state) = *state {
@@ -141,16 +141,16 @@ fn handle_events(
         }
         keyboard_input.clear();
         for gamepad in gamepads.iter().cloned() {
-          if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::West))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadLeft)) {
+          if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::West})|| button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadLeft}) {
             target_velocity_x -= 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::East))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadRight)) {
+          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::East})|| button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadRight}) {
             target_velocity_x += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::North)) || button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadUp)){
+          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::North}) || button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadUp}){
             target_velocity_y += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::South))|| button_inputs.just_pressed(GamepadButton(gamepad, GamepadButtonType::DPadDown)) {
+          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::South})|| button_inputs.just_pressed(GamepadButton{gamepad,button_type: GamepadButtonType::DPadDown}) {
             target_velocity_y -= 1.0;
             pressed = true;
           }
@@ -224,8 +224,8 @@ fn receive_events(mut cmd: Commands,
   mut events: ResMut<protocol::Events>,
   mut _user_info: ResMut<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
-  mut v_query: Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
-  mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
+  mut v_query: Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
+  mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
   mut query: Query<(Entity, &BallId)>,
   mut storm_query: Query<Entity,With<StormRingId>>,
   mut storm_timing_res: ResMut<StormTiming>,
@@ -250,7 +250,7 @@ fn receive_events(mut cmd: Commands,
                                   fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some(pos.0.clone())),
                                   position:pos.clone(),
                                   velocity:velocity,
-                                  start:qq_party_shared::Time{elapsed:timestamp as f32},
+                                  //start:qq_party_shared::Time{elapsed:timestamp as f32},
                                 };
                                 gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);
                               }

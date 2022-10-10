@@ -1,4 +1,4 @@
-use bevy_ecs::{component::Component};
+use bevy::prelude::*;
 use std::time::Duration;
 #[derive(Component, Clone, Debug, Default)]
 pub struct Stopwatch {

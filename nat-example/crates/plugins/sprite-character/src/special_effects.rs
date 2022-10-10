@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,Velocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId,LocalUserInfo,BallId};
+use qq_party_shared::{Position,QQVelocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId,LocalUserInfo,BallId};
 use std::collections::HashMap;
 use rand::Rng;
 use crate::AnimationTimer;
@@ -27,7 +27,7 @@ pub fn onstart(mut cmd: Commands){
       bundles.push(SpecialEffectBundle{
         id:SpecialEffectId(s_e.clone()),
         position: Position(Vec2::new(3600.0,3620.0)),
-        velocity: Velocity(Vec2::new(tv_x,tv_y)),
+        velocity: QQVelocity(Vec2::new(tv_x,tv_y)),
       });
     }
   }
@@ -73,7 +73,7 @@ pub fn apply_special_effect_sprite_system(
   mut cmd: Commands,
   mut query: Query<(
     &SpecialEffectId,
-    &mut Velocity,
+    &mut QQVelocity,
     &mut AnimationTimer,
     &mut MoveTimer,
     &mut TextureAtlasSprite,

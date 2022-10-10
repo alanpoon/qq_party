@@ -33,15 +33,22 @@ pub enum ProtocolSystem {
     Hash(bound = ""),
     Clone(bound = "")
 )]
-pub enum EventHandlerSystem<T> {
+#[derive(SystemLabel)]
+pub enum EventHandlerSystem {
     Before,
     Handle,
     After,
-    _Phantom(std::convert::Infallible, std::marker::PhantomData<T>),
+ //   _Phantom(std::convert::Infallible, std::marker::PhantomData<T>),
 }
 
-impl<T: Send + Sync + 'static> SystemLabel for EventHandlerSystem<T> {
-    fn dyn_clone(&self) -> Box<dyn SystemLabel> {
-        Box::new(self.clone())
-    }
-}
+// impl<T: Send + Sync + 'static> SystemLabel for EventHandlerSystem<T> {
+//     fn dyn_clone(&self) -> Box<dyn SystemLabel> {
+//         Box::new(self.clone())
+        
+//     }
+//     fn as_str(&self) -> &'static str {
+//         let s = self.0.to_string();
+//         Box::leak(s.into_boxed_str())
+//     }
+// }
+

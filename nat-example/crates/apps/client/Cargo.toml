@@ -30,7 +30,7 @@ plugin-audio = { package = "desk-plugin-audio", path = "../../plugins/audio", ve
 
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }
-bevy = { version = "0.6.0" ,features =[]}
+bevy = { version = "0.8.1" ,features =[]}
 tracing-subscriber = "0.2.19"
 console_log = { version = "0.2"}
 log = "0.4"

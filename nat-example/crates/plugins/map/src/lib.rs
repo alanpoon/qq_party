@@ -20,10 +20,10 @@ impl Plugin for MapPlugin {
   }
 }
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
-  commands
-  // 2d camera
-  .spawn()
-  .insert_bundle(UiCameraBundle::default());  
+  // commands
+  // // 2d camera
+  // .spawn()
+  // .insert_bundle(UiCameraBundle::default());  
       let font_handle = asset_server
       .load("fonts/FiraSans-Bold.ttf");
   commands.spawn_bundle(TextBundle {

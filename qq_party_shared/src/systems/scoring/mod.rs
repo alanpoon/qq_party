@@ -1,8 +1,8 @@
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use crate::*;
 
 pub fn score(mut cmd:&mut Commands,ball_id:u32,lastnpc_entity:Entity,
-  query:&Query<(Entity,&Parent,&NPCId),Without<BallId>>,
+  query:&Query<(Entity,&QQParent,&NPCId),Without<BallId>>,
   mut res: &mut ResMut<ScoreBoard>){
   if let Some(mut score) = res.scores.get_mut(&ball_id){
     if let Ok((npc_e,_parent,npc_id)) = query.get(lastnpc_entity){
@@ -11,7 +11,7 @@ pub fn score(mut cmd:&mut Commands,ball_id:u32,lastnpc_entity:Entity,
   }
 }
 
-fn inner_score_next(mut cmd:&mut Commands,npc_entity:Entity,npc_id:&NPCId,query:&Query<(Entity,&Parent,&NPCId),Without<BallId>>,
+fn inner_score_next(mut cmd:&mut Commands,npc_entity:Entity,npc_id:&NPCId,query:&Query<(Entity,&QQParent,&NPCId),Without<BallId>>,
 mut score:&mut (i16,BallLabel))->Option<()>{
   if npc_id.sprite_enum!=0{
     let ret= if let Ok((_npc_e,parent,npc_id)) = query.get(npc_entity){

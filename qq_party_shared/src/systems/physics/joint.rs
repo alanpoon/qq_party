@@ -1,9 +1,9 @@
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use crate::*;
 
 pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Position),(Without<BallId>,Without<ChaseTargetId2>)>,
 mut ball_query:Query<(Entity,&BallId,&Position,&mut LastNPC)>,
-query_scoring:Query<(Entity,&Parent,&NPCId),Without<BallId>>,mut res:ResMut<ScoreBoard>){    
+query_scoring:Query<(Entity,&QQParent,&NPCId),Without<BallId>>,mut res:ResMut<ScoreBoard>){    
   for (npc_e,npc_id,npc_pos) in npc_query.iter_mut(){
     let mut is_crate = false;
     let speed:Option<u8> = match npc_id.sprite_enum{
@@ -48,9 +48,9 @@ pub fn spawn_hierachy(
       for (ball_e,ball_id,mut last_npc) in ball_query.iter_mut(){
         if chase_target_id.0 == ball_id.0{
           if let Some(ln)=last_npc.1{
-            cmd.entity(npc_e).insert(Parent(ln));
+            cmd.entity(npc_e).insert(QQParent(ln));
           }else{
-            cmd.entity(npc_e).insert(Parent(ball_e));
+            cmd.entity(npc_e).insert(QQParent(ball_e));
           }
           if npc_id.sprite_enum!=0{ //not snake
             *last_npc = LastNPC(npc_id.id,Some(npc_e));
@@ -63,9 +63,9 @@ pub fn spawn_hierachy(
 }
 pub fn spawn_joint(
   mut cmd: Commands,
-  mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&Parent,&ChaseTargetId2)>,
+  mut npc_query: Query<(Entity,&NPCId,&Position,&mut QQVelocity,&QQParent,&ChaseTargetId2)>,
   position_query: Query<&Position>,
-  last_npc_query:Query<(Entity,&NPCId,&Parent)>,
+  last_npc_query:Query<(Entity,&NPCId,&QQParent)>,
   mut ball_query:Query<(&BallId,&mut LastNPC)>
 ){
   for (npc_e,npc_id,npc_pos,mut v,parent,chase_target) in npc_query.iter_mut(){

@@ -8,6 +8,6 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.6.0", default-features = false }
-bevy_prototype_lyon = { version = "0.4.0"}
+bevy = { version = "0.8.1", default-features = false }
+bevy_prototype_lyon = { version = "0.6.0"}
 qq_party_shared = { path = "../../../../qq_party_shared" }

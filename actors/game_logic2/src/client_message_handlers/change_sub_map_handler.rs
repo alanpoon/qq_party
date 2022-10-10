@@ -4,8 +4,7 @@ use crate::messaging_::publish_;
 use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use bevy_ecs::prelude::*;
-use bevy_app::prelude::*;
+use bevy::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,position:Position){

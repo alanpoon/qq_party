@@ -10,13 +10,12 @@ pub fn start_up_layer(mut commands: Commands, asset_server: Res<AssetServer>){
   // Required in order to use map_query to retrieve layers/tiles.
   commands.entity(map_entity).insert_bundle(TiledMapBundle {
     tiled_map: handle,
-    map: Map::new(0u16, map_entity),
     transform: Transform::from_xyz(0.0, 0.0, 0.0),
     ..Default::default()
   });
-  let mut camera = OrthographicCameraBundle::new_2d();
+  let mut camera = Camera2dBundle::default();
   camera.transform.translation.x = 3569.0;
   camera.transform.translation.y = 3691.8;
-  camera.orthographic_projection.scale = 0.4;
+  camera.projection.scale = 0.4;
   commands.spawn_bundle(camera);
 }

@@ -6,7 +6,7 @@ pub struct LyonPlugin;
 impl Plugin for LyonPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app.add_plugin(ShapePlugin)
-      .add_system(add_storm_ring_sprite_system.system())
+      .add_system(add_storm_ring_sprite_system)
          ;
   }
 }

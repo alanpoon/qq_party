@@ -1,4 +1,4 @@
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use crate::{A,Time};
 use crate::info_::info_;
 use qq_party_shared::*;
@@ -18,11 +18,11 @@ use bevy_rapier2d::prelude::*;
 //   }
 // }
 pub fn sys_time_debug(t:Res<bevy_wasmcloud_time::Time>,
-  balls_without_rigid:Query<(&BallId,&Position,&RigidBodyVelocityComponent,&Velocity)>,
+  balls_without_rigid:Query<(&BallId,&Position,&Velocity,&QQVelocity)>,
   rapier_parameters: Res<RapierConfiguration>,
  ){
   for (ball_id,pos,rv,vel) in balls_without_rigid.iter(){
-    info_(format!("ball_id {:?} pos {:?} rv {:?} Velocity {:?} rapier_parametersscale {:?}",ball_id,pos,rv.0.linvel,vel,rapier_parameters.scale));
+    info_(format!("ball_id {:?} pos {:?} rv {:?} Velocity {:?}",ball_id,pos,rv.linvel,vel));
   }
 }
 pub fn sys_ball_bundle_debug(query: Query<&BallId>) {

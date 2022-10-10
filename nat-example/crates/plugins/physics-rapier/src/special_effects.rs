@@ -4,36 +4,26 @@ use qq_party_shared::*;
 use rand::Rng;
 pub fn spawn_special_effect_collider(
     mut cmd: Commands,
-    without_rigid: Query<(Entity, &Position), (With<SpecialEffectId>,Without<RigidBodyPositionComponent>)>,
+    without_rigid: Query<(Entity, &Position), (With<SpecialEffectId>,Without<Transform>)>,
     local_user_info: Res<LocalUserInfo>
   ) {
     for (entity, position) in without_rigid.iter() {
-      let collider1 = ColliderBundle {
-        shape: ColliderShapeComponent(ColliderShape::cuboid(20.0, 20.0)),
-        ..Default::default()
-      };
       cmd.entity(entity)
-      .insert_bundle(RigidBodyBundle{
-        mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
-        ccd: RigidBodyCcd {
-            ccd_enabled: true,
-            ..Default::default()
-        }.into(),
-        position: [position.0.x, position.0.y].into(),
-        ..Default::default()
-      })
-      .insert(RigidBodyPositionSync::Discrete)
-      .with_children(|parent|{
-        parent.spawn_bundle(collider1)
-        .insert(ColliderPositionSync::Discrete);
-      })
+      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 0.0)))
+      .insert(RigidBody::Dynamic)
+      .insert(LockedAxes::ROTATION_LOCKED)
+      .insert(Collider::cuboid(20.0, 20.0))
+      // .with_children(|parent|{
+      //   parent.spawn()
+      //   .insert(Collider::cuboid(20.0, 20.0));
+      // })
       ;
     }
   }
 pub fn move_special_effect_closer_to_user_system(
   mut cmd: Commands,
   mut ball_query: Query<(&BallId,&Position)>,
-  mut effects_query: Query<(Entity, &SpecialEffectId,&mut RigidBodyPositionComponent)>,
+  mut effects_query: Query<(Entity, &SpecialEffectId,&mut Transform)>,
   storm_rings_query: Query<(Entity, &StormRingId),Changed<StormRingId>>,
   local_user_info: Res<LocalUserInfo>
 ) {
@@ -74,7 +64,7 @@ pub fn move_special_effect_closer_to_user_system(
         pos.0.x = 1800.0;
         pos.0.y = 200.0;
       }
-      *rigid_pos = [pos.0.x, pos.0.y].into();
+      rigid_pos.translation = [pos.0.x, pos.0.y,0.0].into();
     }
   }
 }

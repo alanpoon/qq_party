@@ -1,19 +1,24 @@
-use bevy::math::Vec2;
-use bevy::prelude::*;
-use bevy_ecs_tilemap::prelude::*;
-use std::{collections::HashMap, io::BufReader};
+use std::io::BufReader;
 
-use bevy::asset::{AssetLoader, AssetPath, BoxedFuture, LoadContext, LoadedAsset};
-use bevy::reflect::TypeUuid;
+use bevy::{
+    asset::{AssetLoader, AssetPath, LoadedAsset},
+    prelude::{
+        AddAsset, Added, AssetEvent, Assets, Bundle, Commands, Component, DespawnRecursiveExt,
+        Entity, EventReader, GlobalTransform, Handle, Image, Plugin, Query, Res, Transform,
+    },
+    reflect::TypeUuid,
+    utils::HashMap,
+};
+use bevy_ecs_tilemap::prelude::*;
 
 #[derive(Default)]
 pub struct TiledMapPlugin;
 
 impl Plugin for TiledMapPlugin {
-    fn build(&self, app: &mut App) {
+    fn build(&self, app: &mut bevy::prelude::App) {
         app.add_asset::<TiledMap>()
             .add_asset_loader(TiledLoader)
-            .add_system(process_loaded_tile_maps);
+            .add_system(process_loaded_maps);
     }
 }
 
@@ -24,10 +29,16 @@ pub struct TiledMap {
     pub tilesets: HashMap<u32, Handle<Image>>,
 }
 
+// Stores a list of tiled layers.
+#[derive(Component, Default)]
+pub struct TiledLayersStorage {
+    pub storage: HashMap<u32, Entity>,
+}
+
 #[derive(Default, Bundle)]
 pub struct TiledMapBundle {
     pub tiled_map: Handle<TiledMap>,
-    pub map: Map,
+    pub storage: TiledLayersStorage,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
 }
@@ -38,8 +49,8 @@ impl AssetLoader for TiledLoader {
     fn load<'a>(
         &'a self,
         bytes: &'a [u8],
-        load_context: &'a mut LoadContext,
-    ) -> BoxedFuture<'a, Result<(), anyhow::Error>> {
+        load_context: &'a mut bevy::asset::LoadContext,
+    ) -> bevy::asset::BoxedFuture<'a, anyhow::Result<(), anyhow::Error>> {
         Box::pin(async move {
             let root_dir = load_context.path().parent().unwrap();
             let map = tiled::parse(BufReader::new(bytes))?;
@@ -74,29 +85,27 @@ impl AssetLoader for TiledLoader {
     }
 }
 
-pub fn process_loaded_tile_maps(
+pub fn process_loaded_maps(
     mut commands: Commands,
     mut map_events: EventReader<AssetEvent<TiledMap>>,
     maps: Res<Assets<TiledMap>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut query: Query<(Entity, &Handle<TiledMap>, &mut Map)>,
+    tile_storage_query: Query<(Entity, &TileStorage)>,
+    mut map_query: Query<(&Handle<TiledMap>, &mut TiledLayersStorage)>,
     new_maps: Query<&Handle<TiledMap>, Added<Handle<TiledMap>>>,
-    layer_query: Query<&Layer>,
-    chunk_query: Query<&Chunk>,
 ) {
     let mut changed_maps = Vec::<Handle<TiledMap>>::default();
     for event in map_events.iter() {
         match event {
             AssetEvent::Created { handle } => {
-                info!("Map added!");
+                // log::info!("Map added!");
                 changed_maps.push(handle.clone());
             }
             AssetEvent::Modified { handle } => {
-                info!("Map changed!");
+                //log::info!("Map changed!");
                 changed_maps.push(handle.clone());
             }
             AssetEvent::Removed { handle } => {
-                info!("Map removed!");
+                //log::info!("Map removed!");
                 // if mesh was modified and removed in the same update, ignore the modification
                 // events are ordered so future modification events are ok
                 changed_maps = changed_maps
@@ -109,74 +118,55 @@ pub fn process_loaded_tile_maps(
 
     // If we have new map entities add them to the changed_maps list.
     for new_map_handle in new_maps.iter() {
-        changed_maps.push(new_map_handle.clone());
+        changed_maps.push(new_map_handle.clone_weak());
     }
 
     for changed_map in changed_maps.iter() {
-        for (_, map_handle, mut map) in query.iter_mut() {
+        for (map_handle, mut layer_storage) in map_query.iter_mut() {
             // only deal with currently changed map
             if map_handle != changed_map {
                 continue;
             }
             if let Some(tiled_map) = maps.get(map_handle) {
-                // Despawn all tiles/chunks/layers.
-                for (layer_id, layer_entity) in map.get_layers() {
-                    if let Ok(layer) = layer_query.get(layer_entity) {
-                        for x in 0..layer.get_layer_size_in_tiles().0 {
-                            for y in 0..layer.get_layer_size_in_tiles().1 {
-                                let tile_pos = TilePos(x, y);
-                                let chunk_pos = ChunkPos(
-                                    tile_pos.0 / layer.settings.chunk_size.0,
-                                    tile_pos.1 / layer.settings.chunk_size.1,
-                                );
-                                if let Some(chunk_entity) = layer.get_chunk(chunk_pos) {
-                                    if let Ok(chunk) = chunk_query.get(chunk_entity) {
-                                        let chunk_tile_pos = chunk.to_chunk_pos(tile_pos);
-                                        if let Some(tile) = chunk.get_tile_entity(chunk_tile_pos) {
-                                            commands.entity(tile).despawn_recursive();
-                                        }
-                                    }
-
-                                    commands.entity(chunk_entity).despawn_recursive();
-                                }
+                // TODO: Create a RemoveMap component..
+                for layer_entity in layer_storage.storage.values() {
+                    if let Ok((_, layer_tile_storage)) = tile_storage_query.get(*layer_entity) {
+                        for tile in layer_tile_storage.iter() {
+                            if let Some(tile) = tile {
+                                commands.entity(*tile).despawn_recursive()
                             }
                         }
                     }
-                    map.remove_layer(&mut commands, layer_id);
+                    // commands.entity(*layer_entity).despawn_recursive();
                 }
 
                 for tileset in tiled_map.map.tilesets.iter() {
                     // Once materials have been created/added we need to then create the layers.
                     for layer in tiled_map.map.layers.iter() {
-                        let tile_width = tileset.tile_width as f32;
-                        let tile_height = tileset.tile_height as f32;
-
-                        let _tile_space = tileset.spacing as f32; // TODO: re-add tile spacing.. :p
+                        let tile_size = TilemapTileSize {
+                            x: tileset.tile_width as f32,
+                            y: tileset.tile_height as f32,
+                        };
+                        let tile_spacing = TilemapSpacing {
+                            x: tileset.spacing as f32,
+                            y: tileset.spacing as f32,
+                        };
 
                         let offset_x = layer.offset_x;
                         let offset_y = layer.offset_y;
 
-                        let mut map_settings = LayerSettings::new(
-                            MapSize(
-                                (tiled_map.map.width as f32 / 64.0).ceil() as u32,
-                                (tiled_map.map.height as f32 / 64.0).ceil() as u32,
-                            ),
-                            ChunkSize(64, 64),
-                            TileSize(tile_width, tile_height),
-                            TextureSize(
-                                tileset.images[0].width as f32,
-                                tileset.images[0].height as f32,
-                            ), // TODO: support multiple tileset images?
-                        );
-                        map_settings.grid_size = Vec2::new(
-                            tiled_map.map.tile_width as f32,
-                            tiled_map.map.tile_height as f32,
-                        );
+                        let map_size = TilemapSize {
+                            x: tiled_map.map.width,
+                            y: tiled_map.map.height,
+                        };
 
-                        map_settings.mesh_type = match tiled_map.map.orientation {
-                            tiled::Orientation::Hexagonal => {
-                                TilemapMeshType::Hexagon(HexType::Row) // TODO: Support hex for real.
-                            }
+                        let grid_size = TilemapGridSize {
+                            x: tiled_map.map.tile_width as f32,
+                            y: tiled_map.map.tile_height as f32,
+                        };
+
+                        let mesh_type = match tiled_map.map.orientation {
+                            tiled::Orientation::Hexagonal => TilemapMeshType::Hexagon(HexType::Row),
                             tiled::Orientation::Isometric => {
                                 TilemapMeshType::Isometric(IsoType::Diamond)
                             }
@@ -186,29 +176,21 @@ pub fn process_loaded_tile_maps(
                             tiled::Orientation::Orthogonal => TilemapMeshType::Square,
                         };
 
-                        let layer_entity = LayerBuilder::<TileBundle>::new_batch(
-                            &mut commands,
-                            map_settings.clone(),
-                            &mut meshes,
-                            tiled_map.tilesets.get(&tileset.first_gid).unwrap().clone(),
-                            0u16,
-                            layer.layer_index as u16,
-                            move |mut tile_pos| {
-                                if tile_pos.0 >= tiled_map.map.width
-                                    || tile_pos.1 >= tiled_map.map.height
-                                {
-                                    return None;
-                                }
+                        let mut tile_storage = TileStorage::empty(map_size);
+                        let layer_entity = commands.spawn().id();
 
+                        for x in 0..map_size.x {
+                            for y in 0..map_size.y {
+                                let mut mapped_y = x;
                                 if tiled_map.map.orientation == tiled::Orientation::Orthogonal {
-                                    tile_pos.1 = (tiled_map.map.height - 1) as u32 - tile_pos.1;
+                                    mapped_y = (tiled_map.map.height - 1) as u32 - y;
                                 }
 
-                                let x = tile_pos.0 as usize;
-                                let y = tile_pos.1 as usize;
+                                let mapped_x = x as usize;
+                                let mapped_y = mapped_y as usize;
 
                                 let map_tile = match &layer.tiles {
-                                    tiled::LayerData::Finite(tiles) => &tiles[y][x],
+                                    tiled::LayerData::Finite(tiles) => &tiles[mapped_y][mapped_x],
                                     _ => panic!("Infinite maps not supported"),
                                 };
 
@@ -216,32 +198,55 @@ pub fn process_loaded_tile_maps(
                                     || map_tile.gid
                                         >= tileset.first_gid + tileset.tilecount.unwrap()
                                 {
-                                    return None;
+                                    continue;
                                 }
 
                                 let tile_id = map_tile.gid - tileset.first_gid;
 
-                                let tile = Tile {
-                                    texture_index: tile_id as u16,
-                                    flip_x: map_tile.flip_h,
-                                    flip_y: map_tile.flip_v,
-                                    flip_d: map_tile.flip_d,
-                                    ..Default::default()
-                                };
+                                let tile_pos = TilePos { x, y };
+                                let tile_entity = commands
+                                    .spawn()
+                                    .insert_bundle(TileBundle {
+                                        position: tile_pos,
+                                        tilemap_id: TilemapId(layer_entity),
+                                        texture: TileTexture(tile_id),
+                                        flip: TileFlip {
+                                            x: map_tile.flip_h,
+                                            y: map_tile.flip_v,
+                                            d: map_tile.flip_d,
+                                        },
+                                        ..Default::default()
+                                    })
+                                    .id();
+                                tile_storage.set(&tile_pos, Some(tile_entity));
+                            }
+                        }
 
-                                Some(TileBundle {
-                                    tile,
-                                    ..Default::default()
-                                })
-                            },
-                        );
+                        commands.entity(layer_entity).insert_bundle(TilemapBundle {
+                            grid_size,
+                            size: map_size,
+                            storage: tile_storage,
+                            texture: TilemapTexture(
+                                tiled_map
+                                    .tilesets
+                                    .get(&tileset.first_gid)
+                                    .unwrap()
+                                    .clone_weak(),
+                            ),
+                            tile_size,
+                            spacing: tile_spacing,
+                            transform: bevy_ecs_tilemap::helpers::get_centered_transform_2d(
+                                &map_size,
+                                &tile_size,
+                                layer.layer_index as f32,
+                            ) * Transform::from_xyz(offset_x, -offset_y, 0.0),
+                            mesh_type,
+                            ..Default::default()
+                        });
 
-                        commands.entity(layer_entity).insert(Transform::from_xyz(
-                            offset_x,
-                            -offset_y,
-                            layer.layer_index as f32,
-                        ));
-                        map.add_layer(&mut commands, layer.layer_index as u16, layer_entity);
+                        layer_storage
+                            .storage
+                            .insert(layer.layer_index, layer_entity);
                     }
                 }
             }

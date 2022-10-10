@@ -1,5 +1,5 @@
 use bevy_rapier2d::prelude::*;
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use std::time::Duration;
 use crate::*;
 use crate::time_interface::countdown::DamageCountdown;

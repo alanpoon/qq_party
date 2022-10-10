@@ -27,6 +27,8 @@ wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df
 instant = {path="wasmcloud_patches/instant"}
 getrandom = {path="wasmcloud_patches/getrandom"}
 #bevy_app = {path="wasmcloud_patches/bevy_app"}
+#bevy_render = {path="wasmcloud_patches/bevy_render"}
 
 [patch."https://github.com/bevyengine/bevy"]
 bevy_app = {path="wasmcloud_patches/bevy_app"}
+bevy_render = {path="wasmcloud_patches/bevy_render"}

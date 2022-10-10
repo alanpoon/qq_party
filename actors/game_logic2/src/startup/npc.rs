@@ -1,6 +1,6 @@
 use wasmbus_rpc::actor::prelude::*;
 use qq_party_shared::*;
-use bevy_math::Vec2;
+use bevy::math::Vec2;
 use wasmcloud_interface_numbergen::random_in_range;
 use crate::info_::info_;
 pub async fn spawn_npc_bundles()-> RpcResult<Vec<NPCBundle>>{
@@ -61,7 +61,7 @@ pub async fn spawn_npc_bundles()-> RpcResult<Vec<NPCBundle>>{
         sprite_enum:*sprite_enum
       },
       position:pos.clone(),
-      velocity:Velocity(Vec2::new(0.0 as f32,0.0 as f32)),
+      velocity:QQVelocity(Vec2::new(0.0 as f32,0.0 as f32)),
       chase_target: ChaseTargetId(0,0),
     };
     npc_bundles.push(npc_bundle);

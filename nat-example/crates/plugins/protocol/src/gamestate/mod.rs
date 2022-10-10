@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use qq_party_shared::*;
 pub fn spawn_or_update_ball_bundles(
   mut cmd: &mut Commands,
-  v_query:&mut Query<(Entity, &BallId,&mut Position,&mut Velocity,&mut TargetVelocity),Without<NPCId>>,
+  v_query:&mut Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
   delta:f32,
   ball_bundles:Vec<BallBundle>
   ){
@@ -37,7 +37,7 @@ pub fn spawn_or_update_ball_bundles(
 }
 pub fn spawn_or_update_npc_bundles(
   mut cmd: &mut Commands,
-  v_query:&mut Query<(Entity, &NPCId,&mut Position,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
+  v_query:&mut Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
   delta:f32,
   bundles:Vec<NPCBundle>
   ){

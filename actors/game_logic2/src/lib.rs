@@ -19,10 +19,8 @@ use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
 use lazy_static::lazy_static; // 1.4.0
-use bevy_app::{App};
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use bevy_utils::Duration;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
@@ -52,12 +50,12 @@ impl Thread for GameLogicActor{
       .init_resource::<ScoreBoard>()
       .init_resource::<StormTiming>()
       .init_resource::<bevy_wasmcloud_time::Time>()
-      .add_plugin(bevy_transform::TransformPlugin::default())
+      .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
-      //.add_system(systems::publish::sys_publish_game_state.system())
-      .add_system(systems::publish::sys_publish_game_state_by_sub_map.system())
-      //.add_system(systems::publish::sys_publish_score.system())
-      //.add_system(systems::sys.system())
+      //.add_system(systems::publish::sys_publish_game_state)
+      .add_system(systems::publish::sys_publish_game_state_by_sub_map)
+      //.add_system(systems::publish::sys_publish_score)
+      //.add_system(systems::sys)
       ;
       
     }

@@ -1,4 +1,4 @@
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use qq_party_shared::{BallId,Position,BallBundle,FireBundle};
 pub fn spawn(w: &mut World,ball_bundle:BallBundle){
   w.spawn_batch(

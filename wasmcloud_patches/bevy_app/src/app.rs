@@ -1,9 +1,10 @@
-use crate::{CoreStage, Events, Plugin, PluginGroup, PluginGroupBuilder, StartupStage};
+use crate::{CoreStage, Plugin, PluginGroup, PluginGroupBuilder, StartupSchedule, StartupStage};
 pub use bevy_derive::AppLabel;
 use bevy_ecs::{
+    event::{Event, Events},
     prelude::{FromWorld, IntoExclusiveSystem},
     schedule::{
-        IntoSystemDescriptor, RunOnce, Schedule, Stage, StageLabel, State, StateData, SystemSet,
+        IntoSystemDescriptor, Schedule, ShouldRun, Stage, StageLabel, State, StateData, SystemSet,
         SystemStage,
     },
     system::Resource,
@@ -14,23 +15,29 @@ use std::fmt::Debug;
 
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
-bevy_utils::define_label!(AppLabel);
+bevy_utils::define_label!(
+    /// A strongly-typed class of labels used to identify an [`App`].
+    AppLabel,
+    /// A strongly-typed identifier for an [`AppLabel`].
+    AppLabelId,
+);
 
 #[allow(clippy::needless_doctest_main)]
-/// Containers of app logic and data
+/// A container of app logic and data.
 ///
-/// Bundles together the necessary elements, like [`World`] and [`Schedule`], to create
-/// an ECS-based application. It also stores a pointer to a
-/// [runner function](Self::set_runner). The runner is responsible for managing the application's
-/// event loop and applying the [`Schedule`] to the [`World`] to drive application logic.
-/// Apps are constructed with the builder pattern.
+/// Bundles together the necessary elements like [`World`] and [`Schedule`] to create
+/// an ECS-based application. It also stores a pointer to a [runner function](Self::set_runner).
+/// The runner is responsible for managing the application's event loop and applying the
+/// [`Schedule`] to the [`World`] to drive application logic.
 ///
-/// ## Example
+/// # Examples
+///
 /// Here is a simple "Hello World" Bevy app:
+///
 /// ```
 /// # use bevy_app::prelude::*;
 /// # use bevy_ecs::prelude::*;
-///
+/// #
 /// fn main() {
 ///    App::new()
 ///        .add_system(hello_world_system)
@@ -45,7 +52,7 @@ pub struct App {
     /// The main ECS [`World`] of the [`App`].
     /// This stores and provides access to all the main data of the application.
     /// The systems of the [`App`] will run using this [`World`].
-    /// If additional separate [`World`]-[`Schedule`] pairs are needed, you can use [`sub_app`][App::add_sub_app]s.
+    /// If additional separate [`World`]-[`Schedule`] pairs are needed, you can use [`sub_app`](App::add_sub_app)s.
     pub world: World,
     /// The [runner function](Self::set_runner) is primarily responsible for managing
     /// the application's event loop and advancing the [`Schedule`].
@@ -53,10 +60,10 @@ pub struct App {
     /// See `bevy::winit::WinitPlugin` and [`ScheduleRunnerPlugin`](crate::schedule_runner::ScheduleRunnerPlugin).
     /// A container of [`Stage`]s set to be run in a linear order.
     pub schedule: Schedule,
-    sub_apps: HashMap<Box<dyn AppLabel>, SubApp>,
+    sub_apps: HashMap<AppLabelId, SubApp>,
 }
 
-/// Each [`SubApp`] has its own [`Schedule`] and [`World`], enabling a separation of concerns.
+/// Each `SubApp` has its own [`Schedule`] and [`World`], enabling a separation of concerns.
 struct SubApp {
     app: App,
 }
@@ -100,12 +107,12 @@ impl App {
 
     /// Advances the execution of the [`Schedule`] by one cycle.
     ///
-    /// See [`Schedule::run_once`] for more details.
+    /// This method also updates sub apps.
+    ///
+    /// See [`add_sub_app`](Self::add_sub_app) and [`run_once`](Schedule::run_once) for more details.
     pub fn update(&mut self) {
         #[cfg(feature = "trace")]
-        let bevy_frame_update_span = info_span!("frame");
-        #[cfg(feature = "trace")]
-        let _bevy_frame_update_guard = bevy_frame_update_span.enter();
+        let _bevy_frame_update_span = info_span!("frame").entered();
         self.schedule.run(&mut self.world);
     }
 
@@ -115,11 +122,9 @@ impl App {
     /// level documentation.
     pub fn run(&mut self) {
         #[cfg(feature = "trace")]
-        let bevy_app_run_span = info_span!("bevy_app");
-        #[cfg(feature = "trace")]
-        let _bevy_app_run_guard = bevy_app_run_span.enter();
+        let _bevy_app_run_span = info_span!("bevy_app").entered();
 
-        //let mut app = std::mem::replace(self, App::empty());
+        // let mut app = std::mem::replace(self, App::empty());
         // let runner = std::mem::replace(&mut app.runner, Box::new(run_once));
         // (runner)(app);
     }
@@ -127,7 +132,7 @@ impl App {
     /// Adds a [`Stage`] with the given `label` to the last position of the app's
     /// [`Schedule`].
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -144,7 +149,7 @@ impl App {
     /// Adds a [`Stage`] with the given `label` to the app's [`Schedule`], located
     /// immediately after the stage labeled by `target`.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -166,7 +171,7 @@ impl App {
     /// Adds a [`Stage`] with the given `label` to the app's [`Schedule`], located
     /// immediately before the stage labeled by `target`.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -188,7 +193,7 @@ impl App {
     /// Adds a [`Stage`] with the given `label` to the last position of the
     /// [startup schedule](Self::add_default_stages).
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -199,7 +204,7 @@ impl App {
     /// ```
     pub fn add_startup_stage<S: Stage>(&mut self, label: impl StageLabel, stage: S) -> &mut Self {
         self.schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            .stage(StartupSchedule, |schedule: &mut Schedule| {
                 schedule.add_stage(label, stage)
             });
         self
@@ -210,7 +215,7 @@ impl App {
     ///
     /// The `target` label must refer to a stage inside the startup schedule.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -230,7 +235,7 @@ impl App {
         stage: S,
     ) -> &mut Self {
         self.schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            .stage(StartupSchedule, |schedule: &mut Schedule| {
                 schedule.add_stage_after(target, label, stage)
             });
         self
@@ -241,7 +246,7 @@ impl App {
     ///
     /// The `target` label must refer to a stage inside the startup schedule.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -261,7 +266,7 @@ impl App {
         stage: S,
     ) -> &mut Self {
         self.schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            .stage(StartupSchedule, |schedule: &mut Schedule| {
                 schedule.add_stage_before(target, label, stage)
             });
         self
@@ -274,9 +279,9 @@ impl App {
     /// to a struct implementing `Stage` and returns the same type. That means that it should
     /// also assume that the stage has already been fetched successfully.
     ///
-    /// See [`Schedule::stage`] for more details.
+    /// See [`stage`](Schedule::stage) for more details.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// Here the closure is used to add a system to the update stage:
     ///
@@ -305,7 +310,7 @@ impl App {
     /// Refer to the [system module documentation](bevy_ecs::system) to see how a system
     /// can be defined.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -322,7 +327,7 @@ impl App {
 
     /// Adds a [`SystemSet`] to the [update stage](Self::add_default_stages).
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -346,7 +351,7 @@ impl App {
 
     /// Adds a system to the [`Stage`] identified by `stage_label`.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -362,13 +367,18 @@ impl App {
         stage_label: impl StageLabel,
         system: impl IntoSystemDescriptor<Params>,
     ) -> &mut Self {
+        use std::any::TypeId;
+        assert!(
+            stage_label.type_id() != TypeId::of::<StartupStage>(),
+            "add systems to a startup stage using App::add_startup_system_to_stage"
+        );
         self.schedule.add_system_to_stage(stage_label, system);
         self
     }
 
     /// Adds a [`SystemSet`] to the [`Stage`] identified by `stage_label`.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -392,6 +402,11 @@ impl App {
         stage_label: impl StageLabel,
         system_set: SystemSet,
     ) -> &mut Self {
+        use std::any::TypeId;
+        assert!(
+            stage_label.type_id() != TypeId::of::<StartupStage>(),
+            "add system sets to a startup stage using App::add_startup_system_set_to_stage"
+        );
         self.schedule
             .add_system_set_to_stage(stage_label, system_set);
         self
@@ -399,10 +414,11 @@ impl App {
 
     /// Adds a system to the [startup stage](Self::add_default_stages) of the app's [`Schedule`].
     ///
-    /// * For adding a system that runs for every frame, see [`add_system`](Self::add_system).
-    /// * For adding a system to specific stage, see [`add_system_to_stage`](Self::add_system_to_stage).
+    /// * For adding a system that runs every frame, see [`add_system`](Self::add_system).
+    /// * For adding a system to a specific stage, see [`add_system_to_stage`](Self::add_system_to_stage).
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// # use bevy_ecs::prelude::*;
@@ -412,7 +428,7 @@ impl App {
     /// }
     ///
     /// App::new()
-    ///     .add_startup_system(my_startup_system.system());
+    ///     .add_startup_system(my_startup_system);
     /// ```
     pub fn add_startup_system<Params>(
         &mut self,
@@ -421,9 +437,9 @@ impl App {
         self.add_startup_system_to_stage(StartupStage::Startup, system)
     }
 
-    /// Adds a [`SystemSet`] to the [startup stage](Self::add_default_stages)
+    /// Adds a [`SystemSet`] to the [startup stage](Self::add_default_stages).
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -450,7 +466,7 @@ impl App {
     ///
     /// `stage_label` must refer to a stage inside the startup schedule.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -467,7 +483,7 @@ impl App {
         system: impl IntoSystemDescriptor<Params>,
     ) -> &mut Self {
         self.schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            .stage(StartupSchedule, |schedule: &mut Schedule| {
                 schedule.add_system_to_stage(stage_label, system)
             });
         self
@@ -478,7 +494,7 @@ impl App {
     ///
     /// `stage_label` must refer to a stage inside the startup schedule.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -503,7 +519,7 @@ impl App {
         system_set: SystemSet,
     ) -> &mut Self {
         self.schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            .stage(StartupSchedule, |schedule: &mut Schedule| {
                 schedule.add_system_set_to_stage(stage_label, system_set)
             });
         self
@@ -545,6 +561,7 @@ impl App {
     ///
     /// All the added stages, with the exception of the startup stage, run every time the
     /// schedule is invoked. The stages are the following, in order of execution:
+    ///
     /// - **First:** Runs at the very start of the schedule execution cycle, even before the
     ///   startup stage.
     /// - **Startup:** This is actually a schedule containing sub-stages. Runs only once
@@ -559,10 +576,9 @@ impl App {
     ///   world changes that happened during the update stage.
     /// - **Last:** Runs right before the end of the schedule execution cycle.
     ///
-    /// The labels for those stages are defined in the [`CoreStage`] and [`StartupStage`]
-    /// `enum`s.
+    /// The labels for those stages are defined in the [`CoreStage`] and [`StartupStage`] `enum`s.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -572,9 +588,9 @@ impl App {
     pub fn add_default_stages(&mut self) -> &mut Self {
         self.add_stage(CoreStage::First, SystemStage::single_threaded())
             .add_stage(
-                CoreStage::Startup,
+                StartupSchedule,
                 Schedule::default()
-                    .with_run_criteria(RunOnce::default())
+                    .with_run_criteria(ShouldRun::once)
                     .with_stage(StartupStage::PreStartup, SystemStage::single_threaded())
                     .with_stage(StartupStage::Startup, SystemStage::single_threaded())
                     .with_stage(StartupStage::PostStartup, SystemStage::single_threaded()),
@@ -587,12 +603,12 @@ impl App {
 
     /// Setup the application to manage events of type `T`.
     ///
-    /// This is done by adding a `Resource` of type `Events::<T>`,
-    /// and inserting a `Events::<T>::update_system` system into `CoreStage::First`.
+    /// This is done by adding a [`Resource`] of type [`Events::<T>`],
+    /// and inserting an [`update_system`](Events::update_system) into [`CoreStage::First`].
     ///
-    /// See [`Events`](bevy_ecs::event::Events) for defining events.
+    /// See [`Events`] for defining events.
     ///
-    /// # Example
+    /// # Examples
     ///
     /// ```
     /// # use bevy_app::prelude::*;
@@ -605,20 +621,24 @@ impl App {
     /// ```
     pub fn add_event<T>(&mut self) -> &mut Self
     where
-        T: Resource,
+        T: Event,
     {
-        self.init_resource::<Events<T>>()
-            .add_system_to_stage(CoreStage::First, Events::<T>::update_system)
+        if !self.world.contains_resource::<Events<T>>() {
+            self.init_resource::<Events<T>>()
+                .add_system_to_stage(CoreStage::First, Events::<T>::update_system);
+        }
+        self
     }
 
-    /// Inserts a resource to the current [App] and overwrites any resource previously added of the same type.
+    /// Inserts a [`Resource`] to the current [`App`] and overwrites any [`Resource`] previously added of the same type.
     ///
-    /// A resource in Bevy represents globally unique data. Resources must be added to Bevy Apps
+    /// A [`Resource`] in Bevy represents globally unique data. [`Resource`]s must be added to Bevy apps
     /// before using them. This happens with [`insert_resource`](Self::insert_resource).
     ///
-    /// See also `init_resource` for resources that implement `Default` or [`FromWorld`].
+    /// See [`init_resource`](Self::init_resource) for [`Resource`]s that implement [`Default`] or [`FromWorld`].
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// #
@@ -629,20 +649,18 @@ impl App {
     /// App::new()
     ///    .insert_resource(MyCounter { counter: 0 });
     /// ```
-    pub fn insert_resource<T>(&mut self, resource: T) -> &mut Self
-    where
-        T: Resource,
-    {
+    pub fn insert_resource<R: Resource>(&mut self, resource: R) -> &mut Self {
         self.world.insert_resource(resource);
         self
     }
 
-    /// Inserts a non-send resource to the app
+    /// Inserts a non-send [`Resource`] to the app.
     ///
-    /// You usually want to use `insert_resource`, but there are some special cases when a resource must
-    /// be non-send.
+    /// You usually want to use [`insert_resource`](Self::insert_resource),
+    /// but there are some special cases when a [`Resource`] cannot be sent across threads.
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// #
@@ -653,21 +671,21 @@ impl App {
     /// App::new()
     ///     .insert_non_send_resource(MyCounter { counter: 0 });
     /// ```
-    pub fn insert_non_send_resource<T>(&mut self, resource: T) -> &mut Self
-    where
-        T: 'static,
-    {
-        self.world.insert_non_send(resource);
+    pub fn insert_non_send_resource<R: 'static>(&mut self, resource: R) -> &mut Self {
+        self.world.insert_non_send_resource(resource);
         self
     }
 
-    /// Initialize a resource in the current [`App`], if it does not exist yet
+    /// Initialize a [`Resource`] with standard starting values by adding it to the [`World`].
     ///
-    /// If the resource already exists, nothing happens.
+    /// If the [`Resource`] already exists, nothing happens.
     ///
-    /// Adds a resource that implements `Default` or [`FromWorld`] trait.
+    /// The [`Resource`] must implement the [`FromWorld`] trait.
+    /// If the [`Default`] trait is implemented, the [`FromWorld`] trait will use
+    /// the [`Default::default`] method to initialize the [`Resource`].
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// #
@@ -686,45 +704,32 @@ impl App {
     /// App::new()
     ///     .init_resource::<MyCounter>();
     /// ```
-    pub fn init_resource<R>(&mut self) -> &mut Self
-    where
-        R: FromWorld + Send + Sync + 'static,
-    {
-        // PERF: We could avoid double hashing here, since the `from_resources` call is guaranteed
-        // not to modify the map. However, we would need to be borrowing resources both
-        // mutably and immutably, so we would need to be extremely certain this is correct
-        if !self.world.contains_resource::<R>() {
-            let resource = R::from_world(&mut self.world);
-            self.insert_resource(resource);
-        }
+    pub fn init_resource<R: Resource + FromWorld>(&mut self) -> &mut Self {
+        self.world.init_resource::<R>();
         self
     }
 
-    /// Initialize a non-send resource in the current [`App`], if it does not exist yet.
+    /// Initialize a non-send [`Resource`] with standard starting values by adding it to the [`World`].
     ///
-    /// Adds a resource that implements `Default` or [`FromWorld`] trait.
-    pub fn init_non_send_resource<R>(&mut self) -> &mut Self
-    where
-        R: FromWorld + 'static,
-    {
-        // See perf comment in init_resource
-        if self.world.get_non_send_resource::<R>().is_none() {
-            let resource = R::from_world(&mut self.world);
-            self.world.insert_non_send(resource);
-        }
+    /// The [`Resource`] must implement the [`FromWorld`] trait.
+    /// If the [`Default`] trait is implemented, the [`FromWorld`] trait will use
+    /// the [`Default::default`] method to initialize the [`Resource`].
+    pub fn init_non_send_resource<R: 'static + FromWorld>(&mut self) -> &mut Self {
+        self.world.init_non_send_resource::<R>();
         self
     }
 
     /// Sets the function that will be called when the app is run.
     ///
-    /// The runner function (`run_fn`) is called only once by [`App::run`]. If the
-    /// presence of a main loop in the app is desired, it is responsibility of the runner
+    /// The runner function `run_fn` is called only once by [`App::run`]. If the
+    /// presence of a main loop in the app is desired, it is the responsibility of the runner
     /// function to provide it.
     ///
     /// The runner function is usually not set manually, but by Bevy integrated plugins
-    /// (e.g. winit plugin).
+    /// (e.g. `WinitPlugin`).
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// #
@@ -739,17 +744,28 @@ impl App {
     ///     .set_runner(my_runner);
     /// ```
 
-    /// Adds a single plugin
+    /// Adds a single [`Plugin`].
     ///
     /// One of Bevy's core principles is modularity. All Bevy engine features are implemented
-    /// as plugins. This includes internal features like the renderer.
+    /// as [`Plugin`]s. This includes internal features like the renderer.
     ///
-    /// Bevy also provides a few sets of default plugins. See [`add_plugins`](Self::add_plugins).
+    /// Bevy also provides a few sets of default [`Plugin`]s. See [`add_plugins`](Self::add_plugins).
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::prelude::*;
     /// #
+    /// # // Dummies created to avoid using `bevy_log`,
+    /// # // which pulls in too many dependencies and breaks rust-analyzer
+    /// # pub mod bevy_log {
+    /// #     use bevy_app::prelude::*;
+    /// #     #[derive(Default)]
+    /// #     pub struct LogPlugin;
+    /// #     impl Plugin for LogPlugin{
+    /// #        fn build(&self, app: &mut App) {}
+    /// #     }
+    /// # }
     /// App::new().add_plugin(bevy_log::LogPlugin::default());
     /// ```
     pub fn add_plugin<T>(&mut self, plugin: T) -> &mut Self
@@ -761,22 +777,19 @@ impl App {
         self
     }
 
-    /// Adds a group of plugins
+    /// Adds a group of [`Plugin`]s.
     ///
-    /// Bevy plugins can be grouped into a set of plugins. Bevy provides
-    /// built-in `PluginGroups` that provide core engine functionality.
+    /// [`Plugin`]s can be grouped into a set by using a [`PluginGroup`].
     ///
-    /// The plugin groups available by default are `DefaultPlugins` and `MinimalPlugins`.
+    /// There are built-in [`PluginGroup`]s that provide core engine functionality.
+    /// The [`PluginGroup`]s available by default are `DefaultPlugins` and `MinimalPlugins`.
     ///
-    /// ## Example
+    /// To customize the plugins in the group (reorder, disable a plugin, add a new plugin
+    /// before / after another plugin), see [`add_plugins_with`](Self::add_plugins_with).
+    ///
+    /// ## Examples
     /// ```
-    /// # use bevy_app::{prelude::*, PluginGroupBuilder};
-    /// #
-    /// # // Dummy created to avoid using bevy_internal, which pulls in to many dependencies.
-    /// # struct MinimalPlugins;
-    /// # impl PluginGroup for MinimalPlugins {
-    /// #     fn build(&mut self, group: &mut PluginGroupBuilder){;}
-    /// # }
+    /// # use bevy_app::{prelude::*, PluginGroupBuilder, NoopPluginGroup as MinimalPlugins};
     /// #
     /// App::new()
     ///     .add_plugins(MinimalPlugins);
@@ -788,18 +801,28 @@ impl App {
         self
     }
 
-    /// Adds a group of plugins with an initializer method
+    /// Adds a group of [`Plugin`]s with an initializer method.
     ///
-    /// Can be used to add a group of plugins, where the group is modified
-    /// before insertion into Bevy application. For example, you can add
-    /// extra plugins at a specific place in the plugin group, or deactivate
-    /// specific plugins while keeping the rest.
+    /// Can be used to add a group of [`Plugin`]s, where the group is modified
+    /// before insertion into a Bevy application. For example, you can add
+    /// additional [`Plugin`]s at a specific place in the [`PluginGroup`], or deactivate
+    /// specific [`Plugin`]s while keeping the rest using a [`PluginGroupBuilder`].
     ///
-    /// ## Example
+    /// # Examples
+    ///
     /// ```
     /// # use bevy_app::{prelude::*, PluginGroupBuilder};
     /// #
-    /// # // Dummies created to avoid using bevy_internal which pulls in to many dependencies.
+    /// # // Dummies created to avoid using `bevy_internal` and `bevy_log`,
+    /// # // which pulls in too many dependencies and breaks rust-analyzer
+    /// # pub mod bevy_log {
+    /// #     use bevy_app::prelude::*;
+    /// #     #[derive(Default)]
+    /// #     pub struct LogPlugin;
+    /// #     impl Plugin for LogPlugin{
+    /// #        fn build(&self, app: &mut App) {}
+    /// #     }
+    /// # }
     /// # struct DefaultPlugins;
     /// # impl PluginGroup for DefaultPlugins {
     /// #     fn build(&mut self, group: &mut PluginGroupBuilder){
@@ -829,29 +852,68 @@ impl App {
         self
     }
 
-    /// Adds the type `T` to the type registry resource.
+    /// Registers the type `T` in the [`TypeRegistry`](bevy_reflect::TypeRegistry) resource,
+    /// adding reflect data as specified in the [`Reflect`](bevy_reflect::Reflect) derive:
+    /// ```rust,ignore
+    /// #[derive(Reflect)]
+    /// #[reflect(Component, Serialize, Deserialize)] // will register ReflectComponent, ReflectSerialize, ReflectDeserialize
+    /// ```
+    ///
+    /// See [`bevy_reflect::TypeRegistry::register`].
     #[cfg(feature = "bevy_reflect")]
     pub fn register_type<T: bevy_reflect::GetTypeRegistration>(&mut self) -> &mut Self {
         {
-            let registry = self
-                .world
-                .get_resource_mut::<bevy_reflect::TypeRegistryArc>()
-                .unwrap();
+            let registry = self.world.resource_mut::<bevy_reflect::TypeRegistryArc>();
             registry.write().register::<T>();
         }
         self
     }
 
-    /// Adds a "sub app" to this [`App`].
+    /// Adds the type data `D` to type `T` in the [`TypeRegistry`](bevy_reflect::TypeRegistry) resource.
     ///
-    /// Sub apps are a largely experimental feature: each `SubApp` has its own [`Schedule`] and [`World`].
+    /// Most of the time [`App::register_type`] can be used instead to register a type you derived [`Reflect`](bevy_reflect::Reflect) for.
+    /// However, in cases where you want to add a piece of type data that was not included in the list of `#[reflect(...)]` type data in the derive,
+    /// or where the type is generic and cannot register e.g. `ReflectSerialize` unconditionally without knowing the specific type parameters,
+    /// this method can be used to insert additional type data.
+    ///
+    /// # Example
+    /// ```rust
+    /// use bevy_app::App;
+    /// use bevy_reflect::{ReflectSerialize, ReflectDeserialize};
+    ///
+    /// App::new()
+    ///     .register_type::<Option<String>>()
+    ///     .register_type_data::<Option<String>, ReflectSerialize>()
+    ///     .register_type_data::<Option<String>, ReflectDeserialize>();
+    /// ```
+    ///
+    /// See [`bevy_reflect::TypeRegistry::register_type_data`].
+    #[cfg(feature = "bevy_reflect")]
+    pub fn register_type_data<
+        T: bevy_reflect::Reflect + 'static,
+        D: bevy_reflect::TypeData + bevy_reflect::FromType<T>,
+    >(
+        &mut self,
+    ) -> &mut Self {
+        {
+            let registry = self.world.resource_mut::<bevy_reflect::TypeRegistryArc>();
+            registry.write().register_type_data::<T, D>();
+        }
+        self
+    }
+
+    /// Adds an [`App`] as a child of the current one.
+    ///
+    /// The provided function `f` is called by the [`update`](Self::update) method. The [`World`]
+    /// parameter represents the main app world, while the [`App`] parameter is just a mutable
+    /// reference to the `SubApp` itself.
     pub fn add_sub_app(
         &mut self,
         label: impl AppLabel,
         app: App,
     ) -> &mut Self {
         self.sub_apps.insert(
-            Box::new(label),
+            label.as_label(),
             SubApp {
                 app,
             },
@@ -859,36 +921,45 @@ impl App {
         self
     }
 
-    /// Retrieves a "sub app" stored inside this [App]. This will panic if the sub app does not exist.
+    /// Retrieves a `SubApp` stored inside this [`App`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if the `SubApp` doesn't exist.
     pub fn sub_app_mut(&mut self, label: impl AppLabel) -> &mut App {
         match self.get_sub_app_mut(label) {
             Ok(app) => app,
-            Err(label) => panic!("Sub-App with label '{:?}' does not exist", label),
+            Err(label) => panic!("Sub-App with label '{:?}' does not exist", label.as_str()),
         }
     }
 
-    /// Retrieves a "sub app" inside this [App] with the given label, if it exists. Otherwise returns
-    /// an [Err] containing the given label.
-    pub fn get_sub_app_mut(&mut self, label: impl AppLabel) -> Result<&mut App, impl AppLabel> {
+    /// Retrieves a `SubApp` inside this [`App`] with the given label, if it exists. Otherwise returns
+    /// an [`Err`] containing the given label.
+    pub fn get_sub_app_mut(&mut self, label: impl AppLabel) -> Result<&mut App, AppLabelId> {
+        let label = label.as_label();
         self.sub_apps
-            .get_mut((&label) as &dyn AppLabel)
+            .get_mut(&label)
             .map(|sub_app| &mut sub_app.app)
             .ok_or(label)
     }
 
-    /// Retrieves a "sub app" stored inside this [App]. This will panic if the sub app does not exist.
+    /// Retrieves a `SubApp` stored inside this [`App`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if the `SubApp` doesn't exist.
     pub fn sub_app(&self, label: impl AppLabel) -> &App {
         match self.get_sub_app(label) {
             Ok(app) => app,
-            Err(label) => panic!("Sub-App with label '{:?}' does not exist", label),
+            Err(label) => panic!("Sub-App with label '{:?}' does not exist", label.as_str()),
         }
     }
 
-    /// Retrieves a "sub app" inside this [App] with the given label, if it exists. Otherwise returns
-    /// an [Err] containing the given label.
+    /// Retrieves a `SubApp` inside this [`App`] with the given label, if it exists. Otherwise returns
+    /// an [`Err`] containing the given label.
     pub fn get_sub_app(&self, label: impl AppLabel) -> Result<&App, impl AppLabel> {
         self.sub_apps
-            .get((&label) as &dyn AppLabel)
+            .get(&label.as_label())
             .map(|sub_app| &sub_app.app)
             .ok_or(label)
     }
@@ -898,6 +969,11 @@ fn run_once(mut app: App) {
     app.update();
 }
 
-/// An event that indicates the app should exit. This will fully exit the app process.
-#[derive(Debug, Clone)]
+/// An event that indicates the [`App`] should exit. This will fully exit the app process at the
+/// start of the next tick of the schedule.
+///
+/// You can also use this event to detect that an exit was requested. In order to receive it, systems
+/// subscribing to this event should run after it was emitted and before the schedule of the same
+/// frame is over.
+#[derive(Debug, Clone, Default)]
 pub struct AppExit;

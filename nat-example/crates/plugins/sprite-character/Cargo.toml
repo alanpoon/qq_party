@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.6.0", default-features = false }
+bevy = { version = "0.8.1", default-features = false }
 anyhow = { version = "1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared" }
 serde = { version = "1.0.123", features = ["derive"]}
@@ -16,7 +16,7 @@ rand = "0.8.5"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 js-sys = "0.3.46"
-wasm-bindgen = {version= "=0.2.78",features = ["serde-serialize"]}
+wasm-bindgen = {version= "=0.2.83",features = ["serde-serialize"]}
 
 [dependencies.web-sys]
 version = "0.3.50"
