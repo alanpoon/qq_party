@@ -27,6 +27,7 @@ plugin-physics-rapier = { package = "desk-plugin-physics-rapier", path = "../../
 plugin-map = { package = "desk-plugin-map", path = "../../plugins/map", version = "0.1.0" }
 plugin-sprite-character = { package = "desk-plugin-sprite-character", path = "../../plugins/sprite-character", version = "0.1.0" }
 plugin-audio = { package = "desk-plugin-audio", path = "../../plugins/audio", version = "0.1.0" }
+qq_party_shared = { path = "../../../../qq_party_shared" }
 
 
 #bevy = { path = ".../../../../../../bevy2", default-features = false }

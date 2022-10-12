@@ -32,3 +32,4 @@ getrandom = {path="wasmcloud_patches/getrandom"}
 [patch."https://github.com/bevyengine/bevy"]
 bevy_app = {path="wasmcloud_patches/bevy_app"}
 bevy_render = {path="wasmcloud_patches/bevy_render"}
+bevy_time = {path="wasmcloud_patches/bevy_time"}

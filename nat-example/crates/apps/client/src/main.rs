@@ -8,15 +8,17 @@ use plugin_physics_rapier::PhysicsPlugin;
 use plugin_map::MapPlugin;
 use plugin_sprite_character::SpriteCharacterPlugin;
 use log::Level;
+use qq_party_shared::QQSharedPlugin;
 #[bevy_main]
 pub fn main() {
     
     let mut app = App::new();
 
-    app.insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_secs_f64(
-           // 1.0 /60.0, 0.0167
-          0.1
-        )))
+    app
+    // .insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_secs_f64(
+    //        // 1.0 /60.0, 0.0167
+    //       0.1
+    //     )))
         .insert_resource(WindowDescriptor {
           width: 1280.0,
           height: 720.0,
@@ -28,6 +30,7 @@ pub fn main() {
         .add_plugin(AudioPlugin)
         .add_plugin(LyonPlugin)
         .add_plugin(PhysicsPlugin)
+        .add_plugin(QQSharedPlugin)
         .add_plugin(ProtocolPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(SpriteCharacterPlugin);

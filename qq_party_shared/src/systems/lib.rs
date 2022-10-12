@@ -44,6 +44,7 @@ impl Plugin for PhysicsPlugin {
         info!("build PhysicsPlugin");
         app.add_plugin(RapierPhysicsPlugin::<NoUserData,>::default())
             .add_system(debug_rigid.system())
+    
             .insert_resource(RapierConfiguration {
                 scale: 1.0,
                 gravity: Vector2::zeros(),

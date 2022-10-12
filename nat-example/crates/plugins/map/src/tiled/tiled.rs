@@ -9,6 +9,7 @@ use bevy::{
     reflect::TypeUuid,
     utils::HashMap,
 };
+use bevy::log::info;
 use bevy_ecs_tilemap::prelude::*;
 
 #[derive(Default)]
@@ -97,15 +98,15 @@ pub fn process_loaded_maps(
     for event in map_events.iter() {
         match event {
             AssetEvent::Created { handle } => {
-                // log::info!("Map added!");
+                info!("Map added!");
                 changed_maps.push(handle.clone());
             }
             AssetEvent::Modified { handle } => {
-                //log::info!("Map changed!");
+                info!("Map changed!");
                 changed_maps.push(handle.clone());
             }
             AssetEvent::Removed { handle } => {
-                //log::info!("Map removed!");
+                info!("Map removed!");
                 // if mesh was modified and removed in the same update, ignore the modification
                 // events are ordered so future modification events are ok
                 changed_maps = changed_maps
@@ -221,7 +222,7 @@ pub fn process_loaded_maps(
                                 tile_storage.set(&tile_pos, Some(tile_entity));
                             }
                         }
-
+                        info!("grid_size {:?}, map_size {:?}",grid_size,map_size);
                         commands.entity(layer_entity).insert_bundle(TilemapBundle {
                             grid_size,
                             size: map_size,
@@ -235,11 +236,12 @@ pub fn process_loaded_maps(
                             ),
                             tile_size,
                             spacing: tile_spacing,
-                            transform: bevy_ecs_tilemap::helpers::get_centered_transform_2d(
-                                &map_size,
-                                &tile_size,
-                                layer.layer_index as f32,
-                            ) * Transform::from_xyz(offset_x, -offset_y, 0.0),
+                            transform: Transform::from_xyz(0.0, 0.0, layer.layer_index as f32),
+                            // transform: bevy_ecs_tilemap::helpers::get_centered_transform_2d(
+                            //     &map_size,
+                            //     &tile_size,
+                            //     layer.layer_index as f32,
+                            // ) * Transform::from_xyz(offset_x, -offset_y, 0.0),
                             mesh_type,
                             ..Default::default()
                         });

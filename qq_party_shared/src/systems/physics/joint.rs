@@ -63,7 +63,7 @@ pub fn spawn_hierachy(
 }
 pub fn spawn_joint(
   mut cmd: Commands,
-  mut npc_query: Query<(Entity,&NPCId,&Position,&mut QQVelocity,&QQParent,&ChaseTargetId2)>,
+  mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&QQParent,&ChaseTargetId2)>,
   position_query: Query<&Position>,
   last_npc_query:Query<(Entity,&NPCId,&QQParent)>,
   mut ball_query:Query<(&BallId,&mut LastNPC)>
@@ -91,8 +91,8 @@ pub fn spawn_joint(
           cmd.entity(npc_e).despawn(); //despawn snake
         }
       }
-      v.0.x = unit_vec.x *factor *unit_vec.length_recip();
-      v.0.y = unit_vec.y  *factor *unit_vec.length_recip();
+      v.linvel.x = unit_vec.x *factor *unit_vec.length_recip();
+      v.linvel.y = unit_vec.y  *factor *unit_vec.length_recip();
       
     }
     // if let Some(ball_entity) = chase_target.1{

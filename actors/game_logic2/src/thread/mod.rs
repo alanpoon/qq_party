@@ -4,7 +4,7 @@ use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
-use crate::{Time,TimeV2};
+use crate::{QQTime,TimeV2};
 use crate::info_::info_;
 use bevy::prelude::*;
 use qq_party_shared::time_interface::TimeInterface;
@@ -25,10 +25,18 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
     if start_thread_request.subject.is_none(){
         let mut app = guard.unwrap();
         if let Some(mut t) = app.world.get_resource_mut::<Time>(){
+          t.update_with_timestamp(start_thread_request.timestamp)
+
+          //t.update(start_thread_request.elapsed as f32);
+        }else{
+          app.world.insert_resource(Time::default());
+        }
+
+        if let Some(mut t) = app.world.get_resource_mut::<QQTime>(){
           n = String::from("can find time");
           //t.update(start_thread_request.elapsed as f32);
         }else{
-          app.world.insert_resource(Time{elapsed:start_thread_request.elapsed as f32});
+          app.world.insert_resource(QQTime{elapsed:start_thread_request.elapsed as f32});
         }
         if let Some(mut t) = app.world.get_resource_mut::<TimeV2>(){
           n = String::from("can find time");

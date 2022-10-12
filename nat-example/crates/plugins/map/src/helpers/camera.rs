@@ -4,11 +4,15 @@ use bevy::time::Time;
 pub fn movement(
     time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
-    mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera,Option<&UiCameraConfig>), With<Camera>>,
+    mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera)>,
+    mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
 ) {
-    for (mut transform, mut ortho, c,ui_c) in query.iter_mut() {
-        if let Some(ui_c) = ui_c{
-            if ui_c.show_ui{
+    for (mut transform, mut ortho, c) in query.iter_mut() {
+        // if let Some(ui_c) = ui_c{
+        //     if ui_c.show_ui{
+        //         info!("ui_c  show_ui{:?}" ,ui_c.show_ui);
+        //     }
+        // }
                 let mut direction = Vec3::ZERO;
 
                 if keyboard_input.pressed(KeyCode::A) {
@@ -44,7 +48,10 @@ pub fn movement(
                 // Important! We need to restore the Z values when moving the camera around.
                 // Bevy has a specific camera setup and this can mess with how our layers are shown.
                 transform.translation.z = z;
-            }
-        }
+        //     }
+        // }
+        // for (mut text,mut _s,mut _g)  in text_query.iter_mut() {
+        //     text.sections[0].value = format!(r#"translation {:?}"#,transform.translation);
+        // }
     }
 }

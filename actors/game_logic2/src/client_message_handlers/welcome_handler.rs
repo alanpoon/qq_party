@@ -71,6 +71,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0)});
         }
       }
+      // info_(format!("npc_bundles {:?}",npc_bundles));
       for (i,npc_chunck) in npc_bundles.chunks(20).enumerate(){
         let mut bb= vec![];
         if i==0{

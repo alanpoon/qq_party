@@ -3,6 +3,7 @@
 // #[cfg(feature = "actor")]
 // use bevy_ecs_wasm::prelude::{Query, Component,Res,ResMut,Entity};
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use bevy::math::{Vec2};
 use serde::{Deserialize, Serialize};
 mod bundle;
@@ -12,9 +13,10 @@ pub mod time_interface;
 pub use time_interface::Timer;
 pub mod scoreboard;
 pub mod sub_map;
+pub mod plugin;
 pub use scoreboard::*;
 pub use time_interface::DamageCountdown;
-
+pub use plugin::QQSharedPlugin;
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
 pub struct Position(pub Vec2);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
@@ -25,8 +27,8 @@ pub struct TargetVelocity(pub Vec2);
 pub struct TargetDestination(pub Vec2,pub f32);
 
 //x:1.0,y:1.0->move to its right,x:0.0,y:1.0->move forward
-// #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
-// pub struct Time{pub elapsed:f32}
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
+pub struct QQTime{pub elapsed:f32}
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub i16); //ball_id, sprite_enum,0:chicken,1:bear
 #[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]

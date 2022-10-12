@@ -28,3 +28,11 @@ pub fn add_fire_sprite_system(
     }
   }
 }
+pub fn debug_fire_sprite_system(
+  mut cmd: Commands,
+  fires_without_mesh: Query<(Entity, &FireId,&Position,&QQVelocity)>,
+) {
+  for (entity, fire_id,position,vel) in fires_without_mesh.iter() {
+    info!("fire vel {:?}",vel);
+  }
+}

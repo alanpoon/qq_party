@@ -63,7 +63,6 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         }
         *elapsed =0.0;
         *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
-        info_(format!("storm_rings reset"));
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};
         match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
@@ -81,7 +80,6 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         
       } else if *elapsed >STORM_INTERVAL as f32 && *elapsed <= (STORM_INTERVAL+STORM_DURATION) as f32{
         if storm_rings.len()==0{
-          info_(format!("storm_rings is len 0"));
           let storm_ring_id = StormRingId(Vec2::new(3600.0,3500.0),90);
           cmd.spawn().insert(storm_ring_id.clone());
           let channel_message_back = ServerMessage::StormRings{storm_rings:vec![storm_ring_id],next_storm_timing:None};

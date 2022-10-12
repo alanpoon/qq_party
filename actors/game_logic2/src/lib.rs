@@ -18,6 +18,7 @@ use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use messaging::*;
+use crate::thread::thread_handle_request;
 use lazy_static::lazy_static; // 1.4.0
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
@@ -47,15 +48,12 @@ impl Thread for GameLogicActor{
       m.world.spawn_batch(npc_bundles);
       m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
       m.init_resource::<Time>()
-      .init_resource::<ScoreBoard>()
       .init_resource::<StormTiming>()
       .init_resource::<bevy_wasmcloud_time::Time>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
-      //.add_system(systems::publish::sys_publish_game_state)
+      .add_plugin(QQSharedPlugin)
       .add_system(systems::publish::sys_publish_game_state_by_sub_map)
-      //.add_system(systems::publish::sys_publish_score)
-      //.add_system(systems::sys)
       ;
       
     }
@@ -76,7 +74,7 @@ impl Thread for GameLogicActor{
     //info!("handle_request----");
     let mut map = APP.clone();
     //Ok(StartThreadResponse{})
-     thread::thread_handle_request(map,start_thread_request).await
+    thread_handle_request(map,start_thread_request).await
   }
   async fn now(&self,ctx:&Context,start_thread_request: &StartThreadRequest)  -> RpcResult<u64>{
     Ok(2)
@@ -125,16 +123,16 @@ pub struct A{
 pub struct BallBundle {
     pub a: A,
 }
-#[derive(Debug, PartialEq, Default)]
-pub struct Time{pub elapsed:f32}
-impl Time{
-  pub fn update(&mut self,t:f32){
-    self.elapsed = t;
-  }
-  pub fn elapsed(&self)->f32{
-    self.elapsed
-  }
-}
+#[derive(Debug, PartialEq, Default,Component)]
+pub struct QQTime{pub elapsed:f32}
+// impl Time{
+//   pub fn update(&mut self,t:f32){
+//     self.elapsed = t;
+//   }
+//   pub fn elapsed(&self)->f32{
+//     self.elapsed
+//   }
+// }
 #[derive(Debug, PartialEq, Default)]
 pub struct TimeV2{pub elapsed:HashMap<String,f32>}
 impl TimeV2{

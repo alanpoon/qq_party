@@ -43,25 +43,24 @@ impl Plugin for PhysicsPlugin {
             // .init_resource::<timewrapper::TimeWrapper>()
             // .init_resource::<timewrapper_qq::TimeWrapper>()
             .init_resource::<DamageCountdown>()
-            .init_resource::<qq_party_shared::scoreboard::ScoreBoard>()
             //.add_system(timewrapper_qq::into_timewrapper)
             //.add_system(debug_rigid)
             //player
-            .add_system(qq_party_shared::systems::physics::spawn_player_collider)
-            .add_system(qq_party_shared::systems::update_state_position_physics)
-            .add_system(qq_party_shared::systems::update_state_velocity)
-            .add_system(qq_party_shared::systems::update_state_velocity_physics)
-            //npc
-            .add_system(qq_party_shared::systems::physics::spawn_npc_collider)
-            .add_system(qq_party_shared::systems::set_state_chasetarget_npc2)
-            //spawn_hierachy
-            .add_system(qq_party_shared::systems::physics::spawn_hierachy)
-            .add_system(qq_party_shared::systems::physics::spawn_joint)
-            //.add_system(sys_time_debug)
-            //fire
-            .add_system(qq_party_shared::systems::physics::spawn_fire_collider)
-            .add_system(qq_party_shared::systems::physics::fire_collision)
-            .add_system(qq_party_shared::systems::physics::despawn_fire)
+            // .add_system(qq_party_shared::systems::physics::spawn_player_collider)
+            // .add_system(qq_party_shared::systems::update_state_position_physics)
+            // .add_system(qq_party_shared::systems::update_state_velocity)
+            // .add_system(qq_party_shared::systems::update_state_velocity_physics)
+            // //npc
+            // .add_system(qq_party_shared::systems::physics::spawn_npc_collider)
+            // .add_system(qq_party_shared::systems::set_state_chasetarget_npc2)
+            // //spawn_hierachy
+            // .add_system(qq_party_shared::systems::physics::spawn_hierachy)
+            // .add_system(qq_party_shared::systems::physics::spawn_joint)
+            // //.add_system(sys_time_debug)
+            // //fire
+            // .add_system(qq_party_shared::systems::physics::spawn_fire_collider)
+            // .add_system(qq_party_shared::systems::physics::fire_collision)
+            // .add_system(qq_party_shared::systems::physics::despawn_fire)
             //special_effects
             .add_system(special_effects::spawn_special_effect_collider)
             .add_system(special_effects::move_special_effect_closer_to_user_system)

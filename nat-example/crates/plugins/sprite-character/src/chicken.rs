@@ -56,8 +56,6 @@ pub fn add_chicken_sprite_system(
         }
       
        });
-    
-      
     }
   }
   

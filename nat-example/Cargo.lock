@@ -2004,6 +2004,7 @@ dependencies = [
  "desk-plugin-protocol",
  "desk-plugin-sprite-character",
  "log",
+ "qq_party_shared",
  "tracing-subscriber 0.2.25",
  "wasm-bindgen",
 ]

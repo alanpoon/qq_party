@@ -9,7 +9,7 @@ pub fn spawn_fire_collider(
   ) {
     for (entity, fire_id,position) in fires_without_rigid.iter() {
       cmd.entity(entity)
-      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 0.0)))
+      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0)))
       .insert(RigidBody::Dynamic)
       .insert(Velocity::angular(0.5))
       // .insert_bundle(RigidBodyBundle{

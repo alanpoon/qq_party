@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
+use bevy::render::texture::ImageSettings;
 use chrono::prelude::*;
 mod helpers;
 mod layer;
@@ -11,9 +12,10 @@ impl Plugin for MapPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app.add_plugin(TilemapPlugin)
          .add_plugin(TiledMapPlugin)
+         .insert_resource(ImageSettings::default_nearest())
          .add_startup_system(startup)
          .add_startup_system(layer::start_up_layer)
-         .add_system(helpers::texture::set_texture_filters_to_nearest)
+         //.add_system(helpers::texture::set_texture_filters_to_nearest)
          .add_system(helpers::camera::movement)
          .add_system(score_display)
          ;

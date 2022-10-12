@@ -35,6 +35,7 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
               subject: format!("game_logic.{}",sa)
               };
               publish_(p_msg);
+            
           }
           _=>{
 

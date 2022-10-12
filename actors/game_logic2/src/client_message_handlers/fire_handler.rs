@@ -39,7 +39,6 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u
     if let Some(fire_bundle) = fire_bundle{
       
       let sa = sub_map_area(fire_bundle.position.0.x,fire_bundle.position.0.y);
-      info_(format!("vel {:?}",fire_bundle.velocity.clone()));
       let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:fire_bundle.velocity.clone(),sprite_enum,timestamp:bevy_wasmcloud_time_val_clone.timestamp};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{

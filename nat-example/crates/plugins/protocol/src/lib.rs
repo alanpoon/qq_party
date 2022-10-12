@@ -176,6 +176,7 @@ fn handle_events(
                 }
               }
               if send{
+                info!("send target_velocity {:?} {:?}",target_velocity_x,target_velocity_y);
                 let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
                 (*commands).push(c);
               }
@@ -258,8 +259,10 @@ fn receive_events(mut cmd: Commands,
                           }
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
+                              info!("receive {:?} tv {:?}",ball_id,target_velocity);
                             for (entity, qball_id) in query.iter_mut(){
                               if ball_id ==*qball_id{
+                                
                                 cmd.entity(entity).insert(target_velocity);
                               }
                             }
