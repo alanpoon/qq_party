@@ -7,7 +7,7 @@ pub fn spawn_storm_ring_collider(
   ) {
     for (entity, storm_ring_id) in without_rigid.iter() {
       cmd.entity(entity)
-      .insert_bundle(TransformBundle::from(Transform::from_xyz(storm_ring_id.0.x, storm_ring_id.0.y, 0.0)))
+      .insert_bundle(TransformBundle::from(Transform::from_xyz(storm_ring_id.0.x, storm_ring_id.0.y, 2.0)))
       .insert(RigidBody::Dynamic)
       .insert(LockedAxes::TRANSLATION_LOCKED)
       .insert(Collider::cuboid(storm_ring_id.1 as f32, storm_ring_id.1 as f32))

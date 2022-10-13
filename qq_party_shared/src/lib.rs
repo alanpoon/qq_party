@@ -10,13 +10,15 @@ mod bundle;
 pub mod systems;
 pub use bundle::*;
 pub mod time_interface;
-pub use time_interface::Timer;
+//pub use time_interface::Timer;
 pub mod scoreboard;
 pub mod sub_map;
 pub mod plugin;
+pub mod to_despawn;
 pub use scoreboard::*;
 pub use time_interface::DamageCountdown;
 pub use plugin::QQSharedPlugin;
+pub use bevy_rapier2d;
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
 pub struct Position(pub Vec2);
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy,Debug)]
@@ -47,7 +49,7 @@ pub struct NPCId{
   pub sprite_enum:u32
 }
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub struct LastNPC(pub u32,pub Option<Entity>);
+pub struct LastNPC(pub u32,pub Option<Entity>,pub bool); //bool: is new_crate
 #[derive(Component, Clone, Debug)]
 pub struct SpecialEffectId(pub String);// special effect texture
 
@@ -97,6 +99,6 @@ pub struct TimerV2{
 #[derive(Component,Clone,Debug)]
 pub struct AnimationTimerV2(TimerV2);
 #[derive(Component,Clone,Debug)]
-pub struct DamageTimer(time_interface::timer::Timer);
+pub struct DamageTimer(Timer);
 #[derive(Component,Clone,Debug,Default)]
 pub struct AudioAble(pub bool,pub bool); //0:set in protocol, 1:set in audioplugin

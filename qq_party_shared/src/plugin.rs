@@ -21,10 +21,12 @@ impl Plugin for QQSharedPlugin {
           .add_system(physics::spawn_player_collider)
           .add_system(physics::update_state_position_physics)
           .add_system(physics::update_state_velocity_physics)
-  
+          //storm_ring
+          .add_system(physics::outside_storm_ring_damage)
           .add_system(update_state_velocity)
           .add_system(add_physics_velocity)
           .add_system(update_physics_velocity)
+          
           ;
            
     }

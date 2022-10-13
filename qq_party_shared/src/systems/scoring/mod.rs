@@ -19,6 +19,7 @@ mut score:&mut (i16,BallLabel))->Option<()>{
       cmd.entity(npc_entity).despawn();
       inner_score_next(cmd,parent.0,npc_id,query,&mut score)
     }else{
+      info!("wierld  npc{:?} npc_id{:?}",npc_entity,npc_id);
       None
     };
     return ret

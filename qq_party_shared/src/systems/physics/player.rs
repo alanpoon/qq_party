@@ -22,7 +22,7 @@ pub fn spawn_player_collider(
     //   position: [position.0.x, position.0.y].into(),
     //   ..Default::default()
     // })
-    .insert(LastNPC(0,None))
+    .insert(LastNPC(0,None,false))
     ;
     scoreboard.scores.insert(ball_id.0,(0,ball_label.clone()));
   }

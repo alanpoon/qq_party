@@ -23,6 +23,7 @@ pub fn add_npc_sprite_system(
     };
     if let Some(t_handle)= texture_hashmap.get(&sprite_name){
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
+        transform:Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.1)),
         texture_atlas: t_handle.clone(),
         ..Default::default()
       }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)));

@@ -12,11 +12,11 @@ pub fn spawn_storm_ring(
 ) {
   cmd.spawn().insert(StormRingId(Vec2::new(pos_x,pos_y),radius));
 }
-pub fn outside_storm_ring_damage<T:TimeInterface+Component>(mut cmd:Commands,
+pub fn outside_storm_ring_damage(mut cmd:Commands,
   ball_query: Query<(Entity, &BallId,&Position)>,
   storm_rings_query: Query<&StormRingId>,
   mut timer_query: Query<&mut DamageTimer>,
-  time:Res<T>,
+  time:Res<Time>,
   mut res:ResMut<ScoreBoard>,
 ) {
   for mut timer in timer_query.iter_mut(){
@@ -46,5 +46,5 @@ pub fn outside_storm_ring_damage<T:TimeInterface+Component>(mut cmd:Commands,
 }
 
 pub fn add_damage_timer(mut cmd:Commands){
-  cmd.spawn().insert(DamageTimer(crate::Timer::new(Duration::from_secs(5),true)));
+  cmd.spawn().insert(DamageTimer(Timer::new(Duration::from_secs(5),true)));
 }
