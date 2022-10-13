@@ -874,6 +874,7 @@ source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2
 [[package]]
 name = "bevy_rapier2d"
 version = "0.17.0"
+source = "git+https://github.com/alanpoon/bevy_rapier?rev=777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e#777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e"
 dependencies = [
  "bevy",
  "bitflags",

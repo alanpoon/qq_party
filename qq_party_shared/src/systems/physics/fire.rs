@@ -8,20 +8,20 @@ pub fn spawn_fire_collider(
     fires_without_rigid: Query<(Entity, &FireId,&Position,&QQVelocity), Without<Transform>>
   ) {
     for (entity, fire_id,position,qv) in fires_without_rigid.iter() {
+      let (_,scale) = match fire_id.1{
+        0=>{
+          (String::from("egg"),0.08)
+        }
+        _=>{
+          (String::from("stick"),0.05)
+        }
+      };
       cmd.entity(entity)
-      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0)))
+      .insert_bundle(TransformBundle::from(
+        Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(scale))
+      ))
       .insert(RigidBody::Dynamic)
       .insert(Velocity{linvel:[qv.0.x,qv.0.y].into(),angvel:0.5})
-      // .insert_bundle(RigidBodyBundle{
-      //   //mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
-      //   ccd: RigidBodyCcd {
-      //       ccd_enabled: true,
-      //       ..Default::default()
-      //   }.into(),
-      //   velocity:RigidBodyVelocityComponent(RigidBodyVelocity { linvel: Vect::new(0.0, 0.0), angvel: 0.5 }),
-      //   position: [position.0.x, position.0.y].into(),
-      //   ..Default::default()
-      // })
       ;
     }
 }

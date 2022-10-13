@@ -26,5 +26,5 @@ bevy = { git="https://github.com/bevyengine/bevy",rev="b995b4662a9481e8d6fd984b2
 #bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "61eefc3339c1e4cc7419ed7676fb9f0f6e386583" }
 #bevy_rapier2d = { path ="/home/alanpoon/Documents/rust/bevy_stuff/bevy_rapier/bevy_rapier2d" }
 #bevy = { version = "=0.8.0", default-features = false }
-#bevy_rapier2d = { version ="0.17.0" }
-bevy_rapier2d = { path = "/home/alanpoon/Documents/rust/bevy_stuff/bevy_rapier2/bevy_rapier2d" }
+bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e" }
+#bevy_rapier2d = { path = "/home/alanpoon/Documents/rust/bevy_stuff/bevy_rapier2/bevy_rapier2d" }

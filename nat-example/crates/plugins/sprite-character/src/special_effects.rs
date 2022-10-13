@@ -39,7 +39,7 @@ pub fn onstart(mut cmd: Commands){
 pub fn add_special_effect_sprite_system(
   mut cmd: Commands,
   mut effects_with_mesh: Query<(&SpecialEffectId,&TextureAtlasSprite,&mut Transform)>,
-  effects_without_mesh: Query<(Entity, &SpecialEffectId), Without<TextureAtlasSprite>>,
+  effects_without_mesh: Query<(Entity, &SpecialEffectId,&Transform), Without<TextureAtlasSprite>>,
   storm_rings_query: Query<(Entity, &StormRingId)>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
 ) {
@@ -50,11 +50,11 @@ pub fn add_special_effect_sprite_system(
   }
   if found_storm_rings{
     let mut close_proximity_count =0; //spawn closer to user
-    for (entity, effect_id) in effects_without_mesh.iter() {
+    for (entity, effect_id,transform) in effects_without_mesh.iter() {
       let sprite_name = effect_id.0.clone();
       if let Some(t_handle)= texture_hashmap.get(&sprite_name){
         cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-          transform:Transform::from_xyz(3600.0,3600.0,2.0),
+          transform:transform.clone(),
           texture_atlas: t_handle.clone(),
           ..Default::default()
         })

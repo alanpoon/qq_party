@@ -24,12 +24,10 @@ debug = true
 [patch.crates-io]
 wasmbus-rpc= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
 wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
-instant = {path="wasmcloud_patches/instant"}
 getrandom = {path="wasmcloud_patches/getrandom"}
-#bevy_app = {path="wasmcloud_patches/bevy_app"}
-#bevy_render = {path="wasmcloud_patches/bevy_render"}
 
 [patch."https://github.com/bevyengine/bevy"]
 bevy_app = {path="wasmcloud_patches/bevy_app"}
+bevy_internal = {path="wasmcloud_patches/bevy_internal"}
 bevy_render = {path="wasmcloud_patches/bevy_render"}
 bevy_time = {path="wasmcloud_patches/bevy_time"}

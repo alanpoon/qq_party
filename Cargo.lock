@@ -54,18 +54,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85965b6739a430150bdd138e2374a98af0c3ee0d030b3bb7fc3bddff58d0102e"
 
 [[package]]
-name = "android_logger"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9ed09b18365ed295d722d0b5ed59c01b79a826ff2d2a8f73d5ecca8e6fb2f66"
-dependencies = [
- "android_log-sys",
- "env_logger",
- "lazy_static",
- "log",
-]
-
-[[package]]
 name = "android_system_properties"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -478,21 +466,17 @@ dependencies = [
 [[package]]
 name = "bevy_internal"
 version = "0.8.1"
-source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d#b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d"
 dependencies = [
  "bevy_app",
  "bevy_asset",
  "bevy_core",
  "bevy_core_pipeline",
  "bevy_derive",
- "bevy_diagnostic",
  "bevy_ecs",
  "bevy_hierarchy",
  "bevy_input",
  "bevy_log",
  "bevy_math",
- "bevy_pbr",
- "bevy_ptr",
  "bevy_reflect",
  "bevy_render",
  "bevy_scene",
@@ -502,7 +486,6 @@ dependencies = [
  "bevy_transform",
  "bevy_utils",
  "bevy_window",
- "ndk-glue",
 ]
 
 [[package]]
@@ -546,26 +529,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_pbr"
-version = "0.8.1"
-source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d#b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d"
-dependencies = [
- "bevy_app",
- "bevy_asset",
- "bevy_core_pipeline",
- "bevy_ecs",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_transform",
- "bevy_utils",
- "bevy_window",
- "bitflags",
- "bytemuck",
- "radsort",
-]
-
-[[package]]
 name = "bevy_ptr"
 version = "0.8.1"
 source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d#b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d"
@@ -573,6 +536,7 @@ source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2
 [[package]]
 name = "bevy_rapier2d"
 version = "0.17.0"
+source = "git+https://github.com/alanpoon/bevy_rapier?rev=777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e#777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e"
 dependencies = [
  "bevy",
  "bitflags",
@@ -1597,7 +1561,7 @@ dependencies = [
  "futures 0.3.24",
  "instant",
  "lazy_static",
- "rmp-serde 1.1.1",
+ "rmp-serde",
  "rustrict",
  "serde",
  "serde_bytes",
@@ -1615,10 +1579,9 @@ dependencies = [
  "bevy_rapier2d",
  "convert_case",
  "futures 0.3.24",
- "instant",
  "lazy_static",
  "qq_party_shared",
- "rmp-serde 1.1.1",
+ "rmp-serde",
  "serde",
  "serde_bytes",
  "wasmbus-rpc",
@@ -1940,11 +1903,13 @@ checksum = "e567468c50f3d4bc7397702e09b380139f9b9288b4e909b070571007f8b5bf78"
 [[package]]
 name = "instant"
 version = "0.1.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a5bbe824c507c5da5956355e86a746d82e0e1464f65d862cc5e71da70e94b2c"
 dependencies = [
  "cfg-if 1.0.0",
- "rmp-serde 0.15.5",
- "serde",
- "thiserror",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -2271,7 +2236,6 @@ version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c71bee8ea72d685477e28bd004cfe1bf99c754d688cd78cad139eae4089484d4"
 dependencies = [
- "android_logger",
  "lazy_static",
  "libc",
  "log",
@@ -3000,17 +2964,6 @@ dependencies = [
  "byteorder",
  "num-traits",
  "paste",
-]
-
-[[package]]
-name = "rmp-serde"
-version = "0.15.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "723ecff9ad04f4ad92fe1c8ca6c20d2196d9286e9c60727c4cb5511629260e9d"
-dependencies = [
- "byteorder",
- "rmp",
- "serde",
 ]
 
 [[package]]
@@ -4067,7 +4020,7 @@ dependencies = [
  "nats",
  "nkeys",
  "once_cell",
- "rmp-serde 1.1.1",
+ "rmp-serde",
  "serde",
  "serde_bytes",
  "serde_json",

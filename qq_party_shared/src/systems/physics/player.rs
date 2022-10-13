@@ -13,15 +13,6 @@ pub fn spawn_player_collider(
     .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(0.2))))
     .insert(RigidBody::Dynamic)
     .insert(LockedAxes::ROTATION_LOCKED)
-    // .insert_bundle(RigidBodyBundle{
-    //   mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
-    //   ccd: RigidBodyCcd {
-    //       ccd_enabled: true,
-    //       ..Default::default()
-    //   }.into(),
-    //   position: [position.0.x, position.0.y].into(),
-    //   ..Default::default()
-    // })
     .insert(LastNPC(0,None,false))
     ;
     scoreboard.scores.insert(ball_id.0,(0,ball_label.clone()));

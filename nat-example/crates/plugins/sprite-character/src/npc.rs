@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,NPCId};
+use qq_party_shared::{NPCId};
 use std::collections::HashMap;
 pub fn add_npc_sprite_system(
   mut cmd: Commands,
-  balls_without_mesh: Query<(Entity, &NPCId,&Position), Without<Transform>>,
+  balls_without_mesh: Query<(Entity, &NPCId,&Transform), Without<TextureAtlasSprite>>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>
 ) {
-  for (entity, npcid,position) in balls_without_mesh.iter() {
+  for (entity, npcid,transform) in balls_without_mesh.iter() {
     let sprite_name = match npcid.sprite_enum{
       0=>{
         String::from("snake")
@@ -23,10 +23,12 @@ pub fn add_npc_sprite_system(
     };
     if let Some(t_handle)= texture_hashmap.get(&sprite_name){
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-        transform:Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.1)),
+        transform:transform.clone(),
         texture_atlas: t_handle.clone(),
         ..Default::default()
-      }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)));
+      })
+      //.insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)))
+      ;
     }else{
       info!("cannot find {:?}",sprite_name);
     }

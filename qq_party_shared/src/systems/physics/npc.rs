@@ -9,12 +9,6 @@ pub fn spawn_npc_collider(
     cmd.entity(entity)
     .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(0.1))))
     .insert(RigidBody::Dynamic)
-    // .insert_bundle(RigidBodyBundle{
-    //   mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
-    //   position: [position.0.x, position.0.y].into(),
-    //   ..Default::default()
-    // })
-    // .insert(RigidBodyPositionSync::Discrete)
     ;
   }
 }

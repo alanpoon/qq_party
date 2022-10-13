@@ -29,7 +29,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         });
         if score_vec.len() >0{
           if score_vec.len() >10{
-            score_vec.clone().split_off(10);
+            score_vec.clone().split_off(8);
           }
         }
         let msg = ServerMessage::Scores{scoreboard:score_vec};

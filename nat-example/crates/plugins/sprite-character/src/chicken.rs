@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use crate::H;
 pub fn add_chicken_sprite_system(
   mut cmd: Commands,
-  balls_without_mesh: Query<(Entity, &BallId,&BallLabel,&Position), Without<TextureAtlasSprite>>,
+  balls_without_mesh: Query<(Entity, &BallId,&BallLabel,&Transform), Without<TextureAtlasSprite>>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
   asset_server: Res<AssetServer>,
   flag_usize_map:Res<H>,
@@ -12,16 +12,18 @@ pub fn add_chicken_sprite_system(
 ) {
   if let (Some(t_handle),Some(bear_handle)) = (texture_hashmap.get("chicken"),texture_hashmap.get("bear")){
     let f_handle= texture_hashmap.get("flags");
-    for (entity, ball_id,ball_label,position) in balls_without_mesh.iter() {
+    for (entity, ball_id,ball_label,transform) in balls_without_mesh.iter() {
       let mut ta_handle = t_handle.clone();
       if ball_id.1==1{
         ta_handle = bear_handle.clone();
       }
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
         texture_atlas: ta_handle,
-        transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.2)),
+        transform:transform.clone(),
+        //transform: Transform::from_xyz(position.0.x as f32,position.0.y as f32,2.0).with_scale(Vec3::splat(0.2)),
         ..Default::default()
-      }).insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)))
+      })
+      //.insert(Position(Vec2::new(position.0.x as f32, position.0.y as f32)))
       .with_children(|parent| {
         // parent is a ChildBuilder, which has a similar API to Commands
         if let Some(f_handle) = f_handle{
