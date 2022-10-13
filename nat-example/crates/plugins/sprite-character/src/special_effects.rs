@@ -10,11 +10,11 @@ pub struct MoveTimer(Timer);
 pub fn onstart(mut cmd: Commands){
   let mut rng = rand::thread_rng();
   let mut bundles = vec![];
-  let special_effects = vec![String::from("storm")];
-//  let special_effects = vec![String::from("storm"),String::from("ice"),String::from("stone"),String::from("rattan")];
+//  let special_effects = vec![String::from("storm")];
+ let special_effects = vec![String::from("storm"),String::from("ice"),String::from("stone"),String::from("rattan")];
 
-  //for _ in 0..8{
-  for _ in 0..1{
+  for _ in 0..8{
+  //for _ in 0..1{
     let b = rng.gen_range(0..40) as f32;
     for s_e in special_effects.iter(){
       let tv_x = if rng.gen_bool(0.5){

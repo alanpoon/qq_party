@@ -5,13 +5,13 @@ use crate::*;
 
 pub fn spawn_fire_collider(
     mut cmd: Commands,
-    fires_without_rigid: Query<(Entity, &FireId,&Position), Without<Transform>>
+    fires_without_rigid: Query<(Entity, &FireId,&Position,&QQVelocity), Without<Transform>>
   ) {
-    for (entity, fire_id,position) in fires_without_rigid.iter() {
+    for (entity, fire_id,position,qv) in fires_without_rigid.iter() {
       cmd.entity(entity)
       .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0)))
       .insert(RigidBody::Dynamic)
-      .insert(Velocity::angular(0.5))
+      .insert(Velocity{linvel:[qv.0.x,qv.0.y].into(),angvel:0.5})
       // .insert_bundle(RigidBodyBundle{
       //   //mass_properties: RigidBodyMassPropsFlags::ROTATION_LOCKED.into(),
       //   ccd: RigidBodyCcd {
