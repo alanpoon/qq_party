@@ -314,6 +314,7 @@ dependencies = [
 [[package]]
 name = "bevy_app"
 version = "0.8.1"
+source = "git+https://github.com/alanpoon/bevy_wasmcloud_patches#5f9f4a10e5bb465e8ac36077d35f2ea4abd4bcea"
 dependencies = [
  "bevy_derive",
  "bevy_ecs",
@@ -466,6 +467,7 @@ dependencies = [
 [[package]]
 name = "bevy_internal"
 version = "0.8.1"
+source = "git+https://github.com/alanpoon/bevy_wasmcloud_patches#5f9f4a10e5bb465e8ac36077d35f2ea4abd4bcea"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -578,6 +580,7 @@ dependencies = [
 [[package]]
 name = "bevy_render"
 version = "0.8.1"
+source = "git+https://github.com/alanpoon/bevy_wasmcloud_patches#5f9f4a10e5bb465e8ac36077d35f2ea4abd4bcea"
 dependencies = [
  "anyhow",
  "bevy_app",
@@ -690,6 +693,7 @@ dependencies = [
 [[package]]
 name = "bevy_time"
 version = "0.8.1"
+source = "git+https://github.com/alanpoon/bevy_wasmcloud_patches#5f9f4a10e5bb465e8ac36077d35f2ea4abd4bcea"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1604,6 +1608,7 @@ dependencies = [
 [[package]]
 name = "getrandom"
 version = "0.2.6"
+source = "git+https://github.com/alanpoon/bevy_wasmcloud_patches#5f9f4a10e5bb465e8ac36077d35f2ea4abd4bcea"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
