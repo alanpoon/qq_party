@@ -24,10 +24,10 @@ pub fn add_storm_ring_sprite_system(
         let shape = GeometryBuilder::build_as(
             &shape,
             DrawMode::Outlined {
-                fill_mode: FillMode::color(Color::CYAN),
+                fill_mode: FillMode::color(Color::rgba(0.0, 1.0, 1.0,0.5)),
                 outline_mode: StrokeMode::new(Color::BLACK, 10.0),
             },
-            Transform::from_xyz(storm_ring_id.0.x,storm_ring_id.0.y,2.0),
+            Transform::from_xyz(storm_ring_id.0.x,storm_ring_id.0.y,1.0),
         );
         cmd.entity(e).insert_bundle(shape);
     }

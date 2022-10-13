@@ -10,7 +10,7 @@ pub fn spawn_player_collider(
 ) {
   for (entity, ball_id,ball_label,position) in balls_without_rigid.iter() {
     cmd.entity(entity)
-    .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(0.2))))
+    .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 3.0).with_scale(Vec3::splat(0.2))))
     .insert(RigidBody::Dynamic)
     .insert(LockedAxes::ROTATION_LOCKED)
     .insert(LastNPC(0,None,false))

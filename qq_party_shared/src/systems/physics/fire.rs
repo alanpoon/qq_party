@@ -18,7 +18,7 @@ pub fn spawn_fire_collider(
       };
       cmd.entity(entity)
       .insert_bundle(TransformBundle::from(
-        Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(scale))
+        Transform::from_xyz(position.0.x, position.0.y, 3.0).with_scale(Vec3::splat(scale))
       ))
       .insert(RigidBody::Dynamic)
       .insert(Velocity{linvel:[qv.0.x,qv.0.y].into(),angvel:0.5})

@@ -75,13 +75,14 @@ pub fn spawn_fire_bundle(
 }
 pub fn spawn_or_delete_storm_rings_bundles(
   mut cmd: &mut Commands,
-  mut v_query:&mut Query<Entity,With<StormRingId>>,
+  mut v_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
   bundles:Vec<StormRingId>
   ){
     let len = bundles.len();
     if len==0{
-      for e in v_query.iter(){
-        cmd.entity(e).despawn_recursive();
+      for (e,mut transform) in v_query.iter_mut(){
+        //cmd.entity(e).despawn_recursive();
+        transform.translation = [4000.0,4000.0,0.0].into();
       }
     }else{
       for storm in bundles.iter(){

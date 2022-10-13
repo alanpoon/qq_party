@@ -228,7 +228,7 @@ fn receive_events(mut cmd: Commands,
   mut v_query: Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
   mut query: Query<(Entity, &BallId)>,
-  mut storm_query: Query<Entity,With<StormRingId>>,
+  mut storm_query: Query<(Entity,&mut Transform),With<StormRingId>>,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
   ) {

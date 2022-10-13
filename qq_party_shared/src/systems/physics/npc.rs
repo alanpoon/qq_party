@@ -7,7 +7,7 @@ pub fn spawn_npc_collider(
 ) {
   for (entity, npc_id,position) in balls_without_rigid.iter() {
     cmd.entity(entity)
-    .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0).with_scale(Vec3::splat(0.1))))
+    .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 3.0).with_scale(Vec3::splat(0.1))))
     .insert(RigidBody::Dynamic)
     ;
   }
