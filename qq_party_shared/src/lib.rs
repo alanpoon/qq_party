@@ -99,6 +99,6 @@ pub struct TimerV2{
 #[derive(Component,Clone,Debug)]
 pub struct AnimationTimerV2(TimerV2);
 #[derive(Component,Clone,Debug)]
-pub struct DamageTimer(Timer);
+pub struct DamageTimer(pub Timer);
 #[derive(Component,Clone,Debug,Default)]
 pub struct AudioAble(pub bool,pub bool); //0:set in protocol, 1:set in audioplugin
