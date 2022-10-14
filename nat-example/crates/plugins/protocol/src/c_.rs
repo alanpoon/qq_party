@@ -47,3 +47,16 @@ pub fn fire(ball_id:BallId,velocity_x:f32,velocity_y:f32)->Command{
   };
   Command::Nats(String::from("default"),n)
 }
+pub fn dash(ball_id:BallId)->Command{
+  let tv = ClientMessage::Dash{
+    ball_id:ball_id
+  };
+  
+  let tv_= rmp_serde::to_vec(&tv).unwrap();
+  let n = nats::proto::ClientOp::Pub{
+    subject: String::from("client_handler.hello"),
+    reply_to: None,
+    payload: tv_,
+  };
+  Command::Nats(String::from("default"),n)
+}

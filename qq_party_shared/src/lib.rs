@@ -43,6 +43,8 @@ pub struct ChaseTargetId2(pub u32, pub Option<Entity>,pub u8);//ball, npc, speed
 pub struct FireId(pub u32,pub i16,pub Option<Vec2>); //owner, sprite_enum, StartPosition
 #[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct Hit;
+#[derive(Component,Serialize, Deserialize, Default, Clone, Debug)]
+pub struct Dash(pub bool,pub Vec2,pub Vec2); //on/off, new_speed, old speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
@@ -68,6 +70,7 @@ pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
+    Dash{ball_id:BallId},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
@@ -78,6 +81,7 @@ pub enum ServerMessage {
 pub enum ClientMessage {
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
     Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32},
+    Dash{ball_id:BallId},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
 }
@@ -100,5 +104,8 @@ pub struct TimerV2{
 pub struct AnimationTimerV2(TimerV2);
 #[derive(Component,Clone,Debug)]
 pub struct DamageTimer(pub Timer);
+#[derive(Component,Clone,Debug)]
+pub struct DashTimer(pub Timer);
 #[derive(Component,Clone,Debug,Default)]
 pub struct AudioAble(pub bool,pub bool); //0:set in protocol, 1:set in audioplugin
+

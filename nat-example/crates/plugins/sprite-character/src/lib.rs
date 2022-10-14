@@ -8,8 +8,8 @@ mod special_effects;
 mod sprite_sheet;
 mod single_image;
 mod timewrapper;
+mod smoke;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 pub struct SpriteCharacterPlugin;
 #[derive(Component,Debug, PartialEq, Default)]
 pub struct H{
@@ -26,11 +26,14 @@ impl Plugin for SpriteCharacterPlugin {
       .add_system(chicken::add_chicken_sprite_system)
       .add_system(chicken::hit_chicken_sprite_system)
       .add_system(chicken::remove_hit_chicken_sprite_system)
+      .add_system(chicken::add_dash_chicken_sprite_system)
+      .add_system(chicken::remove_dash_chicken_sprite_system)
       .add_system(npc::add_npc_sprite_system)
       .add_system(fire::add_fire_sprite_system)
       //.add_system(fire::debug_fire_sprite_system)
       .add_system(special_effects::add_special_effect_sprite_system)
       .add_system(special_effects::apply_special_effect_sprite_system)
+      .add_system(smoke::apply_smoke_animation_system)
       .add_startup_system(sprite_sheet::startup)
       .add_startup_system(single_image::startup)
       .add_startup_system(startup)

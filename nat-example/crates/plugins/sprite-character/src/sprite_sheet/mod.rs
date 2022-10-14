@@ -1,8 +1,6 @@
 pub mod _2d_round;
 use bevy::prelude::*;
 use std::collections::HashMap;
-use wasm_bindgen::prelude::*;
-use js_sys::Array;
 use crate::sprite_sheet::{_2d_round::_fn_chicken,_2d_round::_fn_snake,_2d_round::_fn_chick,_2d_round::_fn_bear,self};
 pub struct SpriteInfos {
 	pub _2d_round: (Handle<Image>, Vec2),
@@ -59,11 +57,21 @@ pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut textu
   let rattan_atlas = TextureAtlas::from_grid(rattan_texture,Vec2::new(191.5,193.0),4,1);
   let rattan_atlas_handler = texture_atlases.add(rattan_atlas);
   texture_hashmap.insert(String::from("rattan"),rattan_atlas_handler);
+  let smoke_texture = asset_server.load("2d/sprites/SmokeFire.png");
+  let smoke_atlas = TextureAtlas::from_grid(smoke_texture,Vec2::new(16.0,16.0),4,4);
+  let smoke_atlas_handler = texture_atlases.add(smoke_atlas);
+  texture_hashmap.insert(String::from("smoke"),smoke_atlas_handler);
   info!("texture_hashmap end ");
   if let Some(el) = web_sys::window().unwrap().document().unwrap().get_element_by_id("loader"){
-    el.set_attribute("style","display:none;");
+    match el.set_attribute("style","display:none;"){
+      Ok(_)=>{},
+      _=>{}
+    }
   }
   if let Some(el) = web_sys::window().unwrap().document().unwrap().get_element_by_id("hello_button"){
-    el.set_attribute("style","display:block;");
+    match el.set_attribute("style","display:block;"){
+      Ok(_)=>{},
+      _=>{}
+    }
   }
 }

@@ -46,7 +46,7 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble};
+use qq_party_shared::{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble,Dash};
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -137,6 +137,12 @@ fn handle_events(
           let ball_id = (*local_user_info).0.ball_id;
           info!("space pressed-- fire");
           let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
+          (*commands).push(c);
+        }
+        if keyboard_input.just_pressed(KeyCode::LShift){
+          let ball_id = (*local_user_info).0.ball_id;
+          info!("shift pressed-- dash ");
+          let c = c_::dash(ball_id);
           (*commands).push(c);
         }
         keyboard_input.clear();
@@ -257,6 +263,15 @@ fn receive_events(mut cmd: Commands,
                               }
                             }                          
                           }
+                          ServerMessage::Dash{ball_id}=>{
+                            info!("received dash");
+                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
+                              if ball_id ==*qball_id{
+                                info!("inserted dash");
+                                cmd.entity(entity).insert(Dash(true,vel.0*2.0,vel.0));
+                              }
+                            }                          
+                          }
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
                               info!("receive {:?} tv {:?}",ball_id,target_velocity);
@@ -311,7 +326,7 @@ fn receive_events(mut cmd: Commands,
                         match server_message{
                           ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
                             info!("welcome_ ball_bundle {:?}",ball_bundle.clone());
-                            cmd.spawn_bundle(ball_bundle);
+                            cmd.spawn_bundle(ball_bundle).insert(Dash(false,[0.0,0.0].into(),[0.0,0.0].into()));
                             audioable.0 = true;
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }
