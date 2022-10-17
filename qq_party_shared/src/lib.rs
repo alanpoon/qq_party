@@ -84,6 +84,7 @@ pub enum ClientMessage {
     Dash{ball_id:BallId},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
+    Disconnect{ball_id_secret:String},
 }
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
 pub struct UserInfo{
