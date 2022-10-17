@@ -41,7 +41,6 @@ pub fn move_special_effect_closer_to_user_system(
       let mut ball_pos =  Position(Vec2::new(0.0,0.0));
       for ( ball_id,po) in ball_query.iter(){
         if ball_id == &local_user_info.0.ball_id{
-          info!("found local_user_info {:?} po{:?}" ,local_user_info,po.clone());
           ball_pos = po.clone();
         }
       }

@@ -104,9 +104,9 @@ pub fn remove_hit_chicken_sprite_system(
   mut cmd: Commands,
   mut balls_with_hit: Query<(Entity, &BallId,&ChickenHit,&mut TextureAtlasSprite,&Children)>,
   hit_test_as_child_query: Query<(Entity,&HitTextAsChild)>,
-  time: Res<bevy::prelude::Time>
+  _time: Res<bevy::prelude::Time>
 ){
-    for (entity, ball_id,chicken_hit,mut sprite,children) in balls_with_hit.iter_mut() {
+    for (entity, _ball_id,chicken_hit,mut sprite,children) in balls_with_hit.iter_mut() {
       let chicken_hit_instant =  chicken_hit.0;
       let elapsed = chicken_hit_instant.elapsed().as_millis();
       if elapsed <= 250 && elapsed>100{

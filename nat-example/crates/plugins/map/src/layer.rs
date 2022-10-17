@@ -1,6 +1,4 @@
-use bevy_ecs_tilemap::prelude::*;
-use bevy::prelude::*;
-use crate::tiled::tiled::*;
+use bevy::prelude::*;use crate::tiled::tiled::*;
 pub fn start_up_layer(mut commands: Commands, asset_server: Res<AssetServer>){
   let handle: Handle<TiledMap> = asset_server.load("2d/qq_party_tile.tmx");
   //let handle: Handle<TiledMap> = asset_server.load("2d/map.tmx");

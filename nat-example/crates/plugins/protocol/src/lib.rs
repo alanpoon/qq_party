@@ -46,7 +46,8 @@ extern "C" {
 //   // `bare_bones`
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
-use qq_party_shared::{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormTiming,AudioAble,Dash};
+use qq_party_shared::*;
+//{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormRingText,StormTiming,AudioAble,Dash}
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -235,8 +236,10 @@ fn receive_events(mut cmd: Commands,
   mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
   mut query: Query<(Entity, &BallId)>,
   mut storm_query: Query<(Entity,&mut Transform),With<StormRingId>>,
+  mut storm_text_query: Query<Entity,With<StormRingTextNode>>,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
+  asset_server: Res<AssetServer>
   ) {
     if let Some(ref mut client) = *client {
         let len = client.clients.len();   
@@ -264,10 +267,8 @@ fn receive_events(mut cmd: Commands,
                             }                          
                           }
                           ServerMessage::Dash{ball_id}=>{
-                            info!("received dash");
                             for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
-                                info!("inserted dash");
                                 cmd.entity(entity).insert(Dash(true,vel.0*2.0,vel.0));
                               }
                             }                          
@@ -304,7 +305,7 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
-                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,storm_rings.clone());
+                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,&mut storm_text_query,storm_rings.clone(),&asset_server);
                             if let Some(storm_timing) = next_storm_timing.clone(){
                               *storm_timing_res = storm_timing;
                             }

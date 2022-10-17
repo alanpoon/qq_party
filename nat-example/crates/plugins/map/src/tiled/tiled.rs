@@ -153,8 +153,8 @@ pub fn process_loaded_maps(
                             y: tileset.spacing as f32,
                         };
 
-                        let offset_x = layer.offset_x;
-                        let offset_y = layer.offset_y;
+                        let _offset_x = layer.offset_x;
+                        let _offset_y = layer.offset_y;
 
                         let map_size = TilemapSize {
                             x: tiled_map.map.width,

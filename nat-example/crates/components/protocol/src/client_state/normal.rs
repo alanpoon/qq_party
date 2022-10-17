@@ -37,7 +37,7 @@ impl ClientState for Normal {
               Event::BevyWeb(json_value) =>{
                 let m: Result<ClientMessage,_> = serde_json::from_value(json_value.clone());
                 match m{
-                  Ok(ClientMessage::Welcome{game_id,ball_id,ball_label})=>{
+                  Ok(ClientMessage::Welcome{game_id:_,ball_id,ball_label})=>{
                     let tv = ClientMessage::Welcome{
                       game_id:String::from("hello"),
                       ball_id:ball_id.clone(),

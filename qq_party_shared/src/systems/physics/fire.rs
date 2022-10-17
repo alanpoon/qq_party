@@ -1,6 +1,5 @@
 use bevy_rapier2d::prelude::*;
 use bevy::prelude::*;
-use bevy_rapier2d::math::Vect;
 use crate::*;
 
 pub fn spawn_fire_collider(

@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::utils::Duration;
 use qq_party_shared::*;
 use bevy_kira_audio::{Audio, AudioPlugin as InnerAudioPlugin,AudioControl};
 pub struct AudioPlugin;
@@ -46,7 +45,7 @@ fn play_thunder_system(
   for mut timer in timer_query.iter_mut(){
     if timer.0.just_finished() {
       let mut len_of_storms_ring = 0;
-      for storm_ring_id in storm_rings_query.iter(){
+      for _ in storm_rings_query.iter(){
         len_of_storms_ring+=1;
         break;
       }

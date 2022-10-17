@@ -97,6 +97,10 @@ pub struct StormRingId(pub Vec2,pub i16); //pos,radius
 pub const STORM_INTERVAL :u64 = 10;
 pub const STORM_DURATION :u64 = 10;
 #[derive(Component,Clone,Debug)]
+pub struct StormRingText(pub Vec2);
+#[derive(Component,Clone,Debug)]
+pub struct StormRingTextNode();
+#[derive(Component,Clone,Debug)]
 pub struct TimerV2{
   
 }

@@ -7,7 +7,7 @@ pub fn movement(
     mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera)>,
     mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
 ) {
-    for (mut transform, mut ortho, c) in query.iter_mut() {
+    for (mut transform, mut ortho, _c) in query.iter_mut() {
         // if let Some(ui_c) = ui_c{
         //     if ui_c.show_ui{
         //         info!("ui_c  show_ui{:?}" ,ui_c.show_ui);

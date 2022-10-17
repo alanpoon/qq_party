@@ -21,6 +21,8 @@ impl Plugin for MapPlugin {
          ;
   }
 }
+#[derive(Component,Clone,Debug)]
+pub struct ScoreText();
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
   // commands
   // // 2d camera
@@ -48,10 +50,10 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ..Default::default()
     },
     ..Default::default()
-  }).insert(Position(Vec2::new(0.0 as f32, 0.0 as f32)));
+  }).insert(ScoreText());
 }
 
-fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
+fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform),With<ScoreText>>, 
   query: Query<(&Camera, &Transform,&OrthographicProjection)>,
   ball_query: Query<(&BallId,&Position)>,
   scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>,
@@ -75,8 +77,8 @@ fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransfor
     if &userinfo.0.ball_id.0==ball_id{
       for (_,_t,_o) in query.iter(){
         for (mut text,mut _s,mut _g)  in text_query.iter_mut() {
-          text.sections[0].value = format!(r#"BallId:{:?}, Score:{:?}
-          {:?} {:?}sec"#,ball_id,score,storm_text,reverse_delta.floor());
+          text.sections[0].value = format!(r#"Score:{:?}
+          {:?} {:?}sec"#,score.0,storm_text,reverse_delta.floor());
         }
       }
     }
