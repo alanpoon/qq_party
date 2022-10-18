@@ -25,9 +25,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       velocity:QQVelocity(Vec2::new(0.0 as f32,0.0 as f32)),
       target_velocity: TargetVelocity(Vec2::ZERO),
     };
-    let mut ball_bundles:Vec<BallBundle> = vec![];
     {
-      let mut guard = match map.lock() {
+      let guard = match map.lock() {
         Ok(guard) => guard,
         Err(poisoned) => {
           poisoned.into_inner()

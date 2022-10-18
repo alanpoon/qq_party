@@ -12,7 +12,7 @@ use wasmcloud_interface_logging::{info,error,debug};
 use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 use crate::bevy_wasmcloud_time;
-pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId)-> RpcResult<()>{
+pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId){
   let mut guard = match map.lock() {
       Ok(guard) => guard,
       Err(poisoned) => {
@@ -47,6 +47,4 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId)-> RpcResult<()>{
       }
       _=>{}
     }
-    
-    Ok(())
 }

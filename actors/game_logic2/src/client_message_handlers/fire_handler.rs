@@ -11,7 +11,7 @@ use wasmcloud_interface_logging::{info,error,debug};
 use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 
-pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32)-> RpcResult<()>{
+pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32){
   let mut guard = match map.lock() {
       Ok(guard) => guard,
       Err(poisoned) => {
@@ -53,5 +53,4 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u
       }
       spawn_fire(&mut app.world,fire_bundle);
     }
-    Ok(())
 }

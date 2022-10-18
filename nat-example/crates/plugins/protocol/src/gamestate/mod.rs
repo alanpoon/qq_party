@@ -88,7 +88,7 @@ pub fn spawn_or_delete_storm_rings_bundles(
         //cmd.entity(e).despawn_recursive();
         //transform.translation = [4000.0,4000.0,0.0].into();
       }
-      for (e) in t_query.iter_mut(){
+      for e in t_query.iter_mut(){
         cmd.entity(e).despawn_recursive();
       }
     }else{
@@ -165,4 +165,7 @@ pub fn spawn_or_delete_storm_rings_bundles(
         });
       });
     }
+}
+pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&BallId)>,ball_id:u32){
+
 }

@@ -2,7 +2,7 @@ extern crate wasmcloud_interface_messaging as messaging;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
-use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadSender};
+use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use lazy_static::lazy_static; // 1.4.0
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
@@ -12,7 +12,7 @@ mod host_call;
 mod info_;
 mod messaging_;
 //use host_call::host_call;
-//use info_::info_;
+use info_::info_;
 
 use serde::{Serialize,Deserialize};
 //ball_id,timestamp
@@ -20,24 +20,29 @@ lazy_static! {
   static ref MAP: Arc<Mutex<HashMap<String,u32>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 #[derive(Debug, Default, Actor, HealthResponder)]
-#[services(Actor,MessageSubscriber)]
+#[services(Actor,Thread,MessageSubscriber)]
 struct PlayerHealthCheckActor {}
 #[async_trait]
 impl MessageSubscriber for PlayerHealthCheckActor{
   async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
     if req.subject.contains("player_health_check_handler"){
-      let client_message:Result<PlayerHealthCheckMsg,_>= rmp_serde::from_slice(&req.body);
+      let client_message:Result<ClientMessage,_>= rmp_serde::from_slice(&req.body);
       match client_message{
-        Ok(cm)=>{
+        Ok(ClientMessage::Ping{ball_id_secret,timestamp})=>{
           let map = MAP.clone();
           let mut m = map.lock().unwrap();
-          if let Some(last_timestamp) = m.get_mut(&cm.ball_id_secret){
-            *last_timestamp = cm.timestamp;
+          info_(format!("ball_id_secret {:?}",ball_id_secret.clone()));
+          if let Some(last_timestamp) = m.get_mut(&ball_id_secret){
+            *last_timestamp = timestamp;
           }else{
-            m.insert(cm.ball_id_secret,cm.timestamp);
+            m.insert(ball_id_secret,timestamp);
           }
         },
-        Err(_)=>{
+        Ok(ClientMessage::Disconnect{ball_id_secret})=>{
+
+        },
+        Err(e)=>{
+          info_(format!("player_health_check_handler err {:?}",e));
         }
       }
     }
@@ -47,7 +52,7 @@ impl MessageSubscriber for PlayerHealthCheckActor{
 #[async_trait]
 impl Thread for PlayerHealthCheckActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    info!("start_thread----");
+    info!("start_thread---- PlayerHealthCheckActor");
     let provider = ThreadSender::new();
     if let Err(e) = provider
         .start_thread(
@@ -63,9 +68,11 @@ impl Thread for PlayerHealthCheckActor{
   }
   async fn handle_request(&self, _ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     let map = MAP.clone();
+    
     let mut m = map.lock().unwrap();
     m.retain(|k,v|{
-      if  *v - start_thread_request.timestamp as u32 >70000{
+      info_(format!("handle_request----PlayerHealthCheckActor v{:?} start_thread_request.timestamp {:?}",*v,start_thread_request.timestamp));
+      if   start_thread_request.timestamp as u32 - *v*1000 >70000{
         let cm = ClientMessage::Disconnect{
           ball_id_secret:k.clone()
         };
@@ -88,12 +95,8 @@ impl Thread for PlayerHealthCheckActor{
   }
 }
 
-#[derive(Serialize,Deserialize)]
-pub struct PlayerHealthCheckMsg{
-  pub ball_id_secret:String,
-  pub timestamp:u32
-}
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
+    Ping{ball_id_secret:String,timestamp:u32},
     Disconnect{ball_id_secret:String},
 }

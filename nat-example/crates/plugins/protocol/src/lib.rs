@@ -18,6 +18,7 @@ use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDi
 use protocol::{Command,Event,nats};
 use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
+use bevy::utils::Duration;
 use chrono::prelude::*;
 pub struct ProtocolPlugin;
 #[wasm_bindgen]
@@ -47,7 +48,9 @@ extern "C" {
 //   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 // }
 use qq_party_shared::*;
-//{Position,FireBundle,TargetVelocity,QQVelocity,BallId,NPCId,ServerMessage,ChaseTargetId,LocalUserInfo,StormRingId,StormRingText,StormTiming,AudioAble,Dash}
+#[derive(Component,Clone,Debug)]
+pub struct PlayerHealthCheckTimer(pub Timer);
+
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -56,6 +59,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<BoxClient>>()
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
+            
             //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
@@ -71,6 +75,7 @@ impl Plugin for ProtocolPlugin {
             .add_system(timewrapper::into_timewrapper)
             //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>)
             .add_system(system::camera::move_with_local_player)
+            .add_system(system::health_check::player_health_check)
             .add_system(send_commands.label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
             //.add_system(send_commands);
         app.add_startup_system(connect_websocket);
@@ -218,6 +223,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
               Command::StoreLocal(user_info)=>{
                 let local_user_info = LocalUserInfo(user_info);
                 cmd.insert_resource(local_user_info);
+                cmd.spawn().insert(PlayerHealthCheckTimer(Timer::new(Duration::new(15,0),true)));
               }
               _=>{}
             }
@@ -317,6 +323,10 @@ fn receive_events(mut cmd: Commands,
                                 info!("push_web_bevy_events_fn2 error {:?}",e);
                               }
                             }
+                          }
+                          ServerMessage::Disconnect{ball_id,..}=>{
+                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id);
+                            
                           }
                           _=>{}
                         }

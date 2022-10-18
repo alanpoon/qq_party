@@ -68,9 +68,10 @@ pub struct StormTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
-    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
-    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
     Dash{ball_id:BallId},
+    Disconnect{ball_id:u32},
+    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
+    GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
@@ -80,11 +81,13 @@ pub enum ServerMessage {
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {
     ChangeSubMap{game_id:String,ball_id:BallId,position:Position},
-    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32},
     Dash{ball_id:BallId},
+    Disconnect{ball_id_secret:String},
+    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32},
+    Ping{ball_id_secret:String,timestamp:u32},
     TargetVelocity{game_id:String,ball_id:BallId,target_velocity:TargetVelocity},
     Welcome{game_id:String,ball_id:BallId,ball_label:BallLabel},
-    Disconnect{ball_id_secret:String},
+    
 }
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone,Default)]
 pub struct UserInfo{
