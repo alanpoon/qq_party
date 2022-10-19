@@ -31,7 +31,6 @@ impl MessageSubscriber for PlayerHealthCheckActor{
         Ok(ClientMessage::Ping{ball_id_secret,timestamp})=>{
           let map = MAP.clone();
           let mut m = map.lock().unwrap();
-          info_(format!("ball_id_secret {:?}",ball_id_secret.clone()));
           if let Some(last_timestamp) = m.get_mut(&ball_id_secret){
             *last_timestamp = timestamp;
           }else{
@@ -52,7 +51,6 @@ impl MessageSubscriber for PlayerHealthCheckActor{
 #[async_trait]
 impl Thread for PlayerHealthCheckActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    info!("start_thread---- PlayerHealthCheckActor");
     let provider = ThreadSender::new();
     if let Err(e) = provider
         .start_thread(
@@ -63,7 +61,6 @@ impl Thread for PlayerHealthCheckActor{
     {
         error!("sending reply: {}",e.to_string());
     }
-    info!("end_thread----");
     Ok(StartThreadResponse{})
   }
   async fn handle_request(&self, _ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
@@ -71,8 +68,7 @@ impl Thread for PlayerHealthCheckActor{
     
     let mut m = map.lock().unwrap();
     m.retain(|k,v|{
-      info_(format!("handle_request----PlayerHealthCheckActor v{:?} start_thread_request.timestamp {:?}",*v,start_thread_request.timestamp));
-      if   start_thread_request.timestamp as u32 - *v*1000 >70000{
+      if start_thread_request.timestamp as u32 - *v*1000 >70000{
         let cm = ClientMessage::Disconnect{
           ball_id_secret:k.clone()
         };

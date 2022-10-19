@@ -167,5 +167,9 @@ pub fn spawn_or_delete_storm_rings_bundles(
     }
 }
 pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&BallId)>,ball_id:u32){
-
+  for (e,ballid) in ball_query.iter_mut(){
+    if ballid.0 == ball_id{
+      cmd.entity(e).despawn_recursive();
+    }
+  }
 }
