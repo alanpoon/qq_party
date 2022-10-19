@@ -48,7 +48,7 @@ struct Inner {
 }
 struct ThreadPool{
   linkdefs: LinkDefinition,
-  threads: HashMap<String,bool>,
+  threads: HashMap<String,(bool,u64)>,//bool:run or not, u64: last_update
   inner: Arc<RwLock<Inner>>,
 }
 impl ThreadPool{
@@ -62,9 +62,7 @@ impl ThreadPool{
   }
 }
 lazy_static! {
-  static ref MAP: Arc<Mutex<HashMap<String,bool>>> = Arc::new(Mutex::new(HashMap::new()));
   static ref TIME: Arc<Mutex<HashMap<String,u64>>> = Arc::new(Mutex::new(HashMap::new()));
-
 }
 
 #[async_trait]
@@ -78,64 +76,73 @@ impl Thread for ThreadProvider {
 
       tokio::spawn(async move{
           let mut thread_actor = actors.write().await;
-          let v = ctxr.actor.clone();
-          let thread_poolx = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap());
-          
+          let v = ctxr.actor.clone();          
           let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
-          thread_pool.threads.insert(start_thread_request_c.game_id.clone(),true);
+          let utc: DateTime<Utc> = Utc::now();
+          let time_stamp = utc.timestamp_millis() as u64;
+          thread_pool.threads.insert(start_thread_request_c.game_id.clone(),(true,time_stamp));
           let ld = thread_pool.linkdefs.clone();
           let inner = thread_pool.inner.clone();
           drop(thread_actor);
           loop{
-            let mut thread_actor = actors.read().await;
-            let mut thread_pool = (*thread_actor).get(&ctxr.actor.clone().unwrap()).unwrap();
-            if let Some(v) = thread_pool.threads.get(&start_thread_request_c.game_id.clone()){
-              if *v{
-                //drop(thread_pool);
-                sleep(Duration::from_millis(start_thread_request_c.sleep_interval as u64));
-                let utc: DateTime<Utc> = Utc::now();
-                let time_stamp = utc.timestamp_millis() as u64;
-                let m = StartThreadRequest{
-                  game_id: start_thread_request_c.game_id.clone(),
-                  elapsed: start.elapsed().as_secs() as u32,
-                  timestamp: time_stamp,
-                  sleep_interval: start_thread_request_c.sleep_interval,
-                  subject: start_thread_request_c.subject.clone(),
-                };
-                let time_c = TIME.clone();
-                time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
-                let read_guard = inner.read().await;
-                let bridge = read_guard.bridge;
-                let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
-                let ctx = Context::default();
-                let actor = ThreadSender::via(tx);
-                match actor.handle_request(&ctx, &m).await {
-                  Err(RpcError::Timeout(_)) => {
-                    info!(
-                          "actor {} req  timed out: returning 503",
-                          &ld.actor_id,
-                      );
+            let mut sleep_interval_cal = None;
+            {
+              let mut thread_actor = actors.write().await;
+              let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
+              if let Some((v,last_update)) = thread_pool.threads.get_mut(&start_thread_request_c.game_id.clone()){
+                if *v{
+                  //drop(thread_pool);
+                  let utc: DateTime<Utc> = Utc::now();
+                  let time_stamp = utc.timestamp_millis() as u64;
+                  if time_stamp - *last_update > start_thread_request_c.sleep_interval as u64  {
+                    *last_update = time_stamp;
+                  }else{
+                    sleep_interval_cal = Some(time_stamp - *last_update);
                   }
-                  Ok(resp) => {
-                    // info!(
-                    //       "http response received from actor {}",
-                    //       &ld.actor_id
-                    //   );
-                  }
-                  Err(e) => {
-                    info!(
-                          "actor {} responded with error {}",
-                          &ld.actor_id,
-                          e.to_string()
-                      );
-                  }
+                }else{
+                  drop(thread_actor);
+                  break;
                 }
-              }else{
-                drop(thread_actor);
-                break;
               }
-            }else{
-              break;
+            }
+            if let Some(sleep_interval) = sleep_interval_cal{
+              sleep(Duration::from_millis(sleep_interval));
+              continue
+            }
+            let m = StartThreadRequest{
+              game_id: start_thread_request_c.game_id.clone(),
+              elapsed: start.elapsed().as_secs() as u32,
+              timestamp: time_stamp,
+              sleep_interval: start_thread_request_c.sleep_interval,
+              subject: start_thread_request_c.subject.clone(),
+            };
+            // let time_c = TIME.clone();
+            // time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
+            let read_guard = inner.read().await;
+            let bridge = read_guard.bridge;
+            let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
+            let ctx = Context::default();
+            let actor = ThreadSender::via(tx);
+            match actor.handle_request(&ctx, &m).await {
+              Err(RpcError::Timeout(_)) => {
+                info!(
+                      "actor {} req  timed out: returning 503",
+                      &ld.actor_id,
+                  );
+              }
+              Ok(resp) => {
+                // info!(
+                //       "http response received from actor {}",
+                //       &ld.actor_id
+                //   );
+              }
+              Err(e) => {
+                info!(
+                      "actor {} responded with error {}",
+                      &ld.actor_id,
+                      e.to_string()
+                  );
+              }
             }
           }
       });

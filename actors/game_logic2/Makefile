@@ -33,19 +33,15 @@ link:
 # @wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
 # 		'{"game_id":"qq_db_kv1","timestamp":0,"elapsed":0,"sleep_interval":100}'
 start-thread:
-	echo actor_id $(ACTOR_ID)
 	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
 		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":30}'
 
 start-thread3:
-	echo $(ACTOR_ID)
-	@wash call -o json $(ACTOR_ID) Thread.StartThread \
-		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":330}'
-		# @wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
-		# '{"game_id":"hello_state","timestamp":2,"elapsed":0,"sleep_interval":5000}'
-start-thread2:
-	@wash call -o json $(ACTOR_ID) Thread.StartThread \
-		'{"game_id":"hello","timestamp":2,"elapsed":0}'
+	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
+		'{"game_id":"hello","timestamp":2,"elapsed":0,"sleep_interval":300}'
+start-thread4:
+	@wash call -o json $(ACTOR_ID) --cluster-seed SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E Thread.StartThread \
+		'{"game_id":"test","timestamp":2,"elapsed":0,"sleep_interval":300}'
 push2:
 	$(PUSH_REG_CMD) game_logic_s.wasm
 
