@@ -104,6 +104,8 @@ pub const STORM_DURATION :u64 = 10;
 pub struct StormRingText(pub Vec2);
 #[derive(Component,Clone,Debug)]
 pub struct StormRingTextNode();
+#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
+pub struct DebugText();
 #[derive(Component,Clone,Debug)]
 pub struct TimerV2{
   

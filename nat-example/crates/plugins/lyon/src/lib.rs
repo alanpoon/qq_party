@@ -3,6 +3,8 @@ use bevy_prototype_lyon::prelude::*;
 use bevy_prototype_lyon::render::Shape;
 use qq_party_shared::*;
 pub mod storm_ring_direction;
+pub mod debug;
+pub use crate::debug::*;
 use crate::storm_ring_direction::*;
 pub struct LyonPlugin;
 impl Plugin for LyonPlugin {
@@ -10,7 +12,8 @@ impl Plugin for LyonPlugin {
       app.add_plugin(ShapePlugin)
       .add_system(add_storm_ring_sprite_system)
       .add_system(add_storm_ring_direction_system)
-      //.add_system(add_startup_system)
+      .add_startup_system(debug_startup)
+      .add_system(debug_system)
       ;
   }
 }

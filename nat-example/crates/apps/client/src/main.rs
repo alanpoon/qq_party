@@ -14,11 +14,11 @@ pub fn main() {
     
     let mut app = App::new();
 
-    app
-    // .insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_secs_f64(
-    //        // 1.0 /60.0, 0.0167
-    //       0.1
-    //     )))
+        app
+        .insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_secs_f64(
+               1.0 /60.0
+              //0.1
+        )))
         .insert_resource(WindowDescriptor {
           width: 1280.0,
           height: 720.0,

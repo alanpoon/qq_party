@@ -37,6 +37,11 @@ impl Plugin for PhysicsPlugin {
             .add_startup_system(qq_party_shared::systems::physics::add_damage_timer)
             .insert_resource(RapierConfiguration {
               //scale: 1.0,
+              timestep_mode:TimestepMode::Variable{
+                max_dt:1.0/60.0,
+                time_scale:1.0,
+                substeps:1,
+              },
               gravity: Vect::ZERO,
               ..Default::default()
             })

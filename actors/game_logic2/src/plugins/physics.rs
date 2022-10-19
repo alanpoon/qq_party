@@ -10,7 +10,11 @@ impl Plugin for PhysicsPlugin {
       app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
           .insert_resource(RapierConfiguration {
             gravity: Vect::ZERO,
-            //timestep_mode: TimestepMode{},
+            timestep_mode: TimestepMode::Interpolated{
+              dt:1.0/60.0,
+              time_scale:1.0,
+              substeps:1,
+            },
             ..Default::default()
           })
           // .add_startup_system(qq_party_shared::systems::physics::add_damage_timer)

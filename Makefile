@@ -8,8 +8,8 @@ build:
 	wash ctl apply NDP4B6DPQICPNEA3UJ7FOG4KR66Y56JCKNASH6UXWZECNNYFTVYJ4ROS ops/manifest.yaml
 	sleep 8
 	(cd actors/game_logic2 && make start-thread)
-	sleep 4
-	(cd actors/game_player_health_check && make start-thread)
+	# sleep 4
+	# (cd actors/game_player_health_check && make start-thread)
 build2:
 	(cd actors/game_logic2 && make start-thread)
 serve_ui:
