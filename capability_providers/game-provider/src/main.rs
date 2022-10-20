@@ -69,7 +69,6 @@ lazy_static! {
 impl Thread for ThreadProvider {
     async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
       let start = Instant::now();
-      //let MAP = Arc::new(Mutex::new(HashMap::new()));
       let mut actors = self.actors.clone();
       let ctxr = ctx.clone();
       let start_thread_request_c = start_thread_request.clone();
@@ -86,19 +85,15 @@ impl Thread for ThreadProvider {
           drop(thread_actor);
           loop{
             let mut sleep_interval_cal = None;
+            let mut bridge_guard = None;
             {
+              let read_guard = inner.read().await;
+              bridge_guard = Some(read_guard.bridge);
               let mut thread_actor = actors.write().await;
               let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
               if let Some((v,last_update)) = thread_pool.threads.get_mut(&start_thread_request_c.game_id.clone()){
                 if *v{
-                  //drop(thread_pool);
-                  let utc: DateTime<Utc> = Utc::now();
-                  let time_stamp = utc.timestamp_millis() as u64;
-                  if time_stamp - *last_update > start_thread_request_c.sleep_interval as u64  {
-                    *last_update = time_stamp;
-                  }else{
-                    sleep_interval_cal = Some(time_stamp - *last_update);
-                  }
+                  sleep_interval_cal = Some(start_thread_request_c.sleep_interval as u64);
                 }else{
                   drop(thread_actor);
                   break;
@@ -106,9 +101,13 @@ impl Thread for ThreadProvider {
               }
             }
             if let Some(sleep_interval) = sleep_interval_cal{
+              //eprintln!("sleep_interval {:?} game_id {:?} sleep_interval_req {:?}",sleep_interval,start_thread_request_c.game_id.clone(),start_thread_request_c.sleep_interval);
               sleep(Duration::from_millis(sleep_interval));
-              continue
+              //continue
             }
+            let utc: DateTime<Utc> = Utc::now();
+            let time_stamp = utc.timestamp_millis() as u64;
+            //eprintln!("time_stamp {:?} game_id {:?}",time_stamp,start_thread_request_c.game_id.clone());
             let m = StartThreadRequest{
               game_id: start_thread_request_c.game_id.clone(),
               elapsed: start.elapsed().as_secs() as u32,
@@ -118,32 +117,31 @@ impl Thread for ThreadProvider {
             };
             // let time_c = TIME.clone();
             // time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
-            let read_guard = inner.read().await;
-            let bridge = read_guard.bridge;
-            let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
-            let ctx = Context::default();
-            let actor = ThreadSender::via(tx);
-            match actor.handle_request(&ctx, &m).await {
-              Err(RpcError::Timeout(_)) => {
-                info!(
-                      "actor {} req  timed out: returning 503",
-                      &ld.actor_id,
-                  );
+            if let Some(bridge) = bridge_guard{
+              let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
+              let ctx = Context::default();
+              let actor = ThreadSender::via(tx);
+              match actor.handle_request(&ctx, &m).await {
+                Err(RpcError::Timeout(_)) => {
+                  info!(
+                        "actor {} req  timed out: returning 503",
+                        &ld.actor_id,
+                    );
+                }
+                Ok(resp) => {
+                }
+                Err(e) => {
+                  info!(
+                        "actor {} responded with error {}",
+                        &ld.actor_id,
+                        e.to_string()
+                    );
+                }
               }
-              Ok(resp) => {
-                // info!(
-                //       "http response received from actor {}",
-                //       &ld.actor_id
-                //   );
-              }
-              Err(e) => {
-                info!(
-                      "actor {} responded with error {}",
-                      &ld.actor_id,
-                      e.to_string()
-                  );
-              }
+            }else{
+              eprintln!("no bridge game_id {:?}",start_thread_request_c.game_id.clone())
             }
+            
           }
       });
       Ok(StartThreadResponse{})
