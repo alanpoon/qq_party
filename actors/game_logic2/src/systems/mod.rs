@@ -4,6 +4,7 @@ use crate::info_::info_;
 use qq_party_shared::*;
 use crate::bevy_wasmcloud_time;
 pub mod publish;
+pub mod reset_game;
 use crate::util::sub_map_area;
 use qq_party_shared::*;
 use bevy_rapier2d::prelude::*;

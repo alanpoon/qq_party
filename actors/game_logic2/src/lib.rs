@@ -21,12 +21,14 @@ use messaging::*;
 use crate::thread::thread_handle_request;
 use lazy_static::lazy_static; // 1.4.0
 use bevy::prelude::*;
+use bevy::utils::Duration;
 use bevy_rapier2d::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};
 use std::boxed::Box;
 use qq_party_shared::*;
+use crate::startup::*;
 use crate::plugins::physics::PhysicsPlugin;
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
@@ -47,12 +49,15 @@ impl Thread for GameLogicActor{
       
       m.world.spawn_batch(npc_bundles);
       m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
+      m.world.spawn().insert(startup::ResetGameTimer(Timer::new(Duration::from_secs(20),true)));
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
+      .init_resource::<bevy_wasmcloud_time::Time>()
       .init_resource::<bevy_wasmcloud_time::Time>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_plugin(QQSharedPlugin)
+      .add_system(systems::reset_game::reset_game_timer_system)
       .add_system(systems::publish::sys_publish_game_state_by_sub_map)
       ;
       
@@ -72,7 +77,7 @@ impl Thread for GameLogicActor{
   }
   async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     //info!("handle_request----");
-    let mut map = APP.clone();
+    let map = APP.clone();
     //Ok(StartThreadResponse{})
     thread_handle_request(map,start_thread_request).await
   }

@@ -68,14 +68,15 @@ pub struct StormTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
+    ResetGame{scoreboard:Vec<(i16,BallLabel)>},
     Dash{ball_id:BallId},
     Disconnect{ball_id:u32},
     Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
-    TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
-    TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
     Scores{scoreboard:Vec<(i16,BallLabel)>},
+    TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
+    TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     Welcome{ball_bundle:BallBundle,sub_map:String},
 }
 #[derive(Serialize, Deserialize, Clone)]

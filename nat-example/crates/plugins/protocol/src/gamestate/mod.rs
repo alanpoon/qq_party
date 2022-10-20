@@ -173,3 +173,17 @@ pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&
     }
   }
 }
+pub fn reset_entities(mut cmd:&mut Commands,query:&Query<(Entity,&BallId)>,
+  mut npc_query: &Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
+  mut storm_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
+  mut storm_timing_res: &mut ResMut<StormTiming>){
+    for (e,_) in query.iter(){
+      cmd.entity(e).despawn_recursive();
+    }
+    for (e,_,_,_,_) in npc_query.iter(){
+      cmd.entity(e).despawn();
+    }
+    for (e,_) in storm_query.iter(){
+      cmd.entity(e).despawn();
+    }
+}

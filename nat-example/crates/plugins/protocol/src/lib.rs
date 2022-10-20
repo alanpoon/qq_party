@@ -16,6 +16,8 @@ use core::ProtocolSystem;
 use futures::prelude::*;
 use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher};
 use protocol::{Command,Event,nats};
+use protocol::ClientStateDispatcher::{ChickenDinner,Normal};
+//use crate::ClientStateDispatcher::ChickenDinner;
 use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
 use bevy::utils::Duration;
@@ -235,6 +237,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
 
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
+  mut state: ResMut<Option<ClientStateDispatcher>>,
   mut events: ResMut<protocol::Events>,
   mut _user_info: ResMut<LocalUserInfo>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
@@ -259,6 +262,18 @@ fn receive_events(mut cmd: Commands,
                       //if subject == String::from("game_logic"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
+                          
+                          ServerMessage::Dash{ball_id}=>{
+                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
+                              if ball_id ==*qball_id{
+                                cmd.entity(entity).insert(Dash(true,vel.0*2.0,vel.0));
+                              }
+                            }                          
+                          }
+                          ServerMessage::Disconnect{ball_id,..}=>{
+                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id);
+                            
+                          }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum,timestamp}=>{  
                             for (_entity, qball_id,pos,_vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
@@ -269,13 +284,6 @@ fn receive_events(mut cmd: Commands,
                                   //start:qq_party_shared::Time{elapsed:timestamp as f32},
                                 };
                                 gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);
-                              }
-                            }                          
-                          }
-                          ServerMessage::Dash{ball_id}=>{
-                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
-                              if ball_id ==*qball_id{
-                                cmd.entity(entity).insert(Dash(true,vel.0*2.0,vel.0));
                               }
                             }                          
                           }
@@ -324,9 +332,9 @@ fn receive_events(mut cmd: Commands,
                               }
                             }
                           }
-                          ServerMessage::Disconnect{ball_id,..}=>{
-                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id);
-                            
+                          ServerMessage::ResetGame{scoreboard}=>{
+                            gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res);
+                            *state = Some(ClientStateDispatcher::ChickenDinner(protocol::ChickenDinner {}));
                           }
                           _=>{}
                         }

@@ -12,13 +12,17 @@ use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 
 pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32){
-  let mut guard = match map.lock() {
+  let guard = match map.lock() {
       Ok(guard) => guard,
       Err(poisoned) => {
         poisoned.into_inner()
       },
     };
     let mut app = guard;
+    let is_running = app.world.get_resource::<IsRunning>().unwrap();
+    if !is_running.0{
+      return;
+    }
     let mut query = app.world.query::<(Entity, &BallId,&Position,&QQVelocity)>();
     let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_,_)| {
       ball_id == _ball_id})

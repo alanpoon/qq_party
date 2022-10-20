@@ -1,10 +1,12 @@
 mod before_login;
 mod normal;
 mod after_normal;
-pub(in crate::client_state) use after_normal::*;
-pub(in crate::client_state) use before_login::*;
+mod chicken_dinner;
+pub use after_normal::*;
+pub use before_login::*;
+pub use chicken_dinner::*;
 use enum_dispatch::enum_dispatch;
-pub(in crate::client_state) use normal::*;
+pub use normal::*;
 
 use crate::{Commands, Event};
 
@@ -14,6 +16,7 @@ pub enum ClientStateDispatcher {
     BeforeLogin,
     Normal,
     AfterNormal,
+    ChickenDinner,
 }
 
 impl Default for ClientStateDispatcher {

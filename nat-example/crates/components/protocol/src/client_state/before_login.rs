@@ -31,6 +31,12 @@ impl ClientState for BeforeLogin {
                     sid:19,
                   };
                   commands.commands.push(Command::Nats(String::from("default"),n.clone()));
+                  let n = nats::proto::ClientOp::Sub{
+                    subject: String::from("game_logic.reset"),
+                    queue_group:None,
+                    sid:23,
+                  };
+                  commands.commands.push(Command::Nats(String::from("default"),n));
                   
                   //info!("subscribe welcome client_name {:?} s_op {:?}",client_name,s_op);
                   return Normal{

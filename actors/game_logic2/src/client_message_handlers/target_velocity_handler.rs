@@ -8,13 +8,17 @@ use bevy::prelude::*;
 use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
-  let mut guard = match map.lock() {
+  let  guard = match map.lock() {
     Ok(guard) => guard,
     Err(poisoned) => {
       poisoned.into_inner()
     },
   };
   let mut app = guard;
+  let is_running = app.world.get_resource::<IsRunning>().unwrap();
+  if !is_running.0{
+    return;
+  }
   let mut query = app.world.query::<(Entity, &BallId,&Position)>();
   let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
   let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
