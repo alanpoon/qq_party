@@ -3,19 +3,8 @@ use crate::info_::info_;
 use qq_party_shared::*;
 use crate::bevy_wasmcloud_time;
 pub mod publish;
-pub mod running_timer;
-pub mod not_running_timer;
 use bevy_rapier2d::prelude::*;
 
-// pub fn sys(mut query: Query<&mut A>,time: Res<Time>) {
-//   //logging::default().write_log("LOGGING_ACTORINFO", "info", "sysing").unwrap();
-//   for  mut a in query.iter_mut() {
-//       //let n = format!("sys a >{:?}, t >{:?}",a,2);
-//       //info_(n);
-//       //logging::default().write_log("LOGGING_ACTORINFO", "info", &n).unwrap();
-//       a.position = a.position + 1;
-//   }
-// }
 pub fn sys_time_debug(t:Res<bevy_wasmcloud_time::Time>,
   balls_without_rigid:Query<(&BallId,&Position,&Velocity,&QQVelocity)>,
   rapier_parameters: Res<RapierConfiguration>,

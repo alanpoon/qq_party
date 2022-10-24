@@ -4,6 +4,7 @@ use crate::messaging_::publish_;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
 use bevy::prelude::*;
+use super::is_running;
 use std::sync::{Arc, Mutex};
 pub fn _fn(map:Arc<Mutex<App>>,ball_id_secret:String){
   let guard = match map.lock() {
@@ -13,9 +14,8 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id_secret:String){
       },
     };
     let mut app = guard;
-    let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
-    if !is_running.0{
-      return;
+    if !is_running(&app){
+      return ;
     }
     let mut query = app.world.query::<(Entity, &BallId,&Position)>();
     let mut ball_to_despawn:Option<Entity> = None;

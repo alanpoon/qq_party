@@ -45,16 +45,14 @@ impl Thread for GameLogicActor{
       
       m.world.spawn_batch(npc_bundles);
       m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
-      m.world.spawn().insert(startup::RunningTimer(Timer::new(Duration::from_secs(20),false)));
+      //m.world.spawn().insert(startup::StateTransformer(Timer::new(Duration::from_secs(20),false),State::Running));
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
+      .init_resource::<startup::StateTransformer>()
       .init_resource::<bevy_wasmcloud_time::Time>()
-      .init_resource::<crate::startup::IsRunning>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_plugin(QQSharedPlugin)
-      .add_system(systems::running_timer::system)
-      .add_system(systems::not_running_timer::system)
       .add_system(systems::publish::sys_publish_game_state_by_sub_map)
       ;
       

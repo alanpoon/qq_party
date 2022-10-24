@@ -4,6 +4,7 @@ use crate::spawn_::spawn_fire;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
 use bevy::prelude::*;
+use super::is_running;
 use std::sync::{Arc, Mutex};
 
 pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32){
@@ -14,9 +15,8 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u
       },
     };
     let mut app = guard;
-    let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
-    if !is_running.0{
-      return;
+    if !is_running(&app){
+      return ;
     }
     let mut query = app.world.query::<(Entity, &BallId,&Position,&QQVelocity)>();
     let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_,_)| {

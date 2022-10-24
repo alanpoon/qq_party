@@ -1,8 +1,8 @@
 use qq_party_shared::*;
 use crate::info_::info_;
+use super::is_running;
 use std::sync::{Arc, Mutex};
 use bevy::prelude::*;
-use crate::startup::IsRunning;
 pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,position:Position){
   let guard = match map.lock() {
     Ok(guard) => guard,
@@ -11,9 +11,8 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,position:Position)
     },
   };
   let mut app = guard;
-  let is_running = app.world.get_resource::<IsRunning>().unwrap();
-  if !is_running.0{
-    return;
+  if !is_running(&app){
+    return ;
   }
   let mut query = app.world.query::<(Entity, &BallId)>();
   let local_ball = query.iter(&app.world).filter(|(_, &_ball_id)| {

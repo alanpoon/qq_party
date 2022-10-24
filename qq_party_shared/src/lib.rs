@@ -72,14 +72,13 @@ pub struct StartGameTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
-    ResetGame{scoreboard:Vec<(i16,BallLabel)>},
     Dash{ball_id:BallId},
     Disconnect{ball_id:u32},
     Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
-    StartGameTiming{next_start_game_timing:Option<StartGameTiming>},
-    StartGame{},
+    StateNotification{countdown:u64,text:String},
+    StateChange{state:QQState,scoreboard:Vec<(i16,BallLabel)>},
     Scores{scoreboard:Vec<(i16,BallLabel)>},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
@@ -124,3 +123,10 @@ pub struct DashTimer(pub Timer);
 #[derive(Component,Clone,Debug,Default)]
 pub struct AudioAble(pub bool,pub bool); //0:set in protocol, 1:set in audioplugin
 
+#[derive(Serialize, Deserialize,Clone,Debug)]
+pub enum QQState{
+    Running,
+    StopNotification,
+    Stop,
+    RunNotification
+}

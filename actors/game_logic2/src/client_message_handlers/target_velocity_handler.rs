@@ -3,6 +3,7 @@ use crate::info_::info_;
 use crate::messaging_::publish_;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::sync::{Arc, Mutex};
+use super::is_running;
 use bevy::prelude::*;
 use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
@@ -13,9 +14,8 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
     },
   };
   let mut app = guard;
-  let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
-  if !is_running.0{
-    return;
+  if !is_running(&app){
+    return ;
   }
   let mut query = app.world.query::<(Entity, &BallId,&Position)>();
   let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();

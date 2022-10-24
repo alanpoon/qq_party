@@ -3,6 +3,7 @@ use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn;
 use crate::util::sub_map_area;
+use super::is_running;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::collections::HashMap;
 use bevy::prelude::*;
@@ -31,10 +32,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         },
       };
       let mut app = guard;
-      info_(format!("pre is running get_resource"));
-      let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
-      info_(format!("after is running get_resource"));
-      if !is_running.0{
+      if !is_running(&app){
         return Ok(());
       }
       spawn(&mut app.world,ball_bundle.clone());
