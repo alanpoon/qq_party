@@ -7,6 +7,8 @@ use bevy_rapier2d::prelude::*;
 use bevy::math::{Vec2};
 use serde::{Deserialize, Serialize};
 mod bundle;
+mod timer_duration;
+pub use timer_duration::*;
 pub mod systems;
 pub use bundle::*;
 pub mod time_interface;
@@ -65,6 +67,8 @@ pub struct SpecialEffectBundle{
 pub struct QQParent(Entity);
 #[derive(Serialize, Deserialize, Default,Clone)]
 pub struct StormTiming(pub u64,pub u64); //next_timing, duration
+#[derive(Serialize, Deserialize, Default,Clone)]
+pub struct StartGameTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
@@ -74,6 +78,8 @@ pub enum ServerMessage {
     Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
+    StartGameTiming{next_start_game_timing:Option<StartGameTiming>},
+    StartGame{},
     Scores{scoreboard:Vec<(i16,BallLabel)>},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
@@ -99,8 +105,6 @@ pub struct UserInfo{
 pub struct LocalUserInfo(pub UserInfo);
 #[derive(Component,Default,Debug,Serialize, Deserialize, Clone)]
 pub struct StormRingId(pub Vec2,pub i16); //pos,radius
-pub const STORM_INTERVAL :u64 = 10;
-pub const STORM_DURATION :u64 = 10;
 #[derive(Component,Clone,Debug)]
 pub struct StormRingText(pub Vec2);
 #[derive(Component,Clone,Debug)]

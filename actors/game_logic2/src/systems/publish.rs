@@ -3,12 +3,11 @@ use bevy::prelude::*;
 use bevy::math::Vec2;
 use qq_party_shared::*;
 use crate::info_::info_;
-use crate::{Time,TimeV2};
+use crate::{TimeV2};
 use crate::bevy_wasmcloud_time;
 use crate::messaging_::publish_;
 use crate::util::sub_map_area;
-use std::collections::HashMap;
-
+use crate::timer_duration::*;
 pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMut<TimeV2>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
   query: Query<(&BallId,&BallLabel,&Position,&QQVelocity,&TargetVelocity)>,
   npc_query: Query<(&NPCId,&Position,&QQVelocity,&ChaseTargetId)>,
@@ -27,10 +26,8 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         score_vec.sort_by(|a,b|{
           b.0.cmp(&a.0)
         });
-        if score_vec.len() >0{
-          if score_vec.len() >10{
-            score_vec.clone().split_off(8);
-          }
+        if score_vec.len() >10{
+          score_vec.clone().split_off(8);
         }
         let msg = ServerMessage::Scores{scoreboard:score_vec};
         match rmp_serde::to_vec(&msg){
@@ -58,9 +55,9 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         storm_rings.push(e);
       }
       if *elapsed >(STORM_INTERVAL+STORM_DURATION) as f32{
-        for e in storm_rings{
-          cmd.entity(e).despawn();
-        }
+        // for e in storm_rings{
+        //   cmd.entity(e).despawn();
+        // }
         *elapsed =0.0;
         *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};

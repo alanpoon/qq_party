@@ -1,13 +1,16 @@
-use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event};
+use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
 use crate::nats;
+use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct ChickenDinner {
   //user_id
 }
+pub fn pre_chicken_dinner_unsub_all(){
 
+}
 impl ClientState for ChickenDinner {
-    fn handle(&self, _commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
-      //info!("LZ ChickenDinner{:?}",event);
+    fn handle(&self, commands: &mut ClientContext, event: &ClientInput) -> ClientStateDispatcher {
+      info!("LZ ChickenDinner{:?}",event);
       match event {
         ClientInput::Event(e) => {
           if let Event::Nats(_client_name,s_op)=e{

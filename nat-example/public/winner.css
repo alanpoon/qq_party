@@ -1,0 +1,332 @@
+
+#root {
+    width: 100%;
+    height: 100%;
+    background: #ececec;
+    padding: 40px 0;
+  }
+  
+  .Winner_container {
+    position: relative;
+    width: 350px;
+    height: 370px;
+    overflow: hidden;
+    margin: auto;
+  }
+  
+  
+  @keyframes winner_enter {
+    /* 0% {
+      top: -150px;
+    }
+    33% {
+      top: 90px;
+    }
+    66% {
+      top: 50px;
+    }
+    100% {
+      top: 80px;
+    } */
+  }
+  @keyframes winner_float {
+    0% {
+      transform: skewX(-5deg) translateY(0) scale(1);
+    }
+    50% {
+      transform: skewX(-5deg) translateY(-6px) scale(1.03);
+    }
+    100% {
+      transform: skewX(-5deg) translateY(0) scale(1);
+    }
+  }
+  .Winner {
+      position: absolute;
+      font-size: 30px;
+      color: #FFFF00;
+      top: -150px;
+      transform: skewX(-5deg);
+      animation: winner_enter .9s, winner_float 1s infinite;
+      animation-delay: 0.5s;
+      animation-fill-mode: forwards;
+      width: 100px;
+      height: 130px;
+      word-wrap: break-word;
+  }
+  
+  .Winner.X {
+    right: 20px;
+    top:180px;
+  }
+.Winner div {
+  position: absolute;
+  height: 130px;
+  width: 110px;
+  border: 5px solid #2C6CB7;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+}
+  /* .Winner.X:after {
+    content: "";
+    width: 20px;
+    background: #2C6CB7;
+    border-radius: 7px;
+    position: absolute;
+    height: 130px;
+    top: 3px;
+    transform: rotate(-30deg);
+  }
+  .Winner.X:before {
+    content: "";
+    width: 20px;
+    background: #2C6CB7;
+    border-radius: 7px;
+    position: absolute;
+    height: 130px;
+    top: 3px;
+    transform: rotate(-30deg);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  } */
+  
+  
+  .Winner.O {
+      left: 130px;
+      top:80px;
+  }
+  /* .Winner.O div {
+    position: absolute;
+    height: 130px;
+    width: 100px;
+    border: 20px solid #2C6CB7;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+  } */
+  
+  .Winner.W {
+      left: 20px;
+      top: 180px;
+  }
+  /* .Winner.W div {
+    position: absolute;
+    height: 130px;
+    width: 100px;
+    border: 20px solid #2C6CB7;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+  } */
+  .Winner div:nth-child(4) {
+    position: absolute;
+    height: 100px;
+    width: 70px;
+    /* border: 20px solid #2C6CB7;
+    border-radius: 50%;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4); */
+    font-size: 50px;
+    top: 195px;
+    left: -20px;
+  }
+  .Winner div:nth-child(5) {
+    position: absolute;
+    height: 100px;
+    width: 70px;
+    font-size: 20px;
+    right: 0px;
+    top: 195px;
+  }
+  .Winner div:nth-child(5) {
+    position: absolute;
+    height: 130px;
+    width: 100px;
+    font-size: 20px;
+    left: 100px;
+    top: 195px;
+  }
+  /* .Winner.O div {
+    position: absolute;
+    height: 130px;
+    width: 100px;
+    border: 20px solid #2C6CB7;
+    border-radius: 50%;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+  } */
+  .Rays_container {
+    width: 350px;
+    height: 370px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #028EA2;
+    background: radial-gradient(circle at 50% 75%, #38B5C7, #028EA2);
+    overflow: hidden;
+    left: 0px;
+  }
+  .Rays_container div:nth-child(1) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(-120deg);
+    top: 195px;
+    left: -20px;
+  }
+  .Rays_container div:nth-child(2) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(-90deg);
+    top: 100px;
+    left: -45px;
+  }
+  .Rays_container div:nth-child(3) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(-60deg);
+    top: 5px;
+    left: -20px;
+  }
+  .Rays_container div:nth-child(4) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(-30deg);
+    top: -60px;
+    left: 50px;
+  }
+  .Rays_container div:nth-child(5) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(0deg);
+    top: -85px;
+    left: 140px;
+  }
+  .Rays_container div:nth-child(6) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(30deg);
+    top: -60px;
+    left: 232px;
+  }
+  .Rays_container div:nth-child(7) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(60deg);
+    top: 7px;
+    left: 300px;
+  }
+  .Rays_container div:nth-child(8) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(90deg);
+    top: 100px;
+    left: 325px;
+  }
+  .Rays_container div:nth-child(9) {
+    border-top: 350px solid #38B5C7;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    height: 0;
+    width: 70px;
+    position: absolute;
+    transform: rotate(120deg);
+    top: 195px;
+    left: 300px;
+  }
+  
+  .Podium_Container .Podium div:nth-child(3):after, .Podium_Container .Podium div:nth-child(2):after, .Podium_Container .Podium div:nth-child(1):after {
+    content: "";
+    width: 70px;
+    height: 13px;
+    background: #e2e2e2;
+    position: absolute;
+    top: -12px;
+    left: -10px;
+    transform: skewX(60deg);
+  }
+  
+  .Podium_Container {
+    position: absolute;
+    bottom: 60px;
+    left: 80px;
+    transform: skew(-1deg) rotate(-1deg);
+  }
+  .Podium_Container .Podium div {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    color: #c5c5c5;
+    font-size: 1.3rem;
+    font-weight: bold;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+  .Podium_Container .Podium div:nth-child(1) {
+    width: 70px;
+    height: 60px;
+    background: #fff;
+    top: 20px;
+  }
+  .Podium_Container .Podium div:nth-child(1):before {
+    content: "";
+    width: 20px;
+    height: 60px;
+    background: #e2e2e2;
+    position: absolute;
+    left: -20px;
+    top: -6px;
+    transform: skewY(30deg);
+  }
+  .Podium_Container .Podium div:nth-child(2) {
+    width: 70px;
+    height: 80px;
+    background: #fff;
+    z-index: 2;
+  }
+  .Podium_Container .Podium div:nth-child(2):before {
+    content: "";
+    width: 20px;
+    height: 21px;
+    background: #e2e2e2;
+    position: absolute;
+    left: -20px;
+    top: -6px;
+    transform: skewY(30deg);
+  }
+  .Podium_Container .Podium div:nth-child(3) {
+    width: 70px;
+    height: 50px;
+    background: #fff;
+    top: 30px;
+  }
+#chicken_dinner {
+    /**
+    * Set transparent to let any other canvases render through
+    */
+    background-color: transparent;
+}

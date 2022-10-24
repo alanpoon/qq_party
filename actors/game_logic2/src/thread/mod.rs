@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
+use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse};
 use wasmbus_rpc::actor::prelude::*;
-use wasmcloud_interface_logging::{info,error,debug};
 use crate::bevy_wasmcloud_time;
 use crate::{QQTime,TimeV2};
 use crate::info_::info_;
@@ -11,7 +10,7 @@ use qq_party_shared::time_interface::TimeInterface;
 pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
   let mut n = String::from("thread_handle_request");
   {
-    let mut guard = match map.try_lock() {
+    let guard = match map.try_lock() {
       Ok(guard) => Ok(guard),
       Err(poisoned) => {
         n = format!("{:?}",poisoned);
@@ -32,13 +31,13 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           app.world.insert_resource(Time::default());
         }
 
-        if let Some(mut t) = app.world.get_resource_mut::<QQTime>(){
+        if let Some( t) = app.world.get_resource_mut::<QQTime>(){
           n = String::from("can find time");
           //t.update(start_thread_request.elapsed as f32);
         }else{
           app.world.insert_resource(QQTime{elapsed:start_thread_request.elapsed as f32});
         }
-        if let Some(mut t) = app.world.get_resource_mut::<TimeV2>(){
+        if let Some( t) = app.world.get_resource_mut::<TimeV2>(){
           n = String::from("can find time");
           //t.update(start_thread_request.elapsed as f32);
         }else{

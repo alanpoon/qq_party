@@ -3,11 +3,10 @@ use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn;
 use crate::util::sub_map_area;
-use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
+use wasmcloud_interface_messaging::{PubMessage};
 use std::collections::HashMap;
 use bevy::prelude::*;
 use std::sync::{Arc, Mutex};
-use wasmcloud_interface_logging::{info,error,debug};
 use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_numbergen::random_in_range;
@@ -16,7 +15,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
     let y = random_in_range(3500,3800).await?;
     let pos = Position(Vec2::new(x as f32,y as f32));
     let key = sub_map_area(pos.clone());
-    let mut n = String::from("");
     info_(format!("welcome ball_id {:?}",ball_id));
     let ball_bundle = BallBundle{
       ball_id:ball_id,
@@ -33,9 +31,11 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         },
       };
       let mut app = guard;
-      let is_running = app.world.get_resource::<IsRunning>().unwrap();
+      info_(format!("pre is running get_resource"));
+      let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
+      info_(format!("after is running get_resource"));
       if !is_running.0{
-        return;
+        return Ok(());
       }
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();

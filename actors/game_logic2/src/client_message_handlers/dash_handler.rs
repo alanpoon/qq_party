@@ -1,16 +1,9 @@
 use qq_party_shared::*;
-use bevy_rapier2d::prelude::*;
-use crate::info_::info_;
 use crate::messaging_::publish_;
-use crate::spawn_::spawn_fire;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
-use wasmcloud_interface_messaging::{MessageSubscriber,PubMessage,SubMessage};
-use std::collections::HashMap;
+use wasmcloud_interface_messaging::{PubMessage};
 use bevy::prelude::*;
 use std::sync::{Arc, Mutex};
-use wasmcloud_interface_logging::{info,error,debug};
-use bevy::math::Vec2;
-use wasmbus_rpc::actor::prelude::*;
 use crate::bevy_wasmcloud_time;
 pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId){
   let guard = match map.lock() {
@@ -20,7 +13,7 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId){
       },
     };
     let mut app = guard;
-    let is_running = app.world.get_resource::<IsRunning>().unwrap();
+    let is_running = app.world.get_resource::<crate::startup::IsRunning>().unwrap();
     if !is_running.0{
       return;
     }

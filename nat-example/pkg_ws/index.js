@@ -61,7 +61,7 @@ export function init_pkg_ws(){
         for (var p=0; p< scores.length;p++){
           var score = scores[p][0];
           var label = scores[p][1];
-          var name = label[0]
+          var name = label[0];
           var flag = label[1].replace(".","");
           unsorted.push({"name":name,"score":score,"flag":flag});
         }
@@ -72,6 +72,20 @@ export function init_pkg_ws(){
       window.storm_rings = event["StormRings"]["storm_rings"];
     }else if (typeof event["Ball"]!="undefined"){
       window.local_ball = event["Ball"];
+    }else if (typeof event["ResetGame"]!="undefined"){
+      var scores = event["ResetGame"]["scoreboard"];
+      for (var p=0; p< scores.length;p++){
+        var x = document.getElementById("myWinners");
+        x.style.display = "block";
+        var score = scores[p][0];
+        var label = scores[p][1];
+        var name = label[0];
+        $("#winner_"+(p+1).toString()).text(name);
+        var flag = label[1].replace(".","");
+        $("#winner_"+(p+1).toString()+"_flag").removeClass();
+        $("#winner_"+(p+1).toString()+"_flag").addClass("flag");
+        $("#winner_"+(p+1).toString()+"_flag").addClass(flag);
+      }
     }
   }
 }
