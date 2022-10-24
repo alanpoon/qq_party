@@ -216,7 +216,7 @@
     <link rel="stylesheet" href="/winner.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
   </head>
   <script src="./simulator.js"></script>
@@ -262,16 +262,19 @@
     init()
     </script> -->
   <body>
+    
     <img id="qq_party_tile" width="220" height="277" src="assets/2d/qq_party_tile-min.png" alt="The Scream" style="display:none">
     <img id="2dround" width="220" height="277" src="assets/2d/round.png" alt="The Scream" style="display:none">
     <div style="display:flex;height:100%;flex-flow:column;">
       <div style="display:flex;">
+        
         <img src="./bevy.jpeg" style="width: 10vw;height:50px;">
         <div><a class="large blue awesome" onclick="myFunction()"  style="flex:0 2 auto;">Gamepad</a></div>
         <div><a class="large magenta awesome" onclick="chatFunction()" style="flex:0 2 auto;">Chat</a></div>
         <div><a class="large green awesome" onclick="mapFunction()" style="flex:0 2 auto;">Map</a></div>
         <div><a class="large yellow awesome" onclick="creditsFunction()" style="flex:0 2 auto;">Credits</a></div>
         <div><a class="large yellow awesome" onclick="winnersFunction()" style="flex:0 2 auto;">Winners</a></div>
+        <div id="alert_placeholder" style="flex:0 2 auto;"></div>
         <!-- <button onclick="myFunction()" style="flex:0 2 auto;">Gamepad</button>
         <button onclick="chatFunction()" style="flex:0 3 auto;">Chat</button> -->
         <div style="flex:0 6 auto"></div>
@@ -723,6 +726,7 @@
           </form>
         </section>
       </div>
+      
     </div>
   </body>
   <script src="./controller.js"></script>
@@ -806,6 +810,7 @@
       } else {
         x.style.display = "none";
       }
+      $('.alert').alert()
     }
     //When the user clicks on <span> (x), close the modal
     for (var i=0;i<span.length;i++){

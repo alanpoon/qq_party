@@ -332,11 +332,21 @@ fn receive_events(mut cmd: Commands,
                               }
                             }
                           }
-                          ServerMessage::ResetGame{scoreboard}=>{
+                          ServerMessage::StateChange{state,scoreboard}=>{
                             gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res);
                             // *state = Some(ClientStateDispatcher::ChickenDinner(protocol::ChickenDinner {}));
                             // protocol::pre_chicken_dinner_unsub_all();
-                            match serde_json::to_string(&ServerMessage::ResetGame{scoreboard}){
+                            match serde_json::to_string(&ServerMessage::StateChange{state,scoreboard}){
+                              Ok(j)=>{
+                                push_web_bevy_events_fn2(&j);
+                              }
+                              Err(e)=>{
+                                info!("push_web_bevy_events_fn2 error {:?}",e);
+                              }
+                            }
+                          }
+                          ServerMessage::StateNotification{countdown,text}=>{
+                            match serde_json::to_string(&ServerMessage::StateNotification{countdown,text}){
                               Ok(j)=>{
                                 push_web_bevy_events_fn2(&j);
                               }

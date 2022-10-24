@@ -72,11 +72,24 @@ export function init_pkg_ws(){
       window.storm_rings = event["StormRings"]["storm_rings"];
     }else if (typeof event["Ball"]!="undefined"){
       window.local_ball = event["Ball"];
-    }else if (typeof event["ResetGame"]!="undefined"){
-      var scores = event["ResetGame"]["scoreboard"];
+    }else if (typeof event["StateChange"]!="undefined"){
+      console.log("StateChange",event["StateChange"]["state"]);
+      if ( typeof event["StateChange"]["state"] !="undefined"){
+        switch (event["StateChange"]["state"]){
+          case "Running":
+            break
+          case "Stop":
+            var x = document.getElementById("myWinners");
+            x.style.display = "block";
+            break
+          default:
+            break
+        }
+       
+      }
+      var scores = event["StateChange"]["scoreboard"];
       for (var p=0; p< scores.length;p++){
-        var x = document.getElementById("myWinners");
-        x.style.display = "block";
+        
         var score = scores[p][0];
         var label = scores[p][1];
         var name = label[0];
@@ -85,6 +98,18 @@ export function init_pkg_ws(){
         $("#winner_"+(p+1).toString()+"_flag").removeClass();
         $("#winner_"+(p+1).toString()+"_flag").addClass("flag");
         $("#winner_"+(p+1).toString()+"_flag").addClass(flag);
+      }
+    }else if (typeof event["StateNotification"]!="undefined"){
+      if ( typeof event["StateNotification"]["countdown"] !="undefined"){
+        console.log("StateNotification",event["StateNotification"]);
+        $("#alert_placeholder").after(
+          '<div class="alert alert-success alert-dismissable">'+
+              '<button type="button" class="close" ' + 
+                      'data-dismiss="alert" aria-hidden="true">' + 
+                  '&times;' + 
+              '</button>' + 
+              event["StateNotification"]["text"] + (Math.floor(event["StateNotification"]["countdown"]/1000)).toString() +" secs"+
+           '</div>');
       }
     }
   }

@@ -57,7 +57,7 @@ pub fn state_update(app:&mut App){
                         let p_msg = PubMessage{
                         body:b,
                         reply_to: None,
-                        subject: String::from("game_logic.state_change")
+                        subject: String::from("game_logic.state")
                         };
                         publish_(p_msg);
                     }
@@ -71,7 +71,7 @@ pub fn state_update(app:&mut App){
                         let p_msg = PubMessage{
                         body:b,
                         reply_to: None,
-                        subject: String::from("game_logic.state_notification")
+                        subject: String::from("game_logic.state")
                         };
                         publish_(p_msg);
                     }
@@ -117,7 +117,7 @@ pub fn state_update(app:&mut App){
                     let p_msg = PubMessage{
                         body:b,
                         reply_to: None,
-                        subject: String::from("game_logic.state_change")
+                        subject: String::from("game_logic.state")
                     };
                     publish_(p_msg);
                     }
@@ -131,7 +131,7 @@ pub fn state_update(app:&mut App){
                         let p_msg = PubMessage{
                         body:b,
                         reply_to: None,
-                        subject: String::from("game_logic.start_notification")
+                        subject: String::from("game_logic.start")
                         };
                         publish_(p_msg);
                     }
