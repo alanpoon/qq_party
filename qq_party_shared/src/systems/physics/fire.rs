@@ -51,9 +51,11 @@ pub fn fire_collision(mut cmd:Commands,mut fire_query: Query<(Entity,&FireId,&Po
 }
 pub fn despawn_fire(
   mut cmd: Commands,
-  fire_query: Query<(Entity,&FireId,&Position),Changed<Hit>>
+  fire_query: Query<(Entity,&FireId,&Position),Changed<Hit>>,
+  mut to_despawn:ResMut<EntityToRemove>
 ) {
   for (e,_,_) in fire_query.iter(){
-    cmd.entity(e).despawn();
+    //cmd.entity(e).despawn();
+    to_despawn.entities.insert(e);
   }
 }

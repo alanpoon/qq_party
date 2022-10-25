@@ -18,17 +18,17 @@ pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:Ta
     return ;
   }
   let mut query = app.world.query::<(Entity, &BallId,&Position)>();
-  let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
-  let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
+  // let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
+  // let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
   let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_)| {
     ball_id == _ball_id})
   .next();
   match local_ball {
     Some((entity, _,position)) => {
         let sa = sub_map_area(position.0.x,position.0.y);
-        info_(format!("sa {:?} pos {:?}",sa,position));
+        //info_(format!("sa {:?} pos {:?}",sa,position));
         app.world.entity_mut(entity).insert(target_velocity);
-        app.world.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
+        //app.world.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
         let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
         match rmp_serde::to_vec(&server_message){
           Ok(b)=>{

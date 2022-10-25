@@ -179,12 +179,14 @@ pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&
 pub fn reset_entities(mut cmd:&mut Commands,query:&Query<(Entity,&BallId)>,
   npc_query: &Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
   storm_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
+  fire_query:&mut Query<Entity,With<FireId>>,
   storm_timing_res: &mut ResMut<StormTiming>,
   to_despawn: &mut ResMut<EntityToRemove>){
     //don't despawn ball_id, ball_id only get despawned after player dc
-    // for (e,_) in query.iter(){
-    //   cmd.entity(e).despawn_recursive();
-    // }
+    
+    for (e,_) in query.iter(){
+      cmd.entity(e).insert(TargetVelocity([0.0,0.0].into()));
+    }
     for (e,_,_,_,_) in npc_query.iter(){
       //cmd.entity(e).despawn();
       to_despawn.entities.insert(e);
@@ -193,4 +195,8 @@ pub fn reset_entities(mut cmd:&mut Commands,query:&Query<(Entity,&BallId)>,
       to_despawn.entities.insert(e);
       //cmd.entity(e).despawn();
     }
+    for e in fire_query.iter(){
+      //app.world.despawn(e);
+      to_despawn.entities.insert(e);
+  }
 }

@@ -39,17 +39,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
       init_score(ball_id.0,ball_label,&mut scoreboard.scores);
-      if let Some(st) = state_from_transform{
-        match st{
-          QQState::Running=>{
-            //continue
-          },
-          _=>{
-            return Ok(());
-          }
-        }
-      }
-      let storm_timing = app.world.get_resource::<StormTiming>().unwrap().clone();
+      
       let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
@@ -61,6 +51,16 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           publish_(p_msg);
         }
         _=>{}
+      }
+      if let Some(st) = state_from_transform{
+        match st{
+          QQState::Running|QQState::StopNotification=>{
+            //continue
+          },
+          _=>{
+            return Ok(());
+          }
+        }
       }
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
@@ -82,6 +82,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0)});
         }
       }
+      let storm_timing = app.world.get_resource::<StormTiming>().unwrap().clone();
       // info_(format!("npc_bundles {:?}",npc_bundles));
       for (i,npc_chunck) in npc_bundles.chunks(20).enumerate(){
         let mut bb= vec![];

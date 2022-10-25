@@ -30,7 +30,6 @@ extern "C" {
 }
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        info!("build PhysicsPlugin");
         //app.add_plugin(RapierPhysicsPlugin::<NoUserData,timewrapper::TimeWrapper>::default())
         app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             //.add_startup_system(enable_physics_profiling)

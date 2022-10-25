@@ -126,18 +126,42 @@ fn handle_events(
         let mut target_velocity_y = 0.0;
         let mut pressed = false;
         if keyboard_input.just_pressed(KeyCode::Left){
+          if keyboard_input.pressed(KeyCode::Up){
+            target_velocity_y += 1.0;
+          }
+          if keyboard_input.pressed(KeyCode::Down){
+            target_velocity_y -= 1.0;
+          }
           target_velocity_x -= 1.0;
           pressed = true;
         }
         if keyboard_input.just_pressed(KeyCode::Right){
+          if keyboard_input.pressed(KeyCode::Up){
+            target_velocity_y += 1.0;
+          }
+          if keyboard_input.pressed(KeyCode::Down){
+            target_velocity_y -= 1.0;
+          }
           target_velocity_x += 1.0;
           pressed = true;
         }
         if keyboard_input.just_pressed(KeyCode::Up){
+          if keyboard_input.pressed(KeyCode::Left){
+            target_velocity_x -= 1.0;
+          }
+          if keyboard_input.pressed(KeyCode::Right){
+            target_velocity_x += 1.0;
+          }
           target_velocity_y += 1.0;
           pressed = true;
         }
         if keyboard_input.just_pressed(KeyCode::Down){
+          if keyboard_input.pressed(KeyCode::Left){
+            target_velocity_x -= 1.0;
+          }
+          if keyboard_input.pressed(KeyCode::Right){
+            target_velocity_x += 1.0;
+          }
           target_velocity_y -= 1.0;
           pressed = true;
         }
@@ -246,6 +270,7 @@ fn receive_events(mut cmd: Commands,
   mut query: Query<(Entity, &BallId)>,
   mut storm_query: Query<(Entity,&mut Transform),With<StormRingId>>,
   mut storm_text_query: Query<Entity,With<StormRingTextNode>>,
+  mut fire_query: Query<Entity,With<FireId>>,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
   mut to_despawn: ResMut<EntityToRemove>,
@@ -275,14 +300,13 @@ fn receive_events(mut cmd: Commands,
                             gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id);
                             
                           }
-                          ServerMessage::Fire{ball_id,velocity,sprite_enum,timestamp}=>{  
+                          ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  
                             for (_entity, qball_id,pos,_vel,_) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
                                 let fire_bundle = FireBundle{
                                   fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some(pos.0.clone())),
                                   position:pos.clone(),
                                   velocity:velocity,
-                                  //start:qq_party_shared::Time{elapsed:timestamp as f32},
                                 };
                                 gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);
                               }
@@ -337,7 +361,7 @@ fn receive_events(mut cmd: Commands,
                             match state{
                               QQState::Stop=>{
                                 info!("reset_entities called");
-                                gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res,&mut to_despawn);
+                                gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut fire_query,&mut storm_timing_res,&mut to_despawn);
                               }
                               QQState::Running=>{
 

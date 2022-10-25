@@ -77,17 +77,28 @@ pub fn state_update(app:&mut App){
             }
             QQState::Stop=>{
                 let mut to_despawn:HashSet<Entity,_> = HashSet::new();
-                // let mut query = app.world.query::<(Entity, &BallId)>();
-                // for (e,_) in query.iter(&app.world){
-                //     //app.world.despawn(e);
-                //     to_despawn.insert(e);
-                // }
+                let mut query = app.world.query::<(Entity, &BallId)>();
+                let mut e_vec = vec![];
+                for (e,_) in query.iter(&mut app.world){
+                    //app.world.entity_mut(e).insert(TargetVelocity([0.0,0.0].into()));
+                    //app.world.despawn(e);
+                    //to_despawn.insert(e);
+                    e_vec.push(e);
+                }
+                for e in e_vec{
+                    app.world.entity_mut(e).insert(TargetVelocity([0.0,0.0].into()));
+                }
                 let mut query = app.world.query::<(Entity, &NPCId)>();
                 for (e,_) in query.iter(&app.world){
                     //app.world.despawn(e);
                     to_despawn.insert(e);
                 }
                 let mut query = app.world.query::<(Entity, &StormRingId)>();
+                for (e,_) in query.iter(&app.world){
+                    //app.world.despawn(e);
+                    to_despawn.insert(e);
+                }
+                let mut query = app.world.query::<(Entity, &FireId)>();
                 for (e,_) in query.iter(&app.world){
                     //app.world.despawn(e);
                     to_despawn.insert(e);

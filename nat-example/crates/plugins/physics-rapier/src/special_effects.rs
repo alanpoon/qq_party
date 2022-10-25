@@ -8,7 +8,7 @@ pub fn spawn_special_effect_collider(
     local_user_info: Res<LocalUserInfo>
   ) {
     for (entity, position) in without_rigid.iter() {
-      info!("spawn_special_effect_collider position {:?}",position.clone());
+      //info!("spawn_special_effect_collider position {:?}",position.clone());
       cmd.entity(entity)
       .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0)))
       .insert(RigidBody::Dynamic)
@@ -66,9 +66,7 @@ pub fn move_special_effect_closer_to_user_system(
         pos.0.x = 1800.0;
         pos.0.y = 200.0;
       }
-
       rigid_pos.translation = [pos.0.x, pos.0.y,2.0].into();
-      info!("special_effect translation {:?}",rigid_pos.translation);
     }
   }
 }

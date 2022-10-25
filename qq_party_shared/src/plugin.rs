@@ -21,9 +21,9 @@ impl Plugin for QQSharedPlugin {
           .add_system(physics::spawn_hierachy)
           .add_system(physics::spawn_joint)
           //npc
-          .add_system(physics::spawn_npc_collider.after(MyLabel::Despawn))
+          .add_system(physics::spawn_npc_collider)
           //player
-          .add_system(physics::spawn_player_collider.after(MyLabel::Despawn))
+          .add_system(physics::spawn_player_collider)
           .add_system(physics::add_ball_dash_physics)
           .add_system(physics::remove_ball_dash_physics)
           .add_system(physics::update_state_position_physics)

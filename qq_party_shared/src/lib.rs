@@ -76,7 +76,7 @@ pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
     Dash{ball_id:BallId},
     Disconnect{ball_id:u32},
-    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32,timestamp:u64},
+    Fire{ball_id:BallId,velocity:QQVelocity,sprite_enum:u32},
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
     StateNotification{countdown:u64,text:String},
