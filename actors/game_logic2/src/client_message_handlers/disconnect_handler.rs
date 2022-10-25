@@ -1,4 +1,4 @@
-use qq_party_shared::*;
+use qq_party_shared::{*, systems::EntityToRemove};
 use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
@@ -49,7 +49,10 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id_secret:String){
       _=>{}
     }
     if let Some(entity) = ball_to_despawn{
-      app.world.despawn(entity);
+      if let Some(mut to_despawn) = app.world.get_resource_mut::<EntityToRemove>(){
+        to_despawn.entities.insert(entity);
+      }
+      //app.world.despawn(entity);
     }
     
 }

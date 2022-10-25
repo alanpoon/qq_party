@@ -248,6 +248,7 @@ fn receive_events(mut cmd: Commands,
   mut storm_text_query: Query<Entity,With<StormRingTextNode>>,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
+  mut to_despawn: ResMut<EntityToRemove>,
   asset_server: Res<AssetServer>
   ) {
     if let Some(ref mut client) = *client {
@@ -319,7 +320,7 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
-                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,&mut storm_text_query,storm_rings.clone(),&asset_server);
+                            gamestate::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,&mut storm_text_query,storm_rings.clone(),&mut to_despawn,&asset_server);
                             if let Some(storm_timing) = next_storm_timing.clone(){
                               *storm_timing_res = storm_timing;
                             }
@@ -333,7 +334,8 @@ fn receive_events(mut cmd: Commands,
                             }
                           }
                           ServerMessage::StateChange{state,scoreboard}=>{
-                            gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res);
+                            info!("reset_entities called");
+                            gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res,&mut to_despawn);
                             // *state = Some(ClientStateDispatcher::ChickenDinner(protocol::ChickenDinner {}));
                             // protocol::pre_chicken_dinner_unsub_all();
                             match serde_json::to_string(&ServerMessage::StateChange{state,scoreboard}){

@@ -79,12 +79,15 @@ pub fn spawn_or_delete_storm_rings_bundles(
   mut v_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
   mut t_query:&mut Query<Entity,With<StormRingTextNode>>,
   bundles:Vec<StormRingId>,
+  to_despawn: &mut ResMut<EntityToRemove>,
   asset_server: &Res<AssetServer>
   ){
+    info!("spawn_or_delete_storm_rings_bundles");
     let len = bundles.len();
     if len==0{
       for (e,mut transform) in v_query.iter_mut(){
-        cmd.entity(e).despawn();
+        //cmd.entity(e).despawn();
+        to_despawn.entities.insert(e);
         //cmd.entity(e).despawn_recursive();
         //transform.translation = [4000.0,4000.0,0.0].into();
       }
@@ -174,16 +177,19 @@ pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&
   }
 }
 pub fn reset_entities(mut cmd:&mut Commands,query:&Query<(Entity,&BallId)>,
-  mut npc_query: &Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
-  mut storm_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
-  mut storm_timing_res: &mut ResMut<StormTiming>){
+  npc_query: &Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
+  storm_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
+  storm_timing_res: &mut ResMut<StormTiming>,
+  to_despawn: &mut ResMut<EntityToRemove>){
     for (e,_) in query.iter(){
       cmd.entity(e).despawn_recursive();
     }
     for (e,_,_,_,_) in npc_query.iter(){
-      cmd.entity(e).despawn();
+      //cmd.entity(e).despawn();
+      to_despawn.entities.insert(e);
     }
     for (e,_) in storm_query.iter(){
-      cmd.entity(e).despawn();
+      to_despawn.entities.insert(e);
+      //cmd.entity(e).despawn();
     }
 }

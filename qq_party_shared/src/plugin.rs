@@ -1,12 +1,16 @@
 use bevy::prelude::*;
 use crate::*;
 use crate::systems::*;
+
+
 pub struct QQSharedPlugin;
 impl Plugin for QQSharedPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build QQSharedPlugin");
         app
           .init_resource::<ScoreBoard>()
+          .init_resource::<entity_to_remove::EntityToRemove>()
+          .add_system_to_stage(CoreStage::Last,entity_to_remove::remove_entity_system.label(MyLabel::Despawn))
           //fire
           .add_system(physics::spawn_fire_collider)
           .add_system(physics::fire_collision)
@@ -16,9 +20,9 @@ impl Plugin for QQSharedPlugin {
           .add_system(physics::spawn_hierachy)
           .add_system(physics::spawn_joint)
           //npc
-          .add_system(physics::spawn_npc_collider)
+          .add_system(physics::spawn_npc_collider.after(MyLabel::Despawn))
           //player
-          .add_system(physics::spawn_player_collider)
+          .add_system(physics::spawn_player_collider.after(MyLabel::Despawn))
           .add_system(physics::add_ball_dash_physics)
           .add_system(physics::remove_ball_dash_physics)
           .add_system(physics::update_state_position_physics)

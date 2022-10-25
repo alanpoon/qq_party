@@ -4,6 +4,8 @@ use bevy_rapier2d::prelude::Velocity;
 pub mod physics;
 pub use physics::*;
 pub mod scoring;
+pub mod entity_to_remove;
+pub use entity_to_remove::*;
 use crate::*;
 
 pub fn update_physics_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity)>){

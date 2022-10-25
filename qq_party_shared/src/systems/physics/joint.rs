@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 use crate::*;
-
+use crate::systems::entity_to_remove;
 pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Position),(Without<BallId>,Without<ChaseTargetId2>)>,
 mut ball_query:Query<(Entity,&BallId,&Position,&mut LastNPC)>,
 query_scoring:Query<(Entity,&QQParent,&NPCId),Without<BallId>>,
-mut res:ResMut<ScoreBoard>){    
+mut res:ResMut<ScoreBoard>,
+mut to_despawn:ResMut<entity_to_remove::EntityToRemove>){    
   for (ball_e,ball_id,pos,mut last_npc) in ball_query.iter_mut(){
     let mut is_near_crate= false;
     for (npc_e,npc_id,npc_pos) in npc_query.iter_mut(){
@@ -31,7 +32,7 @@ mut res:ResMut<ScoreBoard>){
       }else if is_crate{
         if let Some(last_npc_e) = last_npc.1{ 
           if pos.0.distance(npc_pos.0)<25.0{
-            crate::systems::scoring::score(&mut cmd,ball_id.0,last_npc_e,&query_scoring,&mut res);
+            crate::systems::scoring::score(&mut cmd,ball_id.0,last_npc_e,&query_scoring,&mut res,&mut to_despawn);
             *last_npc = LastNPC(0,None,true);
             is_near_crate = true;
           }
@@ -73,7 +74,8 @@ pub fn spawn_joint(
   mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&QQParent,&ChaseTargetId2)>,
   position_query: Query<&Position>,
   last_npc_query:Query<(Entity,&NPCId,&QQParent)>,
-  mut ball_query:Query<(&BallId,&mut LastNPC)>
+  mut ball_query:Query<(&BallId,&mut LastNPC)>,
+  mut to_despawn: ResMut<entity_to_remove::EntityToRemove>,
 ){
   for (npc_e,npc_id,npc_pos,mut v,parent,chase_target) in npc_query.iter_mut(){
     if let Ok(pos) = position_query.get(parent.0) {
@@ -89,13 +91,15 @@ pub fn spawn_joint(
                 if let Ok((ln_e,_npc_id_,ln_parent))=last_npc_query.get(last_npc.1.unwrap()){
                   *last_npc = LastNPC(last_npc.0,Some(ln_parent.0),last_npc.2);
                   //*last_npc.0 = ln_parent.0;
-                  cmd.entity(ln_e).despawn(); //despawn last npc
+                  //cmd.entity(ln_e).despawn(); //despawn last npc
+                  (*to_despawn).entities.insert(ln_e);
                 }
               }
               break;
             }
           }
-          cmd.entity(npc_e).despawn(); //despawn snake
+          (*to_despawn).entities.insert(npc_e);
+          //cmd.entity(npc_e).despawn(); //despawn snake
         }
       }
       v.linvel.x = unit_vec.x *factor *unit_vec.length_recip();

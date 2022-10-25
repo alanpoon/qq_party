@@ -10,6 +10,7 @@ mod bundle;
 mod timer_duration;
 pub use timer_duration::*;
 pub mod systems;
+pub use systems::*;
 pub use bundle::*;
 pub mod time_interface;
 //pub use time_interface::Timer;
@@ -129,4 +130,10 @@ pub enum QQState{
     StopNotification,
     Stop,
     RunNotification
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(SystemLabel)]
+pub enum MyLabel {
+    /// everything that handles input
+    Despawn,
 }

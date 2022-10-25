@@ -9,6 +9,7 @@ mod sprite_sheet;
 mod single_image;
 mod timewrapper;
 mod smoke;
+use qq_party_shared::*;
 use wasm_bindgen::prelude::*;
 pub struct SpriteCharacterPlugin;
 #[derive(Component,Debug, PartialEq, Default)]
@@ -28,7 +29,7 @@ impl Plugin for SpriteCharacterPlugin {
       .add_system(chicken::remove_hit_chicken_sprite_system)
       .add_system(chicken::add_dash_chicken_sprite_system)
       .add_system(chicken::remove_dash_chicken_sprite_system)
-      .add_system(npc::add_npc_sprite_system)
+      .add_system(npc::add_npc_sprite_system.after(MyLabel::Despawn))
       .add_system(fire::add_fire_sprite_system)
       //.add_system(fire::debug_fire_sprite_system)
       .add_system(special_effects::add_special_effect_sprite_system)

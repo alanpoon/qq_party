@@ -2,8 +2,10 @@ pub mod npc;
 //pub mod npc_debug;
 pub mod storm_ring;
 use crate::messaging_::publish_;
+use qq_party_shared::systems::EntityToRemove;
 use wasmcloud_interface_messaging::PubMessage;
 use qq_party_shared::*;
+use std::collections::HashSet;
 use crate::info_::info_;
 use bevy::prelude::*;
 use bevy::utils::Duration;
@@ -15,6 +17,7 @@ impl Default for StateTransformer{
         StateTransformer(Timer::new(Duration::from_secs(10),false),QQState::Running)
     }
 }
+
 pub fn state_update(app:&mut App){
     let time = app.world.get_resource::<Time>().unwrap();
     let time_c= time.clone();
@@ -24,7 +27,7 @@ pub fn state_update(app:&mut App){
         if st.0.tick(Duration::from_millis((time_c.delta_seconds() as f32 * 1000.0) as u64)).just_finished() {
             match st.1{
                 QQState::Running=>{
-                    st.0 = Timer::new(Duration::from_secs(1),false);
+                    st.0 = Timer::new(Duration::from_secs(10),false);
                     st.1 = QQState::StopNotification;  
                 }
                 QQState::StopNotification=>{
@@ -79,24 +82,28 @@ pub fn state_update(app:&mut App){
                 }
             }
             QQState::Stop=>{
-                let mut to_despawn = vec![];
-                let mut query = app.world.query::<(Entity, &BallId)>();
-                for (e,_) in query.iter(&app.world){
-                    //app.world.despawn(e);
-                    to_despawn.push(e);
-                }
+                let mut to_despawn:HashSet<Entity,_> = HashSet::new();
+                // let mut query = app.world.query::<(Entity, &BallId)>();
+                // for (e,_) in query.iter(&app.world){
+                //     //app.world.despawn(e);
+                //     to_despawn.push(e);
+                // }
                 let mut query = app.world.query::<(Entity, &NPCId)>();
                 for (e,_) in query.iter(&app.world){
                     //app.world.despawn(e);
-                    to_despawn.push(e);
+                    to_despawn.insert(e);
                 }
-                let mut query = app.world.query::<(Entity, &StormRingId)>();
-                for (e,_) in query.iter(&app.world){
-                    //app.world.despawn(e);
-                    to_despawn.push(e);
-                }
-                for d in to_despawn{
-                    app.world.despawn(d);
+                // let mut query = app.world.query::<(Entity, &StormRingId)>();
+                // for (e,_) in query.iter(&app.world){
+                //     //app.world.despawn(e);
+                //     to_despawn.insert(e);
+                // }
+                // for d in to_despawn{
+                //     app.world.despawn(d);
+                // }
+                let res_to_despawn = app.world.get_resource_mut::<EntityToRemove>();
+                if let Some(mut res_to_despawn) = res_to_despawn{
+                    res_to_despawn.entities = to_despawn;
                 }
                 let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
                 let mut score_vec:Vec<(i16,BallLabel)> = vec![];
