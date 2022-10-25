@@ -5,6 +5,15 @@ pub mod fire_handler;
 pub mod dash_handler;
 pub mod disconnect_handler;
 use bevy::prelude::*;
-pub fn is_running(_app:&App)->bool{
-    return true;
+use qq_party_shared::*;
+pub fn is_running(app:&App)->bool{
+    if let Some(st) = app.world.get_resource::<StateTransformer>(){
+        match st.1{
+            QQState::Running|QQState::StopNotification=>{
+                return true;
+            }
+            _=>{}
+        }
+    }
+    return false;
 }

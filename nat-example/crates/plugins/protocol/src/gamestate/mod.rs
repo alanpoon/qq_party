@@ -181,9 +181,10 @@ pub fn reset_entities(mut cmd:&mut Commands,query:&Query<(Entity,&BallId)>,
   storm_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
   storm_timing_res: &mut ResMut<StormTiming>,
   to_despawn: &mut ResMut<EntityToRemove>){
-    for (e,_) in query.iter(){
-      cmd.entity(e).despawn_recursive();
-    }
+    //don't despawn ball_id, ball_id only get despawned after player dc
+    // for (e,_) in query.iter(){
+    //   cmd.entity(e).despawn_recursive();
+    // }
     for (e,_,_,_,_) in npc_query.iter(){
       //cmd.entity(e).despawn();
       to_despawn.entities.insert(e);

@@ -5,6 +5,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy::math::{Vec2};
+use bevy::utils::Duration;
 use serde::{Deserialize, Serialize};
 mod bundle;
 mod timer_duration;
@@ -79,8 +80,8 @@ pub enum ServerMessage {
     GameState{ball_bundles:Vec<BallBundle>,npc_bundles:Vec<NPCBundle>,storm_timing:StormTiming,timestamp:u64},
     StormRings{storm_rings:Vec<StormRingId>,next_storm_timing:Option<StormTiming>},
     StateNotification{countdown:u64,text:String},
-    StateChange{state:QQState,scoreboard:Vec<(i16,BallLabel)>},
-    Scores{scoreboard:Vec<(i16,BallLabel)>},
+    StateChange{state:QQState,scoreboard:Vec<(u32,i16,BallLabel)>},
+    Scores{scoreboard:Vec<(u32,i16,BallLabel)>},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
     Welcome{ball_bundle:BallBundle,sub_map:String},
@@ -136,4 +137,11 @@ pub enum QQState{
 pub enum MyLabel {
     /// everything that handles input
     Despawn,
+}
+#[derive(Component,Clone,Debug)]
+pub struct StateTransformer(pub Timer,pub QQState);
+impl Default for StateTransformer{
+    fn default()->Self{
+        StateTransformer(Timer::new(Duration::from_secs(10),false),QQState::Running)
+    }
 }

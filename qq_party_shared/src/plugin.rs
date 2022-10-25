@@ -10,6 +10,7 @@ impl Plugin for QQSharedPlugin {
         app
           .init_resource::<ScoreBoard>()
           .init_resource::<entity_to_remove::EntityToRemove>()
+          .init_resource::<StateTransformer>()
           .add_system_to_stage(CoreStage::Last,entity_to_remove::remove_entity_system.label(MyLabel::Despawn))
           //fire
           .add_system(physics::spawn_fire_collider)

@@ -48,7 +48,6 @@ impl Thread for GameLogicActor{
       //m.world.spawn().insert(startup::StateTransformer(Timer::new(Duration::from_secs(20),false),State::Running));
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
-      .init_resource::<startup::StateTransformer>()
       .init_resource::<bevy_wasmcloud_time::Time>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
@@ -153,3 +152,8 @@ impl TimeV2{
     self.elapsed.get(&key)
   }
 }
+#[derive(Debug,Default,Clone)]
+pub struct Winners{
+  scores: Vec<(u32,i16,BallLabel)> //ball_id,score,ball_label
+}
+

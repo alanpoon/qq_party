@@ -3,7 +3,6 @@ use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn;
 use crate::util::sub_map_area;
-use super::is_running;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::collections::HashMap;
 use bevy::prelude::*;
@@ -32,12 +31,24 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         },
       };
       let mut app = guard;
-      if !is_running(&app){
-        return Ok(());
+      let mut state_from_transform= None;
+      if let Some(st) = app.world.get_resource::<StateTransformer>(){
+        state_from_transform = Some(st.1.clone());
       }
+      
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
       init_score(ball_id.0,ball_label,&mut scoreboard.scores);
+      if let Some(st) = state_from_transform{
+        match st{
+          QQState::Running=>{
+            //continue
+          },
+          _=>{
+            return Ok(());
+          }
+        }
+      }
       let storm_timing = app.world.get_resource::<StormTiming>().unwrap().clone();
       let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
       match rmp_serde::to_vec(&server_message){

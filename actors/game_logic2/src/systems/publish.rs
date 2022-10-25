@@ -19,15 +19,15 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
     if key =="scoreboard"{
       if *elapsed >3.0{
         *elapsed = 0.0;
-        let mut score_vec:Vec<(i16,BallLabel)> = vec![];
+        let mut score_vec:Vec<(u32,i16,BallLabel)> = vec![];
         for (k,v) in (*scoreboard).scores.iter(){
-          score_vec.push(v.clone());
+          score_vec.push((k.clone(),v.0.clone(),v.1.clone()));
         }
         score_vec.sort_by(|a,b|{
-          b.0.cmp(&a.0)
+          b.1.cmp(&a.1)
         });
-        if score_vec.len() >10{
-          score_vec.clone().split_off(8);
+        if score_vec.len() >8{
+          score_vec.clone().truncate(8);
         }
         let msg = ServerMessage::Scores{scoreboard:score_vec};
         match rmp_serde::to_vec(&msg){

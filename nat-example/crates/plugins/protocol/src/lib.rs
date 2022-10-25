@@ -333,9 +333,19 @@ fn receive_events(mut cmd: Commands,
                               }
                             }
                           }
-                          ServerMessage::StateChange{state,scoreboard}=>{
-                            info!("reset_entities called");
-                            gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res,&mut to_despawn);
+                          ServerMessage::StateChange{state,scoreboard}=>{                            
+                            match state{
+                              QQState::Stop=>{
+                                info!("reset_entities called");
+                                gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut storm_timing_res,&mut to_despawn);
+                              }
+                              QQState::Running=>{
+
+                              }
+                              _=>{
+
+                              }
+                            }
                             // *state = Some(ClientStateDispatcher::ChickenDinner(protocol::ChickenDinner {}));
                             // protocol::pre_chicken_dinner_unsub_all();
                             match serde_json::to_string(&ServerMessage::StateChange{state,scoreboard}){

@@ -16,7 +16,6 @@ pub fn update_physics_velocity(mut query: Query<(&mut Velocity,&mut TargetVeloci
     if tv.0.y *50.0!=0.0{
       v.linvel.y = tv.0.y * 50.0;
     }
-    
     *tv = TargetVelocity(Vec2::ZERO);
   }
 }

@@ -59,8 +59,9 @@ export function init_pkg_ws(){
         
         var scores = event["Scores"]["scoreboard"];
         for (var p=0; p< scores.length;p++){
-          var score = scores[p][0];
-          var label = scores[p][1];
+          var ball_id = scores[p][0];
+          var score = scores[p][1];
+          var label = scores[p][2];
           var name = label[0];
           var flag = label[1].replace(".","");
           unsorted.push({"name":name,"score":score,"flag":flag});
@@ -89,9 +90,9 @@ export function init_pkg_ws(){
       }
       var scores = event["StateChange"]["scoreboard"];
       for (var p=0; p< scores.length;p++){
-        
-        var score = scores[p][0];
-        var label = scores[p][1];
+        var ball_id = scores[p][0];
+        var score = scores[p][1];
+        var label = scores[p][2];
         var name = label[0];
         $("#winner_"+(p+1).toString()).text(name);
         var flag = label[1].replace(".","");
