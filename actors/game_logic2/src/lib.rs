@@ -69,7 +69,7 @@ impl Thread for GameLogicActor{
     info!("end_thread----");
     Ok(StartThreadResponse{})
   }
-  async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+  async fn handle_request(&self, _ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
     //info!("handle_request----");
     let map = APP.clone();
     //Ok(StartThreadResponse{})
@@ -81,7 +81,7 @@ impl Thread for GameLogicActor{
 }
 #[async_trait]
 impl MessageSubscriber for GameLogicActor{
-  async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
+  async fn handle_message(&self, _ctx: &Context, req: &SubMessage) -> RpcResult<()> {
     if req.subject.contains("client_handler"){
       let client_message: Result<ClientMessage,_> = rmp_serde::from_slice(&req.body);
       match client_message{

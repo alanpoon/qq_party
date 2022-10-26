@@ -3,7 +3,7 @@ use crate::info_::info_;
 use super::is_running;
 use std::sync::{Arc, Mutex};
 use bevy::prelude::*;
-pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,position:Position){
+pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,position:Position){
   let guard = match map.lock() {
     Ok(guard) => guard,
     Err(poisoned) => {

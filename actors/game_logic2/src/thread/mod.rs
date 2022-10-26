@@ -9,7 +9,6 @@ use crate::startup;
 use bevy::prelude::*;
 use qq_party_shared::time_interface::TimeInterface;
 pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
-  let mut n = String::from("thread_handle_request");
   {
     let guard = match map.try_lock() {
       Ok(guard) => Ok(guard),
@@ -32,14 +31,12 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           app.world.insert_resource(Time::default());
         }
 
-        if let Some( t) = app.world.get_resource_mut::<QQTime>(){
-          n = String::from("can find time");
+        if let Some( _t) = app.world.get_resource_mut::<QQTime>(){
           //t.update(start_thread_request.elapsed as f32);
         }else{
           app.world.insert_resource(QQTime{elapsed:start_thread_request.elapsed as f32});
         }
         if let Some( t) = app.world.get_resource_mut::<TimeV2>(){
-          n = String::from("can find time");
           //t.update(start_thread_request.elapsed as f32);
         }else{
           app.world.insert_resource(TimeV2{elapsed:HashMap::from([
@@ -62,8 +59,6 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
          startup::state_update(&mut app);
          app.update();
         // drop(app);      
-    }else{
-      let split_arr:Vec<String> = start_thread_request.game_id.split("_").map(|x|x.to_string()).collect();
     }
     
   }

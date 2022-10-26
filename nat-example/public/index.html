@@ -675,39 +675,52 @@
         </div>
       </div>
       <div id="myWinners" class="modal" style="display:none">
-        <div class="alert_placeholder" style="flex:0 2 auto;"></div>
         <div class="modal-content" style="width:90vw; height:540px;">
-          <!-- <span class="close">&times;</span> -->
-          <H3>Winners</H3>
-          <div id="container" style="width:400px;height:410px;position:relative">
-            <div id="root" style="position:absolute;">
-                <div class = 'Winner_container' >
-                    <div class = 'Rays_container'>
-                        
-                    </div>
-                    <div class ='Podium_Container'>
-                        <div class ='Podium'>
-                            <div>2</div>
-                            <div>1</div>
-                            <div>3</div>
+          <div class="alert_placeholder" style="flex:0 2 auto;"></div>
+          <div style="display:flex;height:100%;flex-flow:column;">
+            <div style="display:flex;">
+              <!-- <span class="close">&times;</span> -->
+              <H3>Winners</H3>
+              
+              <div id="container" style="width:400px;height:410px;position:relative;flex:0 2 auto;">
+                <div id="root" style="position:absolute;">
+                    <div class = 'Winner_container' >
+                        <div class = 'Rays_container'>
+                            
+                        </div>
+                        <div class ='Podium_Container'>
+                            <div class ='Podium'>
+                                <div>2</div>
+                                <div>1</div>
+                                <div>3</div>
+                            </div>
+                        </div>
+                        <div class = 'Winner W f32'  >
+                          <div id="winner_2" style="position:relative;">2</div>
+                            <img id="winner_2_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                            <p id="winner_2_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
+                        </div>
+                        <div class = 'Winner O f32'  >
+                            <div id="winner_1" style="position:relative;">1</div>
+                            <img id="winner_1_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                            <p id="winner_1_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
+                           
+                        </div>
+                        <div class = 'Winner X f32'  >
+                          <div id="winner_3" style="position:relative;">3</div>
+                          <img id="winner_3_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                          <p id="winner_3_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
                         </div>
                     </div>
-                    <div class = 'Winner W f32'  >
-                      <div id="winner_2" style="position:relative;">2</div>
-                        <img id="winner_2_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                    </div>
-                    <div class = 'Winner O f32'  >
-                        <div id="winner_1" style="position:relative;">1</div>
-                        <img id="winner_1_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                    </div>
-                    <div class = 'Winner X f32'  >
-                      <div id="winner_3" style="position:relative;">3</div>
-                      <img id="winner_3_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                    </div>
                 </div>
+                <canvas id="chicken_dinner" style="position:absolute;width:400px;height:410px;"></canvas>
+              </div>
+              <div style="flex:0 2 auto;" id="right">
+              </div>
             </div>
-            <canvas id="chicken_dinner" style="position:absolute;width:400px;height:410px;"></canvas>
-        </div>
+          </div>
+          
+          
         </div>
       </div>
       <div class ='circleBase' id='rotateMode' style="position:absolute;bottom:0px">
@@ -834,9 +847,19 @@
       }
     })
     const canvas = document.getElementById('chicken_dinner')
-
     const jsConfetti = new JSConfetti({ canvas })
-    jsConfetti.addConfetti().then(() => jsConfetti.addConfetti().then(() => jsConfetti.addConfetti()))
+
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutationRecord) {
+            //jsConfetti.addConfetti().then(() => jsConfetti.addConfetti().then(() => jsConfetti.addConfetti()))
+            jsConfetti.addConfetti().then(() => jsConfetti.addConfetti())
+        });    
+    });
+
+    var target = document.getElementById('myWinners');
+    observer.observe(target, { attributes : true, attributeFilter : ['style'] });
+    
+
     for (let i=0; i<9; i++) { 
         $(".Rays_container").append("<div key='"+i+"'></div>");
     }

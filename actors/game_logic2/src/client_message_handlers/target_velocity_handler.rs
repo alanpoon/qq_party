@@ -6,7 +6,7 @@ use std::sync::{Arc, Mutex};
 use super::is_running;
 use bevy::prelude::*;
 use crate::bevy_wasmcloud_time;
-pub fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
+pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
   let  guard = match map.lock() {
     Ok(guard) => guard,
     Err(poisoned) => {

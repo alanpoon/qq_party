@@ -65,7 +65,7 @@ pub fn spawn_npc_bundles_sync()-> RpcResult<Vec<NPCBundle>>{
   let mut npc_bundles:Vec<NPCBundle> = vec![];
   let mut z = 0;
   let mut npc_positions_vec= vec![];
-  for ri in 0..2{
+  for _ in 0..2{
     let x = random_in_range_(0,200)?;
     let y = random_in_range_(0,200)?;
     z += random_in_range_(0,100)?;

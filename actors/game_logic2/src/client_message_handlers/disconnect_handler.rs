@@ -41,6 +41,9 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id_secret:String){
           }
           _=>{}
         }
+        if let Some(mut scoreboard) = app.world.get_resource_mut::<ScoreBoard>(){
+          scoreboard.scores.remove(&ball_id);
+        }
       },
       _=>{}
     }

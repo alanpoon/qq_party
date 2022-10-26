@@ -26,7 +26,7 @@ impl Plugin for QQSharedPlugin {
           .add_system(physics::spawn_player_collider)
           .add_system(physics::add_ball_dash_physics)
           .add_system(physics::remove_ball_dash_physics)
-          .add_system(physics::update_state_position_physics.after(MyLabel::UpdateTranslation))
+          .add_system(physics::update_state_position_physics)
           .add_system(physics::update_state_velocity_physics)
           //storm_ring
           .add_system(physics::outside_storm_ring_damage)

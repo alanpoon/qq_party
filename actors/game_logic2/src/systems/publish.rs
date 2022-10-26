@@ -14,7 +14,6 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
   storm_ring_query: Query<(Entity,&StormRingId)>,
   scoreboard:Res<ScoreBoard>,
   mut storm_timing:ResMut<StormTiming>) {
-  let mut once = true;
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if key =="scoreboard"{
       if *elapsed >3.0{
@@ -51,7 +50,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
     }
     if key == "storm_ring"{
       let mut storm_rings = vec![];
-      for (e,storm_ring_id) in storm_ring_query.iter(){
+      for (e,_storm_ring_id) in storm_ring_query.iter(){
         storm_rings.push(e);
       }
       if *elapsed >(STORM_INTERVAL+STORM_DURATION) as f32{

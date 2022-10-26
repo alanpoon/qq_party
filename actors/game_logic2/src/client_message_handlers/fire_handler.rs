@@ -8,7 +8,7 @@ use super::is_running;
 use bevy_rapier2d::prelude::*;
 use std::sync::{Arc, Mutex};
 
-pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32){
+pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:u32){
   let guard = match map.lock() {
       Ok(guard) => guard,
       Err(poisoned) => {
@@ -24,7 +24,7 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u
       ball_id == _ball_id})
     .next();
     let fire_bundle = match local_ball {
-      Some((entity, ball_id,position,vel)) => {
+      Some((_, ball_id,position,vel)) => {
           let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some(position.0.clone())),position:position.clone(),
             velocity:QQVelocity([vel.linvel.x*2.0,vel.linvel.y*2.0].into()),
           };

@@ -71,12 +71,10 @@ export function init_pkg_ws(){
       }
       window.leaderboard_new_data(unsorted)
     }else if (typeof event["StormRings"]!="undefined"){
-      console.log("nn",event["StormRings"]);
       window.storm_rings = event["StormRings"]["storm_rings"];
     }else if (typeof event["Ball"]!="undefined"){
       window.local_ball = event["Ball"];
     }else if (typeof event["StateChange"]!="undefined"){
-      console.log("StateChange",event["StateChange"]["state"]);
       if ( typeof event["StateChange"]["state"] !="undefined"){
         switch (event["StateChange"]["state"]){
           case "Running":
@@ -99,6 +97,7 @@ export function init_pkg_ws(){
         var label = scores[p][2];
         var name = label[0];
         $("#winner_"+(p+1).toString()).text(name);
+        $("#winner_"+(p+1).toString()+"_score").text("score: "+score.toString());
         var flag = label[1].replace(".","");
         $("#winner_"+(p+1).toString()+"_flag").removeClass();
         $("#winner_"+(p+1).toString()+"_flag").addClass("flag");
@@ -106,7 +105,6 @@ export function init_pkg_ws(){
       }
     }else if (typeof event["StateNotification"]!="undefined"){
       if ( typeof event["StateNotification"]["countdown"] !="undefined"){
-        console.log("StateNotification",event["StateNotification"]);
         $(".alert_placeholder").html(
           '<div class="alert alert-success alert-dismissable">'+
               // '<button type="button" class="close" ' + 

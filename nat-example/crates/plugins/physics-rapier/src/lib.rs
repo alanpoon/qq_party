@@ -60,7 +60,6 @@ impl Plugin for PhysicsPlugin {
             // //spawn_hierachy
             // .add_system(qq_party_shared::systems::physics::spawn_hierachy)
             // .add_system(qq_party_shared::systems::physics::spawn_joint)
-            // //.add_system(sys_time_debug)
             // //fire
             // .add_system(qq_party_shared::systems::physics::spawn_fire_collider)
             // .add_system(qq_party_shared::systems::physics::fire_collision)
@@ -80,9 +79,3 @@ impl Plugin for PhysicsPlugin {
 //   pipeline.counters.enable()
 // }
 //use bevy_rapier2d::physics::time::TimeInterface;
-// pub fn sys_time_debug(balls_without_rigid:Query<(&BallId,&Position,&Velocity,&QQVelocity)>,time:Res<timewrapper::TimeWrapper>){
-//   for (ball_id,pos,rv,vel) in balls_without_rigid.iter(){
-//     let delta = time.delta_seconds();
-//     info!("ball_id {:?} pos {:?} rv {:?} vel{:?} delta {:?}",ball_id,pos,rv.0.linvel,vel,delta);
-//   }
-// }

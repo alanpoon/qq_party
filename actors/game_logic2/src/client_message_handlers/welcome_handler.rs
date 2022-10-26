@@ -131,6 +131,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
     Ok(())
 }
 
-pub fn init_score(ball_id:u32,ball_label:BallLabel,mut scores:&mut HashMap<u32,(i16,BallLabel)>){
+pub fn init_score(ball_id:u32,ball_label:BallLabel,scores:&mut HashMap<u32,(i16,BallLabel)>){
   scores.insert(ball_id,(0,ball_label));
 }

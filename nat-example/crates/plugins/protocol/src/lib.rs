@@ -274,6 +274,7 @@ fn receive_events(mut cmd: Commands,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
   mut to_despawn: ResMut<EntityToRemove>,
+  mut res_scoreboard: ResMut<ScoreBoard>,
   asset_server: Res<AssetServer>
   ) {
     if let Some(ref mut client) = *client {
@@ -297,7 +298,7 @@ fn receive_events(mut cmd: Commands,
                             }                          
                           }
                           ServerMessage::Disconnect{ball_id,..}=>{
-                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id,&mut to_despawn);
+                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id,&mut to_despawn,&mut res_scoreboard);
                             
                           }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  
@@ -362,9 +363,12 @@ fn receive_events(mut cmd: Commands,
                               QQState::Stop=>{
                                 info!("reset_entities called");
                                 gamestate::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut fire_query,&mut storm_timing_res,&mut to_despawn);
+                                for (_,mut v) in res_scoreboard.scores.iter_mut(){
+                                  v.0=0;
+                                }
                               }
                               QQState::Running=>{
-
+                                
                               }
                               _=>{
 
