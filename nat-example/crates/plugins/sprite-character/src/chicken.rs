@@ -104,6 +104,7 @@ pub fn remove_hit_chicken_sprite_system(
   mut cmd: Commands,
   mut balls_with_hit: Query<(Entity, &BallId,&ChickenHit,&mut TextureAtlasSprite,&Children)>,
   hit_test_as_child_query: Query<(Entity,&HitTextAsChild)>,
+  mut to_despawn: ResMut<EntityToRemove>,
   _time: Res<bevy::prelude::Time>
 ){
     for (entity, _ball_id,chicken_hit,mut sprite,children) in balls_with_hit.iter_mut() {
@@ -128,7 +129,9 @@ pub fn remove_hit_chicken_sprite_system(
         cmd.entity(entity).remove::<ChickenHit>();
         for child in children.iter(){
           if let Ok((e,_)) = hit_test_as_child_query.get(*child){
-            cmd.entity(e).despawn();
+            //cmd.entity(e).despawn();
+            info!("chicken to despawn");
+            to_despawn.entities.insert(e);
           }
         }
       }
@@ -166,12 +169,14 @@ pub fn add_dash_chicken_sprite_system(
 pub fn remove_dash_chicken_sprite_system(
   mut cmd: Commands,
   mut balls_with_dash: Query<(Entity,&mut DashAsChildTimer)>,
+  mut to_despawn:ResMut<EntityToRemove>,
   time:Res<Time>
 ){
     for (e, mut timer) in balls_with_dash.iter_mut() {
       (*timer).0.tick(time.delta());
       if (*timer).0.just_finished() {
-        cmd.entity(e).despawn();
+        //cmd.entity(e).despawn();
+        to_despawn.entities.insert(e);
       }
      
     }

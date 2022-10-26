@@ -57,9 +57,28 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           QQState::Running|QQState::StopNotification=>{
             //continue
           },
-          _=>{
-            return Ok(());
+          QQState::Stop|QQState::RunNotification=>{
+            if let Some(winners) = app.world.get_resource::<crate::Winners>(){
+              let channel_message_back = ServerMessage::StateChange{state:QQState::Stop,scoreboard:winners.scores.clone()};
+              info_(format!("sending while stop"));
+              match rmp_serde::to_vec(&channel_message_back){
+                Ok(b)=>{
+                  let p_msg = PubMessage{
+                    body:b,
+                    reply_to: None,
+                    subject: format!("game_logic_specify.{}",ball_id.0)
+                  };
+                  publish_(p_msg);
+                }
+                Err(e)=>{
+                  info_(format!("m iter ....error{}",e));
+                }
+              }
+              return Ok(());
+            }
           }
+            
+          _=>{}
         }
       }
       let mut ball_bundles =vec![];
@@ -67,12 +86,13 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       let bevy_wasmcloud_time_val = app.world.get_resource::<crate::bevy_wasmcloud_time::Time>().unwrap();
       let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
       let mut query = app.world.query::<(&BallId,&BallLabel,&Position, &QQVelocity,&TargetVelocity)>();
-      for (ball_id,ball_label,position,velocity,target_velocity) in query.iter(&app.world){
-        let sa = sub_map_area(position.clone());
-        if sa ==key{
-          ball_bundles.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
+      for (gball_id,ball_label,position,velocity,target_velocity) in query.iter(&app.world){
+        if gball_id.0!=ball_id.0{//don't send yourself
+          let sa = sub_map_area(position.clone());
+          if sa ==key{
+            ball_bundles.push(BallBundle{ball_id:gball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
+          }
         }
-        
       }
       let mut npc_query = app.world.query::<(&NPCId,&Position,&QQVelocity,&ChaseTargetId)>();
 

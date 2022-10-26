@@ -297,7 +297,7 @@ fn receive_events(mut cmd: Commands,
                             }                          
                           }
                           ServerMessage::Disconnect{ball_id,..}=>{
-                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id);
+                            gamestate::disconnect_ball_id(&mut cmd,&mut query,ball_id,&mut to_despawn);
                             
                           }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  

@@ -20,20 +20,20 @@ pub fn state_update(app:&mut App){
         Some(mut st)=>{
         if st.0.tick(Duration::from_millis((time_c.delta_seconds() as f32 * 1000.0) as u64)).just_finished() {
             match st.1{
-                QQState::Running=>{
+                QQState::Running=>{ //finished running
                     st.0 = Timer::new(Duration::from_secs(10),false);
                     st.1 = QQState::StopNotification;  
                 }
-                QQState::StopNotification=>{
+                QQState::StopNotification=>{ //finished StopNotification
                     st.0 = Timer::new(Duration::from_secs(10),false);
                     st.1 = QQState::Stop;
                 }
                 QQState::Stop=>{
-                    st.0 = Timer::new(Duration::from_secs(20),false);
+                    st.0 = Timer::new(Duration::from_secs(10),false);
                     st.1 = QQState::RunNotification;
                 }
                 QQState::RunNotification=>{
-                    st.0 = Timer::new(Duration::from_secs(10),false);
+                    st.0 = Timer::new(Duration::from_secs(20),false);
                     st.1 = QQState::Running;
                 }
             }
@@ -148,7 +148,7 @@ pub fn state_update(app:&mut App){
                         let p_msg = PubMessage{
                         body:b,
                         reply_to: None,
-                        subject: String::from("game_logic.start")
+                        subject: String::from("game_logic.state")
                         };
                         publish_(p_msg);
                     }

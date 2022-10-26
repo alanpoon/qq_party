@@ -18,8 +18,6 @@ pub fn remove_entity_system(
 ) {
   //remove_duplicate_elements_hashing(&mut res.entities);
   for e in (*res).entities.drain(){
-    cmd.entity(e).despawn();
-  }
-  if res.entities.len()>0{
+    cmd.entity(e).despawn_recursive();
   }
 }

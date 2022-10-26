@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use qq_party_shared::*;
 use std::f32::consts::PI;
+
 pub fn spawn_or_update_ball_bundles(
   mut cmd: &mut Commands,
   v_query:&mut Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
@@ -10,12 +11,15 @@ pub fn spawn_or_update_ball_bundles(
     let len = ball_bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      for (_entity, ball_id,mut pos, mut v,mut _tv) in v_query.iter_mut(){
+      for (e, ball_id,mut pos, mut v,mut _tv) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
         if ball_bundle.ball_id.0 == ball_id.0{
           *v = ball_bundle.velocity;
-          (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
-          (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
+          // (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
+          // (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
+          let x = ball_bundle.position.0.x +ball_bundle.velocity.0.x *delta;
+          let y = ball_bundle.position.0.y + ball_bundle.velocity.0.y *delta;
+          cmd.entity(e).insert(Transform::from_xyz(x, y, 3.0).with_scale(Vec3::splat(0.2)));
           //*tv = ball_bundle.target_velocity;
           founds.push(i);
           //found = true;
@@ -169,10 +173,11 @@ pub fn spawn_or_delete_storm_rings_bundles(
       });
     }
 }
-pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&BallId)>,ball_id:u32){
+pub fn disconnect_ball_id(mut cmd: &mut Commands,ball_query:&mut Query<(Entity,&BallId)>,ball_id:u32,to_despawn:&mut ResMut<EntityToRemove>){
   for (e,ballid) in ball_query.iter_mut(){
     if ballid.0 == ball_id{
-      cmd.entity(e).despawn_recursive();
+      //cmd.entity(e).despawn_recursive();
+      to_despawn.entities.insert(e);
     }
   }
 }

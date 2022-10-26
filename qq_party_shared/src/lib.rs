@@ -137,6 +137,8 @@ pub enum QQState{
 pub enum MyLabel {
     /// everything that handles input
     Despawn,
+    Scoring,
+    Hierachy,
 }
 #[derive(Component,Clone,Debug)]
 pub struct StateTransformer(pub Timer,pub QQState);

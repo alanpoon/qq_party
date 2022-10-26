@@ -43,8 +43,9 @@ pub fn update_state_position_physics(mut query: Query<(&mut Position,&mut Transf
     pos.0.y = rigid_pos.translation.y;
   }
 }
-pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut Velocity)>) {
-  for (pos,mut v) in query.iter_mut() {
+
+pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut Transform,&mut Velocity)>) {
+  for (pos,mut transform,mut v) in query.iter_mut() {
    // info!("qqvel {:?} pos {:?}",v.clone(),pos.clone());
     let mut x=0.0;
     let mut y=0.0;
@@ -56,5 +57,17 @@ pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut Velocity)>
     }
     let move_delta = Vect::new(x, y);
     v.linvel = move_delta;
+    if pos.0.x>=3820.0{
+      transform.translation.x = 3819.0;
+    }
+    if pos.0.x<=0.0{
+      transform.translation.x = 1.0;
+    }
+    if pos.0.y>=3820.0{
+      transform.translation.y = 3819.0;
+    }
+    if pos.0.y<=0.0{
+      transform.translation.y = 1.0;
+    }
   }
 }

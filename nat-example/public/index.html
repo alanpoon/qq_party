@@ -274,7 +274,7 @@
         <div><a class="large green awesome" onclick="mapFunction()" style="flex:0 2 auto;">Map</a></div>
         <div><a class="large yellow awesome" onclick="creditsFunction()" style="flex:0 2 auto;">Credits</a></div>
         <div><a class="large yellow awesome" onclick="winnersFunction()" style="flex:0 2 auto;">Winners</a></div>
-        <div id="alert_placeholder" style="flex:0 2 auto;"></div>
+        <div class="alert_placeholder" style="flex:0 2 auto;"></div>
         <!-- <button onclick="myFunction()" style="flex:0 2 auto;">Gamepad</button>
         <button onclick="chatFunction()" style="flex:0 3 auto;">Chat</button> -->
         <div style="flex:0 6 auto"></div>
@@ -316,7 +316,9 @@
       <div id="myModal" class="modal">
         <!-- Modal content -->
         <div class="modal-content" style="width:90vw; height:400px;">
+          
           <div class="">
+            <div class="alert_placeholder" ></div>
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#home">Start Game</a></li>
               <li><a data-toggle="tab" href="#menu1">How to play</a></li>
@@ -673,8 +675,9 @@
         </div>
       </div>
       <div id="myWinners" class="modal" style="display:none">
+        <div class="alert_placeholder" style="flex:0 2 auto;"></div>
         <div class="modal-content" style="width:90vw; height:540px;">
-          <span class="close">&times;</span>
+          <!-- <span class="close">&times;</span> -->
           <H3>Winners</H3>
           <div id="container" style="width:400px;height:410px;position:relative">
             <div id="root" style="position:absolute;">

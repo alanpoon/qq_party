@@ -51,6 +51,8 @@ export function init_pkg_ws(){
     }
   }
   init_chat()
+  var timeinterval;
+  var countdown;
   window.push_web_bevy_events_fn2 =function(msg){
     var event = JSON.parse(msg);
     if (typeof event["Scores"]!="undefined"){
@@ -78,6 +80,8 @@ export function init_pkg_ws(){
       if ( typeof event["StateChange"]["state"] !="undefined"){
         switch (event["StateChange"]["state"]){
           case "Running":
+            var x = document.getElementById("myWinners");
+            x.style.display = "none";
             break
           case "Stop":
             var x = document.getElementById("myWinners");
@@ -103,14 +107,23 @@ export function init_pkg_ws(){
     }else if (typeof event["StateNotification"]!="undefined"){
       if ( typeof event["StateNotification"]["countdown"] !="undefined"){
         console.log("StateNotification",event["StateNotification"]);
-        $("#alert_placeholder").after(
+        $(".alert_placeholder").html(
           '<div class="alert alert-success alert-dismissable">'+
-              '<button type="button" class="close" ' + 
-                      'data-dismiss="alert" aria-hidden="true">' + 
-                  '&times;' + 
-              '</button>' + 
-              event["StateNotification"]["text"] + (Math.floor(event["StateNotification"]["countdown"]/1000)).toString() +" secs"+
+              // '<button type="button" class="close" ' + 
+              //         'data-dismiss="alert" aria-hidden="true">' + 
+              //     '&times;' + 
+              // '</button>' + 
+              event["StateNotification"]["text"] + '<span class="notification_counter">'+(Math.floor(event["StateNotification"]["countdown"]/1000)).toString() +'</span>' +" secs"+
            '</div>');
+           countdown = Math.floor(event["StateNotification"]["countdown"]/1000)
+           timeinterval = setInterval(() => {
+            $(".notification_counter").text(countdown.toString());
+            countdown-=1
+            if (countdown < 0) {
+              $(".alert_placeholder").empty();
+              clearInterval(timeinterval);
+            }
+          },1000);
       }
     }
   }
