@@ -178,7 +178,6 @@ $(function() {
         } else {
             callback(); //we're done
         }
-        console.log("newtable",$(newTable));
         $(newTable).find("tr").slice(8).remove();
         $(currentTable).find("tr").slice(8).remove();
     }

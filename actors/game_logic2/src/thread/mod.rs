@@ -13,9 +13,7 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
     let guard = match map.try_lock() {
       Ok(guard) => Ok(guard),
       Err(poisoned) => {
-        n = format!("{:?}",poisoned);
-        info_(format!("poisoned{}",n));
-        Err(n.clone())
+        Err(String::from(""))
       },
     };
     if let Err(_)= guard{
@@ -49,7 +47,6 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           ])});
         }
         if let Some(mut t) = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>(){
-          n = String::from("can find time");
           //t.update(start_thread_request.elapsed as f32);
           t.update_with_timestamp(start_thread_request.timestamp)
         }else{

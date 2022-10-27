@@ -39,7 +39,9 @@
       }
       #qq_party_canvas {
       width:85vw !important;
-      min-height: 600px;
+      /* height: 90vh !important; */
+      /* min-height: 600px; */
+      min-height: 90vh;
       }
       .dropbtn {
       background-color: #4CAF50;
@@ -205,6 +207,10 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
+      .alert{
+        padding:0px !important;
+        margin:0px !important;
+      }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <link rel="stylesheet" href="/leaderboard.css">
@@ -309,7 +315,7 @@
         Chat:
         <textarea id="chat_text_area" style="flex: 1 1 auto;height:100%;" readonly></textarea>
       </div>
-      <canvas id="qq_party_canvas" style="flex: 1 1 auto;height:100%"></canvas>
+      <canvas id="qq_party_canvas" style="flex: 1 1 auto;height:90%"></canvas>
       
       <button id="myBtn" style="display:none">Open Modal</button>
       <!-- The Modal -->
@@ -677,50 +683,42 @@
       <div id="myWinners" class="modal" style="display:none">
         <div class="modal-content" style="width:90vw; height:540px;">
           <div class="alert_placeholder" style="flex:0 2 auto;"></div>
-          <div style="display:flex;height:100%;flex-flow:column;">
-            <div style="display:flex;">
-              <!-- <span class="close">&times;</span> -->
-              <H3>Winners</H3>
-              
-              <div id="container" style="width:400px;height:410px;position:relative;flex:0 2 auto;">
-                <div id="root" style="position:absolute;">
-                    <div class = 'Winner_container' >
-                        <div class = 'Rays_container'>
-                            
-                        </div>
-                        <div class ='Podium_Container'>
-                            <div class ='Podium'>
-                                <div>2</div>
-                                <div>1</div>
-                                <div>3</div>
-                            </div>
-                        </div>
-                        <div class = 'Winner W f32'  >
-                          <div id="winner_2" style="position:relative;">2</div>
-                            <img id="winner_2_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                            <p id="winner_2_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
-                        </div>
-                        <div class = 'Winner O f32'  >
-                            <div id="winner_1" style="position:relative;">1</div>
-                            <img id="winner_1_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                            <p id="winner_1_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
-                           
-                        </div>
-                        <div class = 'Winner X f32'  >
-                          <div id="winner_3" style="position:relative;">3</div>
-                          <img id="winner_3_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
-                          <p id="winner_3_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
-                        </div>
-                    </div>
-                </div>
-                <canvas id="chicken_dinner" style="position:absolute;width:400px;height:410px;"></canvas>
+            <!-- <span class="close">&times;</span> -->
+            <H3>Winners</H3>
+            
+            <div id="container" style="width:400px;height:410px;position:relative;flex:0 2 auto;">
+              <div id="root" style="position:absolute;">
+                  <div class = 'Winner_container' >
+                      <div class = 'Rays_container'>
+                          
+                      </div>
+                      <div class ='Podium_Container'>
+                          <div class ='Podium'>
+                              <div>2</div>
+                              <div>1</div>
+                              <div>3</div>
+                          </div>
+                      </div>
+                      <div class = 'Winner W f32'  >
+                        <div id="winner_2" style="position:relative;">2</div>
+                          <img id="winner_2_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                          <p id="winner_2_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
+                      </div>
+                      <div class = 'Winner O f32'  >
+                          <div id="winner_1" style="position:relative;">1</div>
+                          <img id="winner_1_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                          <p id="winner_1_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
+                          
+                      </div>
+                      <div class = 'Winner X f32'  >
+                        <div id="winner_3" style="position:relative;">3</div>
+                        <img id="winner_3_flag" style="transform: scale(1.2,1.2);position:relative;left:20px;top:10px;"/>
+                        <p id="winner_3_score" style="position:relative;top:10px;right:0px;font-size: 19px;">score</p>
+                      </div>
+                  </div>
               </div>
-              <div style="flex:0 2 auto;" id="right">
-              </div>
+              <canvas id="chicken_dinner" style="position:absolute;width:400px;height:410px;"></canvas>
             </div>
-          </div>
-          
-          
         </div>
       </div>
       <div class ='circleBase' id='rotateMode' style="position:absolute;bottom:0px">
@@ -747,6 +745,37 @@
   </body>
   <script src="./controller.js"></script>
   <script>
+    var fullscreen = {
+      request: function(elem){
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        }
+      },
+      exit: function() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    };
+
+    var changeLockOrientation = function(val) {
+      window.screen.orientation.lock(val);
+    };
+
+    fullscreen.request(document.documentElement);
+    changeLockOrientation("landscape");
     function drawHexagon(ctx,x, y,r) {
       const a = 2 * Math.PI / 6;
       ctx.beginPath();

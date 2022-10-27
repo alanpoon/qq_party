@@ -9,7 +9,7 @@ pub use entity_to_remove::*;
 use crate::*;
 
 pub fn update_physics_velocity(mut query: Query<(&mut Velocity,&mut TargetVelocity),Changed<TargetVelocity>>){
-  for (mut v,tv) in query.iter_mut() {
+  for (mut v,mut tv) in query.iter_mut() {
 
       let f = if tv.0.x * tv.0.x+tv.0.y * tv.0.y>=2.0{
         1.0
@@ -25,7 +25,7 @@ pub fn update_physics_velocity(mut query: Query<(&mut Velocity,&mut TargetVeloci
     //   v.linvel.y = tv.0.y * 50.0;
     // }
     
-    //*tv = TargetVelocity(Vec2::ZERO);
+    *tv = TargetVelocity(Vec2::ZERO);
   }
 }
 

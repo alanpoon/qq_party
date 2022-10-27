@@ -102,7 +102,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       
       continue;
     }
-    if *elapsed >60.0{
+    if *elapsed >8.0{
       *elapsed = 0.0; 
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
