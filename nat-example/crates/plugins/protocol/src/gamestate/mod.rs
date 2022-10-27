@@ -4,22 +4,24 @@ use std::f32::consts::PI;
 
 pub fn spawn_or_update_ball_bundles(
   mut cmd: &mut Commands,
-  v_query:&mut Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
+  v_query:&mut Query<(Entity, &BallId,&mut Transform,&mut Velocity),Without<NPCId>>,
   delta:f32,
   ball_bundles:Vec<BallBundle>
   ){
     let len = ball_bundles.len();
     let mut founds = vec![];
     for i in 0..len{
-      for (e, ball_id,mut pos, mut v,mut _tv) in v_query.iter_mut(){
+      for (e, ball_id,mut pos, mut t,mut v) in v_query.iter_mut(){
         let ball_bundle = ball_bundles.get(i).unwrap();
         if ball_bundle.ball_id.0 == ball_id.0{
           *v = ball_bundle.velocity;
           // (*pos).0.x = ball_bundle.position.0.x+ ball_bundle.velocity.0.x *delta;
           // (*pos).0.y = ball_bundle.position.0.y+ ball_bundle.velocity.0.y *delta;
-          let x = ball_bundle.position.0.x +ball_bundle.velocity.0.x *delta;
-          let y = ball_bundle.position.0.y + ball_bundle.velocity.0.y *delta;
-          cmd.entity(e).insert(Transform::from_xyz(x, y, 3.0).with_scale(Vec3::splat(0.2)));
+          let x = ball_bundle.transform.translation.x +ball_bundle.velocity.0.x *delta;
+          let y = ball_bundle.transform.translation.y + ball_bundle.velocity.0.y *delta;
+          t.translation.x = x;
+          t.translation.y = y;
+          //cmd.entity(e).insert(Transform::from_xyz(x, y, 3.0).with_scale(Vec3::splat(0.2)));
           //*tv = ball_bundle.target_velocity;
           founds.push(i);
           //found = true;
@@ -35,7 +37,7 @@ pub fn spawn_or_update_ball_bundles(
     for (i,ball_bundle) in ball_bundles.iter().enumerate(){
       if !founds.contains(&i){
         let mut ball_bundle_c = ball_bundle.clone();
-        ball_bundle_c.target_velocity = TargetVelocity(Vec2::new(0.0,0.0));
+        //ball_bundle_c.target_velocity = TargetVelocity(Vec2::new(0.0,0.0));
         cmd.spawn_bundle(ball_bundle_c);
       }
     }

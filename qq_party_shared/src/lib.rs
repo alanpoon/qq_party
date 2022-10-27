@@ -19,6 +19,7 @@ pub mod scoreboard;
 pub mod sub_map;
 pub mod plugin;
 pub mod to_despawn;
+pub mod update;
 pub use scoreboard::*;
 pub use time_interface::DamageCountdown;
 pub use plugin::QQSharedPlugin;
@@ -35,11 +36,11 @@ pub struct TargetDestination(pub Vec2,pub f32);
 //x:1.0,y:1.0->move to its right,x:0.0,y:1.0->move forward
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug)]
 pub struct QQTime{pub elapsed:f32}
-#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+#[derive(Component,Reflect,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct BallId(pub u32,pub i16); //ball_id, sprite_enum,0:chicken,1:bear
-#[derive(Component,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
+#[derive(Component,Reflect,Serialize, Deserialize, Default, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct BallLabel(pub String,pub String); //Label, Flag
-#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+#[derive(Component,Reflect, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId(pub u32, pub u8);//ball, npc, speed
 #[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct ChaseTargetId2(pub u32, pub Option<Entity>,pub u8);//ball, npc, speed
@@ -49,12 +50,12 @@ pub struct FireId(pub u32,pub i16,pub Option<Vec2>); //owner, sprite_enum, Start
 pub struct Hit;
 #[derive(Component,Serialize, Deserialize, Default, Clone, Debug)]
 pub struct Dash(pub bool,pub Vec2,pub Vec2); //on/off, new_speed, old speed
-#[derive(Component,Serialize, Deserialize, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+#[derive(Component,Reflect, Default, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct NPCId{
   pub id:u32,
   pub sprite_enum:u32
 }
-#[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
+#[derive(Component,Reflect,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct LastNPC(pub u32,pub Option<Entity>,pub bool); //bool: is new_crate
 #[derive(Component, Clone, Debug)]
 pub struct SpecialEffectId(pub String);// special effect texture
@@ -71,7 +72,7 @@ pub struct QQParent(Entity);
 pub struct StormTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Default,Clone)]
 pub struct StartGameTiming(pub u64,pub u64); //next_timing, duration
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Reflect,Clone)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
     Dash{ball_id:BallId},

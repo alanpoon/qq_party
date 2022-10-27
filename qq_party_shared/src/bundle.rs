@@ -4,19 +4,30 @@
 // use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity,Bundle};
 use bevy::prelude::*;
 use crate::*;
-#[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
+// #[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
+// pub struct BallBundle {
+//     pub ball_id: BallId,
+//     pub ball_label: BallLabel,
+//     pub position: Position,
+//     pub velocity: QQVelocity,
+//     pub target_velocity: TargetVelocity,   
+// }
+#[derive(Bundle,Reflect,Clone,Debug)]
 pub struct BallBundle {
     pub ball_id: BallId,
     pub ball_label: BallLabel,
-    pub position: Position,
-    pub velocity: QQVelocity,
-    pub target_velocity: TargetVelocity,   
+    pub transform: Transform,
+    pub velocity: Velocity,
+    pub rigid_body:RigidBody,
+    pub locked_axes:LockedAxes,
+    pub last_npc:LastNPC,
 }
-#[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
+#[derive(Bundle,Reflect,Clone,Debug)]
 pub struct NPCBundle {
     pub npc_id: NPCId,
-    pub position: Position,
-    pub velocity: QQVelocity,
+    pub transform: Transform,
+    pub velocity: Velocity,
+    pub rigid_body:RigidBody,
     pub chase_target: ChaseTargetId,
 }
 #[derive(Bundle,Clone,Debug)]

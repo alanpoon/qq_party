@@ -11,6 +11,14 @@ impl Plugin for QQSharedPlugin {
           .init_resource::<ScoreBoard>()
           .init_resource::<entity_to_remove::EntityToRemove>()
           .init_resource::<StateTransformer>()
+          .register_type::<ServerMessage>()
+          .register_type::<BallBundle>()
+          .register_type::<NPCBundle>()
+          .register_type::<BallId>()
+          .register_type::<BallLabel>()
+          .register_type::<LastNPC>()
+          .register_type::<NPCId>()
+          .register_type::<ChaseTargetId>()
           .add_system_to_stage(CoreStage::Last,entity_to_remove::remove_entity_system.label(MyLabel::Despawn))
           //fire
           .add_system(physics::spawn_fire_collider)
@@ -21,9 +29,9 @@ impl Plugin for QQSharedPlugin {
           .add_system(physics::spawn_hierachy.label(MyLabel::Hierachy).after(MyLabel::Scoring))
           .add_system(physics::spawn_joint.after(MyLabel::Hierachy))
           //npc
-          .add_system(physics::spawn_npc_collider)
+          //.add_system(physics::spawn_npc_collider)
           //player
-          .add_system(physics::spawn_player_collider)
+          //.add_system(physics::spawn_player_collider)
           .add_system(physics::add_ball_dash_physics)
           .add_system(physics::remove_ball_dash_physics)
           .add_system(physics::update_state_position_physics)

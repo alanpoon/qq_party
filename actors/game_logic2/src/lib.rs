@@ -11,6 +11,7 @@ mod client_message_handlers;
 mod plugins;
 mod startup;
 mod util;
+use bevy::core::CorePlugin;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
@@ -49,6 +50,7 @@ impl Thread for GameLogicActor{
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
       .init_resource::<bevy_wasmcloud_time::Time>()
+      .init_resource::<bevy::reflect::TypeRegistryArc>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_plugin(QQSharedPlugin)

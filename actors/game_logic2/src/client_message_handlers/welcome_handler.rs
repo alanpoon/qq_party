@@ -2,26 +2,32 @@ use qq_party_shared::*;
 use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn;
-use crate::util::sub_map_area;
+use qq_party_shared::sub_map::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::collections::HashMap;
-use bevy::prelude::*;
+use bevy::{prelude::*,  reflect::{
+  serde::{ReflectDeserializer, ReflectSerializer},
+  DynamicStruct, TypeRegistry,TypeRegistryInternal
+}, transform,
+};
+use bevy_rapier2d::prelude::*;
 use std::sync::{Arc, Mutex};
 use bevy::math::Vec2;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_numbergen::random_in_range;
 pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:BallLabel)-> RpcResult<()>{
-    let x = random_in_range(3300,3800).await?;
-    let y = random_in_range(3500,3800).await?;
-    let pos = Position(Vec2::new(x as f32,y as f32));
-    let key = sub_map_area(pos.clone());
+    let x = random_in_range(3300,3800).await? as f32;
+    let y = random_in_range(3500,3800).await? as f32;
+    let key = sub_map_area(x,y);
     info_(format!("welcome ball_id {:?}",ball_id));
     let ball_bundle = BallBundle{
       ball_id:ball_id,
       ball_label:ball_label.clone(),
-      position:pos,
-      velocity:QQVelocity(Vec2::new(0.0 as f32,0.0 as f32)),
-      target_velocity: TargetVelocity(Vec2::ZERO),
+      transform:Transform { translation: [x,y,3.0].into(), ..Default::default() },
+      velocity:Velocity::zero(),
+      rigid_body:RigidBody::Dynamic,
+      locked_axes:LockedAxes::ROTATION_LOCKED,
+      last_npc:LastNPC(0, None, false)
     };
     {
       let guard = match map.lock() {
@@ -39,9 +45,11 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
       init_score(ball_id.0,ball_label,&mut scoreboard.scores);
+      let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
       
       let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
-      match rmp_serde::to_vec(&server_message){
+      let serializer = ReflectSerializer::new(&server_message, &type_registry);
+      match rmp_serde::to_vec(&serializer){
         Ok(b)=>{
           let p_msg = PubMessage{
             body:b,
@@ -52,6 +60,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         }
         _=>{}
       }
+      drop(type_registry);
       if let Some(st) = state_from_transform{
         match st{
           QQState::Running|QQState::StopNotification=>{
@@ -59,9 +68,12 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           },
           QQState::Stop|QQState::RunNotification=>{
             if let Some(winners) = app.world.get_resource::<crate::Winners>(){
+              let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
               let channel_message_back = ServerMessage::StateChange{state:QQState::Stop,scoreboard:winners.scores.clone()};
+              let serializer = ReflectSerializer::new(&server_message, &type_registry);
+
               info_(format!("sending while stop"));
-              match rmp_serde::to_vec(&channel_message_back){
+              match rmp_serde::to_vec(&serializer){
                 Ok(b)=>{
                   let p_msg = PubMessage{
                     body:b,
@@ -85,21 +97,25 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       let mut npc_bundles = vec![];
       let bevy_wasmcloud_time_val = app.world.get_resource::<crate::bevy_wasmcloud_time::Time>().unwrap();
       let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
-      let mut query = app.world.query::<(&BallId,&BallLabel,&Position, &QQVelocity,&TargetVelocity)>();
-      for (gball_id,ball_label,position,velocity,target_velocity) in query.iter(&app.world){
+      let mut query = app.world.query::<(&BallId,&BallLabel,&Transform, &Velocity,&LastNPC)>();
+      //let mut query = app.world.query::<(&BallBundle)>();
+      for (gball_id,ball_label,transform,velocity,last_npc) in query.iter(&app.world){
         if gball_id.0!=ball_id.0{//don't send yourself
-          let sa = sub_map_area(position.clone());
+          let sa = sub_map_area(transform.translation.x,transform.translation.y);
           if sa ==key{
-            ball_bundles.push(BallBundle{ball_id:gball_id.clone(),ball_label:ball_label.clone(),position:position.clone(),velocity:velocity.clone(),target_velocity:target_velocity.clone()});
+            ball_bundles.push(BallBundle{ball_id:gball_id.clone(),ball_label:ball_label.clone(),transform:transform.clone(),velocity:velocity.clone(),rigid_body:RigidBody::Dynamic,locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone()});
           }
         }
       }
-      let mut npc_query = app.world.query::<(&NPCId,&Position,&QQVelocity,&ChaseTargetId)>();
+      let mut npc_query = app.world.query::<(&NPCId,&Transform,&Velocity,&ChaseTargetId)>();
 
-      for (npc_id,position,velocity,chase_target) in npc_query.iter(&app.world){
-        let sa = sub_map_area(position.clone());
+      for (npc_id,transform,velocity,chase_target) in npc_query.iter(&app.world){
+        let sa = sub_map_area(transform.translation.x,transform.translation.x);
         if sa ==key{
-          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),position:position.clone(),velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0)});
+          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),transform:transform.clone(),
+            velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0),
+            rigid_body:RigidBody::Dynamic
+          });
         }
       }
       let storm_timing = app.world.get_resource::<StormTiming>().unwrap().clone();
@@ -109,9 +125,11 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         if i==0{
           bb = ball_bundles.clone();
         }
+        let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
         let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
           storm_timing:storm_timing.clone(),timestamp:bevy_wasmcloud_time_val_clone.timestamp};
-        match rmp_serde::to_vec(&channel_message_back){
+        let serializer = ReflectSerializer::new(&channel_message_back, &type_registry);
+        match rmp_serde::to_vec(&serializer){
           Ok(b)=>{
             let p_msg = PubMessage{
               body:b,

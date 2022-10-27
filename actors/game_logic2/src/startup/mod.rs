@@ -7,9 +7,12 @@ use wasmcloud_interface_messaging::PubMessage;
 use qq_party_shared::*;
 use std::collections::HashSet;
 use crate::info_::info_;
-use bevy::prelude::*;
 use bevy::utils::Duration;
-
+use bevy::{prelude::*,  reflect::{
+    serde::{ReflectDeserializer, ReflectSerializer},
+    DynamicStruct, TypeRegistry,TypeRegistryInternal
+  }, transform,
+  };
 
 
 pub fn state_update(app:&mut App){
@@ -42,14 +45,18 @@ pub fn state_update(app:&mut App){
         }
         _=>{}
     }
+      
     if let Some(new_state)= new_state{
         info_(format!("new_state {:?}",new_state));
+        let type_registry = app.world.get_resource::<TypeRegistryInternal>().unwrap();
         match new_state{
             QQState::Running=>{
                 app.world.spawn()
-                .insert(storm_ring::spawn_storm_ring(3400.0,3400.0,80));
+                .insert(storm_ring::spawn_storm_ring(3400.0,3400.0,80));  
+                let type_registry = app.world.get_resource::<TypeRegistryInternal>().unwrap();
                 let server_message = ServerMessage::StateChange{state:QQState::Running,scoreboard:vec![]};
-                match rmp_serde::to_vec(&server_message){
+                let serializer = ReflectSerializer::new(&server_message, &type_registry);
+                match rmp_serde::to_vec(&serializer){
                     Ok(b)=>{
                         let p_msg = PubMessage{
                         body:b,
@@ -62,8 +69,10 @@ pub fn state_update(app:&mut App){
                 }
             }
             QQState::StopNotification=>{
+                let type_registry = app.world.get_resource::<TypeRegistryInternal>().unwrap();
                 let server_message = ServerMessage::StateNotification{countdown:12000,text:String::from("Game ending in ")};
-                match rmp_serde::to_vec(&server_message){
+                let serializer = ReflectSerializer::new(&server_message, &type_registry);
+                match rmp_serde::to_vec(&serializer){
                     Ok(b)=>{
                         let p_msg = PubMessage{
                         body:b,
@@ -128,8 +137,10 @@ pub fn state_update(app:&mut App){
                     winners.scores = score_vec.clone();
                 }
                 //score_vec = vec![(3232,2222,BallLabel(String::from("hello"),String::from(".cn")))];
+                let type_registry = app.world.get_resource::<TypeRegistryInternal>().unwrap();
                 let server_message = ServerMessage::StateChange{state:QQState::Stop,scoreboard:score_vec};
-                match rmp_serde::to_vec(&server_message){
+                let serializer = ReflectSerializer::new(&server_message, &type_registry);
+                match rmp_serde::to_vec(&serializer){
                     Ok(b)=>{
                     let p_msg = PubMessage{
                         body:b,
@@ -142,8 +153,10 @@ pub fn state_update(app:&mut App){
                 }
             }
             QQState::RunNotification=>{
+                let type_registry = app.world.get_resource::<TypeRegistryInternal>().unwrap();
                 let server_message = ServerMessage::StateNotification{countdown:12000,text:String::from("New game starting in ")};
-                match rmp_serde::to_vec(&server_message){
+                let serializer = ReflectSerializer::new(&server_message, &type_registry);
+                match rmp_serde::to_vec(&serializer){
                     Ok(b)=>{
                         let p_msg = PubMessage{
                         body:b,

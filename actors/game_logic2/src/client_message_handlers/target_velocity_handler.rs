@@ -4,7 +4,12 @@ use crate::messaging_::publish_;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::sync::{Arc, Mutex};
 use super::is_running;
-use bevy::prelude::*;
+use bevy::{prelude::*,  reflect::{
+  serde::{ReflectDeserializer, ReflectSerializer},
+  DynamicStruct, TypeRegistry,TypeRegistryInternal
+}, transform,
+};
+use bevy_rapier2d::prelude::*;
 use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
   let  guard = match map.lock() {
@@ -17,36 +22,31 @@ pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:T
   if !is_running(&app){
     return ;
   }
-  let mut query = app.world.query::<(Entity, &BallId,&Position)>();
-  // let bevy_wasmcloud_time_val = app.world.get_resource_mut::<bevy_wasmcloud_time::Time>().unwrap();
-  // let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
-  let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_)| {
-    ball_id == _ball_id})
-  .next();
-  match local_ball {
-    Some((entity, _,position)) => {
-        let sa = sub_map_area(position.0.x,position.0.y);
-        //info_(format!("sa {:?} pos {:?}",sa,position));
-        app.world.entity_mut(entity).insert(target_velocity);
-        //app.world.entity_mut(entity).insert(bevy_wasmcloud_time_val_clone);
-        let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
-        match rmp_serde::to_vec(&server_message){
-          Ok(b)=>{
-            let p_msg = PubMessage{
-              body:b,
-              reply_to: None,
-              subject: format!("game_logic.{}",sa)
-              };
-              publish_(p_msg);
-            
-          }
-          _=>{
 
-          }
+  let mut velocity_query= app.world.query::<(&BallId,&Transform,&mut Velocity)>();
+  for (gball_id,transform,mut velocity) in velocity_query.iter_mut(&mut app.world){
+    if gball_id.0 ==ball_id.0{
+      let sa = sub_map_area(transform.translation.x,transform.translation.y);
+      update::target_velocity::velocity(&mut velocity, target_velocity.clone());
+      let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
+      let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
+      let serializer = ReflectSerializer::new(&server_message, &type_registry);
+
+      match rmp_serde::to_vec(&serializer){
+        Ok(b)=>{
+          let p_msg = PubMessage{
+            body:b,
+            reply_to: None,
+            subject: format!("game_logic.{}",sa)
+            };
+            publish_(p_msg);
+          
         }
-    }
-    None => {
-        info_(format!("target_velocity_handler cannot find ball_id {:?}",ball_id));
+        _=>{
+
+        }
+      }
+      break;
     }
   }
   
