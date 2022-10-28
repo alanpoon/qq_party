@@ -103,15 +103,19 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       
       continue;
     }
-    if *elapsed >8.0{
+    if *elapsed >30.0{
       *elapsed = 0.0; 
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
       for (ball_id,ball_label,transform,velocity,last_npc) in query.iter(){
         let sa = sub_map_area(transform.translation.x,transform.translation.y);
         if &sa ==key{
-          ball_bundles.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),transform:transform.clone(),velocity:velocity.clone(),
-            rigid_body:RigidBody::Dynamic,locked_axes:LockedAxes::TRANSLATION_LOCKED,last_npc:last_npc.clone()
+          ball_bundles.push(BallBundle{ball_id:ball_id.clone(),ball_label:ball_label.clone(),
+            transform:transform.clone(),
+            global_transform:GlobalTransform::identity(),
+            velocity:velocity.clone(),
+            rigid_body:RigidBody::Dynamic,
+            locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone()
           });
         }
         
@@ -120,7 +124,9 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       for (npc_id,transform,velocity,chase_target) in npc_query.iter(){
         let sa = sub_map_area(transform.translation.x,transform.translation.y);
         if &sa ==key{
-          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),transform:transform.clone(),velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0),rigid_body:RigidBody::Dynamic});
+          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),transform:transform.clone(),
+            global_transform:GlobalTransform::identity(),
+            velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0),rigid_body:RigidBody::Dynamic});
         }
       }
       for (i,npc_chunck) in npc_bundles.chunks(20).enumerate(){

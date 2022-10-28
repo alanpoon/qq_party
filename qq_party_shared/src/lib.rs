@@ -68,11 +68,11 @@ pub struct SpecialEffectBundle{
 }
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct QQParent(Entity);
-#[derive(Serialize, Deserialize, Default,Clone)]
+#[derive(Serialize, Deserialize, Default,Clone,Debug)]
 pub struct StormTiming(pub u64,pub u64); //next_timing, duration
 #[derive(Serialize, Deserialize, Default,Clone)]
 pub struct StartGameTiming(pub u64,pub u64); //next_timing, duration
-#[derive(Clone,Serialize,Deserialize)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub enum ServerMessage {
     Chat{msg:String,msg_ago:String,user:String,user_id:u32},
     Dash{ball_id:BallId},

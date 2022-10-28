@@ -1,7 +1,6 @@
 use crate::*;
 use bevy::prelude::*;
 use std::collections::HashSet;
-use std::hash::Hash;
 
 #[derive(Default,Debug,Clone)]
 pub struct EntityToRemove{

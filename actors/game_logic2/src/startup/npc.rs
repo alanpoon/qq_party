@@ -1,7 +1,7 @@
 use wasmbus_rpc::actor::prelude::*;
 use qq_party_shared::*;
 use bevy::prelude::*;
-use bevy_rapier2d::{prelude::*, na::Translation};
+use bevy_rapier2d::prelude::*;
 use bevy::math::Vec2;
 use crate::numbergen_::random_in_range_;
 use wasmcloud_interface_numbergen::random_in_range;
@@ -59,6 +59,7 @@ pub async fn spawn_npc_bundles()-> RpcResult<Vec<NPCBundle>>{
         translation:[pos.0.x,pos.0.y,3.0].into(),
         ..Default::default()
       },
+      global_transform:GlobalTransform::identity(),
       rigid_body:RigidBody::Dynamic,
       velocity:Velocity::zero(),
       chase_target: ChaseTargetId(0,0),
@@ -120,6 +121,7 @@ pub fn spawn_npc_bundles_sync()-> RpcResult<Vec<NPCBundle>>{
         translation:[pos.0.x,pos.0.y,3.0].into(),
         ..Default::default()
       },
+      global_transform:GlobalTransform::identity(),
       rigid_body:RigidBody::Dynamic,
       velocity:Velocity::zero(),
       chase_target: ChaseTargetId(0,0),

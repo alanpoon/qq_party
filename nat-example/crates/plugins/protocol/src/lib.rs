@@ -106,7 +106,7 @@ fn handle_events(
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    balls: Query<(&BallId,&QQVelocity)>,
+    balls: Query<(&BallId,&Velocity)>,
     
 ) {
     if let Some(ref mut state) = *state {
@@ -201,16 +201,16 @@ fn handle_events(
             if ball_id_ingame==&ball_id{
               let mut send= false;
               if target_velocity_x!=0.0{
-                if v.0.x / target_velocity_x <0.0{
+                if v.linvel.x / target_velocity_x <0.0{
                   send = true;
-                }else if v.0.x==0.0{
+                }else if v.linvel.x==0.0{
                   send = true;
                 }
               }
               if target_velocity_y!=0.0{
-                if v.0.y / target_velocity_y <0.0{
+                if v.linvel.y / target_velocity_y <0.0{
                   send = true;
-                }else if v.0.y==0.0{
+                }else if v.linvel.y==0.0{
                   send = true;
                 }
               }
@@ -327,12 +327,12 @@ fn receive_events(mut cmd: Commands,
                           }
                           
                           ServerMessage::GameState{ball_bundles,npc_bundles,storm_timing,timestamp,..}=>{
-                            info!("game_state {:?}",ball_bundles.clone());
+                            info!("game_state npc_bundles{:?}",npc_bundles.clone());
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
                             let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;
                             msg_handler::game_state::_fn_spawn_or_update_ball_bundles(&mut cmd,&mut set,delta,ball_bundles);
-                            // msg_handler::spawn_or_update_npc_bundles(&mut cmd,&mut npc_query,delta,npc_bundles);
+                            msg_handler::game_state::_fn_spawn_or_update_npc_bundles(&mut cmd,&mut set,delta,npc_bundles);
                             *storm_timing_res = storm_timing;
                           }
                           ServerMessage::Scores{scoreboard,..}=>{

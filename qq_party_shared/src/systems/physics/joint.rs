@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use crate::*;
 use crate::systems::entity_to_remove;
-pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Position),(Without<BallId>,Without<ChaseTargetId2>)>,
-mut ball_query:Query<(Entity,&BallId,&Position,&mut LastNPC)>,
+pub fn set_state_chasetarget_npc2(mut cmd:Commands,mut npc_query: Query<(Entity,&NPCId,&Transform),(Without<BallId>,Without<ChaseTargetId2>)>,
+mut ball_query:Query<(Entity,&BallId,&Transform,&mut LastNPC)>,
 query_scoring:Query<(Entity,&QQParent,&NPCId),Without<BallId>>,
 mut res:ResMut<ScoreBoard>,
 mut to_despawn:ResMut<entity_to_remove::EntityToRemove>){    
@@ -70,7 +70,6 @@ pub fn spawn_hierachy(
   }
 }
 pub fn spawn_joint(
-  mut cmd: Commands,
   mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&QQParent,&ChaseTargetId2)>,
   position_query: Query<&Position>,
   last_npc_query:Query<(Entity,&NPCId,&QQParent)>,

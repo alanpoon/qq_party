@@ -48,7 +48,7 @@ impl<'de> Deserialize<'de> for BallBundle {
         Ok(BallBundle{
             ball_id:bs.ball_id,
             ball_label:bs.ball_label,
-            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0),
+            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0).with_scale(Vec3::splat(0.2)),
             global_transform:GlobalTransform::identity(),
             velocity:Velocity { linvel: [bs.velocity.x,bs.velocity.y].into(), ..Default::default() },
             rigid_body:RigidBody::Dynamic,
@@ -61,6 +61,7 @@ impl<'de> Deserialize<'de> for BallBundle {
 pub struct NPCBundle {
     pub npc_id: NPCId,
     pub transform: Transform,
+    pub global_transform: GlobalTransform,
     pub velocity: Velocity,
     pub rigid_body:RigidBody,
     pub chase_target: ChaseTargetId,
@@ -94,7 +95,8 @@ impl<'de> Deserialize<'de> for NPCBundle {
         let bs =NPCBundleS::deserialize(deserializer)?;
         Ok(NPCBundle{
             npc_id:bs.npc_id,
-            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0),
+            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0).with_scale(Vec3::splat(0.1)),
+            global_transform:GlobalTransform::identity(),
             velocity:Velocity { linvel: [bs.velocity.x,bs.velocity.y].into(), ..Default::default() },
             rigid_body:RigidBody::Dynamic,
             chase_target:bs.chase_target
@@ -104,7 +106,8 @@ impl<'de> Deserialize<'de> for NPCBundle {
 #[derive(Bundle,Clone,Debug)]
 pub struct FireBundle {
     pub fire_id:FireId,
-    pub position: Position,
-    pub velocity: QQVelocity,
+    pub transform: Transform,
+    pub global_transform:GlobalTransform,
+    pub velocity: Velocity,
     //pub start: Time,
 }

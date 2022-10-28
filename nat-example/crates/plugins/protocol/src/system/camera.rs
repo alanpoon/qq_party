@@ -13,18 +13,18 @@ extern "C" {
 pub fn move_with_local_player(
     mut commands: ResMut<protocol::Commands>,
     mut local_user_info: ResMut<LocalUserInfo>,
-    ball_query: Query<(&BallId,&Position)>,
-    mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera), With<Camera>>,
+    ball_query: Query<(&BallId,&Transform),(With<BallId>,Without<Camera>)>,
+    mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera), (With<Camera>,Without<BallId>)>,
 ) {
   
-  for ( ball_id,po) in ball_query.iter(){
+  for ( ball_id,t) in ball_query.iter(){
     for (mut transform, mut _ortho,c) in query.iter_mut(){
       // if let Some(ci) = ci{
       //   if ci.show_ui{
           if ball_id == &local_user_info.0.ball_id{
-            transform.translation.x = po.0.x;
-            transform.translation.y = po.0.y;
-            let event= json!({"Ball":[po.0.x,po.0.y]});
+            transform.translation.x = t.translation.x;
+            transform.translation.y = t.translation.y;
+            let event= json!({"Ball":[t.translation.x,t.translation.y]});
             push_web_bevy_events_fn2(&event.to_string());
             if transform.translation.x >3700.0{
               transform.translation.x = 3700.0;
@@ -43,10 +43,10 @@ pub fn move_with_local_player(
             // Bevy has a specific camera setup and this can mess with how our layers are shown.
             transform.translation.z = z;
             //sub_map
-            let sa = sub_map_area(po.0.x,po.0.y);
+            let sa = sub_map_area(t.translation.x,t.translation.y);
             if local_user_info.0.sub_map !=sa{
               //unsub
-              info!("We are subing game_logic.{} pos{:?}",sa,po.clone());
+              info!("We are subing game_logic.{} translation{:?}",sa,t.translation);
               if local_user_info.0.sub_map!=String::from(""){
                 let n = nats::proto::ClientOp::Unsub{
                   sid:17,
@@ -54,7 +54,7 @@ pub fn move_with_local_player(
                 };
                 (*commands).push(Command::Nats(String::from("default"),n));
               }
-              let c = c_::change_sub_map(*ball_id,*po);
+              let c = c_::change_sub_map(*ball_id,Position([t.translation.x,t.translation.y].into()));
               (*commands).push(c);
               //new_sub
               let n = nats::proto::ClientOp::Sub{

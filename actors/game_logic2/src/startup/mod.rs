@@ -153,6 +153,7 @@ pub fn state_update(app:&mut App){
                     _=>{}
                 }
                 if let Ok(npc_bundles)=crate::startup::npc::spawn_npc_bundles_sync(){
+                    //info_(format!("npc_bundles {:?}",npc_bundles));
                     app.world.spawn_batch(npc_bundles);
                 }
                 //when elapsed >60, it will publish

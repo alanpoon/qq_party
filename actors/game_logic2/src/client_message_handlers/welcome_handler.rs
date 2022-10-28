@@ -102,7 +102,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       for (npc_id,transform,velocity,chase_target) in npc_query.iter(&app.world){
         let sa = sub_map_area(transform.translation.x,transform.translation.x);
         if sa ==key{
-          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),transform:transform.clone(),
+          npc_bundles.push(NPCBundle{npc_id:npc_id.clone(),
+            transform:transform.clone(),
+            global_transform:GlobalTransform::identity(),
             velocity:velocity.clone(),chase_target:ChaseTargetId(chase_target.0.clone(),0),
             rigid_body:RigidBody::Dynamic
           });

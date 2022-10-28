@@ -19,14 +19,16 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
     if !is_running(&app){
       return ;
     }
-    let mut query = app.world.query::<(Entity, &BallId,&Position,&Velocity)>();
+    let mut query = app.world.query::<(Entity, &BallId,&Transform,&Velocity)>();
     let local_ball = query.iter(&app.world).filter(|(_, &_ball_id,_,_)| {
       ball_id == _ball_id})
     .next();
     let fire_bundle = match local_ball {
-      Some((_, ball_id,position,vel)) => {
-          let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some(position.0.clone())),position:position.clone(),
-            velocity:QQVelocity([vel.linvel.x*2.0,vel.linvel.y*2.0].into()),
+      Some((_, ball_id,t,vel)) => {
+          let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some([t.translation.x,t.translation.y].into())),
+            transform:Transform::from_xyz(t.translation.x, t.translation.y, 3.0),
+            global_transform:GlobalTransform::identity(),
+            velocity:Velocity { linvel: vel.linvel *2.0, ..Default::default() },
           };
           
           Some(fire_bundle)
@@ -35,9 +37,11 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
     };
     if let Some(fire_bundle) = fire_bundle{
       
-      let sa = sub_map_area(fire_bundle.position.0.x,fire_bundle.position.0.y);
+      let sa = sub_map_area(fire_bundle.transform.translation.x,fire_bundle.transform.translation.y);
       spawn_fire(&mut app.world,fire_bundle.clone());
-      let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:fire_bundle.velocity.clone(),sprite_enum};
+      let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:
+        QQVelocity(Vec2::new(fire_bundle.velocity.linvel.x,fire_bundle.velocity.linvel.y)),
+        sprite_enum};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
           let p_msg = PubMessage{

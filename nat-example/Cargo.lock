@@ -2087,6 +2087,7 @@ name = "desk-plugin-protocol"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_rapier2d",
  "chrono",
  "desk-client-websocket",
  "desk-plugin-core",
