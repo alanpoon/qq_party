@@ -5,11 +5,7 @@ use crate::spawn_::spawn;
 use qq_party_shared::sub_map::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::collections::HashMap;
-use bevy::{prelude::*,  reflect::{
-  serde::{ReflectDeserializer, ReflectSerializer},
-  DynamicStruct, TypeRegistry,TypeRegistryInternal
-}, transform,
-};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use std::sync::{Arc, Mutex};
 use bevy::math::Vec2;
@@ -44,12 +40,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
-      init_score(ball_id.0,ball_label,&mut scoreboard.scores);
-      let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
-      
+      init_score(ball_id.0,ball_label,&mut scoreboard.scores);      
       let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
-      let serializer = ReflectSerializer::new(&server_message, &type_registry);
-      match rmp_serde::to_vec(&serializer){
+      match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
           let p_msg = PubMessage{
             body:b,
@@ -60,7 +53,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         }
         _=>{}
       }
-      drop(type_registry);
       if let Some(st) = state_from_transform{
         match st{
           QQState::Running|QQState::StopNotification=>{
@@ -68,12 +60,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           },
           QQState::Stop|QQState::RunNotification=>{
             if let Some(winners) = app.world.get_resource::<crate::Winners>(){
-              let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
               let channel_message_back = ServerMessage::StateChange{state:QQState::Stop,scoreboard:winners.scores.clone()};
-              let serializer = ReflectSerializer::new(&server_message, &type_registry);
-
               info_(format!("sending while stop"));
-              match rmp_serde::to_vec(&serializer){
+              match rmp_serde::to_vec(&channel_message_back){
                 Ok(b)=>{
                   let p_msg = PubMessage{
                     body:b,
@@ -125,11 +114,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         if i==0{
           bb = ball_bundles.clone();
         }
-        let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
         let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
           storm_timing:storm_timing.clone(),timestamp:bevy_wasmcloud_time_val_clone.timestamp};
-        let serializer = ReflectSerializer::new(&channel_message_back, &type_registry);
-        match rmp_serde::to_vec(&serializer){
+        match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
             let p_msg = PubMessage{
               body:b,

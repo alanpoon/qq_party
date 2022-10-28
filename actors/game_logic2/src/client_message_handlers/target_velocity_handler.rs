@@ -4,13 +4,8 @@ use crate::messaging_::publish_;
 use wasmcloud_interface_messaging::{PubMessage};
 use std::sync::{Arc, Mutex};
 use super::is_running;
-use bevy::{prelude::*,  reflect::{
-  serde::{ReflectDeserializer, ReflectSerializer},
-  DynamicStruct, TypeRegistry,TypeRegistryInternal
-}, transform,
-};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use crate::bevy_wasmcloud_time;
 pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:TargetVelocity){
   let  guard = match map.lock() {
     Ok(guard) => guard,
@@ -28,11 +23,8 @@ pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:T
     if gball_id.0 ==ball_id.0{
       let sa = sub_map_area(transform.translation.x,transform.translation.y);
       update::target_velocity::velocity(&mut velocity, target_velocity.clone());
-      let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
       let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
-      let serializer = ReflectSerializer::new(&server_message, &type_registry);
-
-      match rmp_serde::to_vec(&serializer){
+      match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
           let p_msg = PubMessage{
             body:b,

@@ -1,9 +1,5 @@
 use wasmcloud_interface_messaging::PubMessage;
-use bevy::{prelude::*,  reflect::{
-  serde::{ReflectDeserializer, ReflectSerializer},
-  DynamicStruct, TypeRegistry,TypeRegistryInternal
-}, transform,
-};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy::math::Vec2;
 use qq_party_shared::*;
@@ -18,9 +14,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
   npc_query: Query<(&NPCId,&Transform,&Velocity,&ChaseTargetId)>,
   storm_ring_query: Query<(Entity,&StormRingId)>,
   scoreboard:Res<ScoreBoard>,
-  mut storm_timing:ResMut<StormTiming>,
-  type_registry:Res<TypeRegistry>) {
-    let type_registry = type_registry.read();
+  mut storm_timing:ResMut<StormTiming>) {
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if key =="scoreboard"{
       if *elapsed >3.0{
@@ -36,8 +30,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
           score_vec.clone().truncate(8);
         }
         let server_message = ServerMessage::Scores{scoreboard:score_vec};
-        let serializer = ReflectSerializer::new(&server_message, &type_registry);
-        match rmp_serde::to_vec(&serializer){
+        match rmp_serde::to_vec(&server_message){
           Ok(b)=>{
             let p_msg = PubMessage{
               body:b,
@@ -68,8 +61,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         *elapsed =0.0;
         *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};
-        let serializer = ReflectSerializer::new(&channel_message_back, &type_registry);
-        match rmp_serde::to_vec(&serializer){
+        match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
             let p_msg = PubMessage{
               body:b,
@@ -88,8 +80,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
           let storm_ring_id = StormRingId(Vec2::new(3600.0,3500.0),90);
           cmd.spawn().insert(storm_ring_id.clone());
           let channel_message_back = ServerMessage::StormRings{storm_rings:vec![storm_ring_id],next_storm_timing:None};
-          let serializer = ReflectSerializer::new(&channel_message_back, &type_registry);
-          match rmp_serde::to_vec(&serializer){
+          match rmp_serde::to_vec(&channel_message_back){
             Ok(b)=>{
               let p_msg = PubMessage{
                 body:b,
@@ -140,10 +131,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
           storm_timing:storm_timing.clone(),
           timestamp:(*bevy_wasmcloud_time_val).timestamp};
-        
-        let serializer = ReflectSerializer::new(&channel_message_back, &type_registry);
-
-        match rmp_serde::to_vec(&serializer){
+        match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
             let p_msg = PubMessage{
               body:b,

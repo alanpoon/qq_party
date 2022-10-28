@@ -1,4 +1,4 @@
-use bevy::{ input::Input, math::Vec3, prelude::*, render::camera::Camera};
+use bevy::{ prelude::*, render::camera::Camera};
 use qq_party_shared::*;
 use protocol::{Command,nats};
 use serde_json::json;

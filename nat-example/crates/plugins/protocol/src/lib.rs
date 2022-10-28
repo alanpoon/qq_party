@@ -12,6 +12,7 @@ mod gamestate;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use core::ProtocolSystem;
 use futures::prelude::*;
 use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher};
@@ -264,9 +265,15 @@ fn receive_events(mut cmd: Commands,
   mut state: ResMut<Option<ClientStateDispatcher>>,
   mut events: ResMut<protocol::Events>,
   mut _user_info: ResMut<LocalUserInfo>,
+  // mut set: ParamSet<(
+  //   Query<&mut Health, With<Enemy>>,
+  //   Query<&mut Health, With<Player>>,
+  //   // also access the whole world ... why not
+  //   &World,
+  // )>,
   //mut query: Query<(Entity, &BallId,&mut TargetVelocity)> ) {
-  mut v_query: Query<(Entity, &BallId,&mut Position,&mut QQVelocity,&mut TargetVelocity),Without<NPCId>>,
-  mut npc_query: Query<(Entity, &NPCId,&mut Position,&mut QQVelocity,&mut ChaseTargetId),Without<BallId>>,
+  mut v_query: Query<(Entity, &BallId,&mut Transform,&mut Velocity),Without<NPCId>>,
+  mut npc_query: Query<(Entity, &NPCId,&mut Transform,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
   mut query: Query<(Entity, &BallId)>,
   mut storm_query: Query<(Entity,&mut Transform),With<StormRingId>>,
   mut storm_text_query: Query<Entity,With<StormRingTextNode>>,
@@ -291,9 +298,9 @@ fn receive_events(mut cmd: Commands,
                         match server_message{
                           
                           ServerMessage::Dash{ball_id}=>{
-                            for (entity, qball_id,pos,vel,_) in v_query.iter_mut(){
+                            for (entity, qball_id,pos,vel) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
-                                cmd.entity(entity).insert(Dash(true,vel.0*2.0,vel.0));
+                                cmd.entity(entity).insert(Dash(true,vel.linvel*2.0,vel.linvel));
                               }
                             }                          
                           }
@@ -302,11 +309,11 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  
-                            for (_entity, qball_id,pos,_vel,_) in v_query.iter_mut(){
+                            for (_entity, qball_id,t,_vel) in v_query.iter_mut(){
                               if ball_id ==*qball_id{
                                 let fire_bundle = FireBundle{
-                                  fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some(pos.0.clone())),
-                                  position:pos.clone(),
+                                  fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some([t.translation.x,t.translation.y].into())),
+                                  position:Position([t.translation.x,t.translation.y].into()),
                                   velocity:velocity,
                                 };
                                 gamestate::spawn_fire_bundle(&mut cmd,fire_bundle);

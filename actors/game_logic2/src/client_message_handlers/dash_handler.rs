@@ -2,11 +2,7 @@ use qq_party_shared::*;
 use crate::messaging_::publish_;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
-use bevy::{prelude::*,  reflect::{
-  serde::{ReflectDeserializer, ReflectSerializer},
-  DynamicStruct, TypeRegistry,TypeRegistryInternal
-}, transform,
-};
+use bevy::prelude::*;
 use super::is_running;
 use std::sync::{Arc, Mutex};
 pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId){
@@ -32,10 +28,8 @@ pub fn _fn(map:Arc<Mutex<App>>,ball_id:BallId){
           let vel_c = vel.clone();
           app.world.entity_mut(entity).insert(Dash(true,vel_c.0*2.0,vel_c.0));
           app.world.entity_mut(entity).insert(DashTimer(Timer::from_seconds(1.0, false)));
-          let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
           let server_message = ServerMessage::Dash{ball_id:ball_id_c};
-          let serializer = ReflectSerializer::new(&server_message, &type_registry);
-          match rmp_serde::to_vec(&serializer){
+          match rmp_serde::to_vec(&server_message){
             Ok(b)=>{
               let p_msg = PubMessage{
                 body:b,

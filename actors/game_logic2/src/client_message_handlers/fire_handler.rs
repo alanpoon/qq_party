@@ -3,11 +3,7 @@ use crate::messaging_::publish_;
 use crate::spawn_::spawn_fire;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
 use wasmcloud_interface_messaging::{PubMessage};
-use bevy::{prelude::*,  reflect::{
-  serde::{ReflectDeserializer, ReflectSerializer},
-  DynamicStruct, TypeRegistry,TypeRegistryInternal
-}, transform,
-};
+use bevy::prelude::*;
 use super::is_running;
 use bevy_rapier2d::prelude::*;
 use std::sync::{Arc, Mutex};
@@ -41,10 +37,8 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
       
       let sa = sub_map_area(fire_bundle.position.0.x,fire_bundle.position.0.y);
       spawn_fire(&mut app.world,fire_bundle.clone());
-      let type_registry = app.world.get_resource::<TypeRegistry>().unwrap().read();
       let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:fire_bundle.velocity.clone(),sprite_enum};
-      let serializer = ReflectSerializer::new(&server_message, &type_registry);
-      match rmp_serde::to_vec(&serializer){
+      match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
           let p_msg = PubMessage{
             body:b,
