@@ -11,11 +11,12 @@ use serde::de::{Deserialize, Deserializer};
 pub struct BallBundle {
     pub ball_id: BallId,
     pub ball_label: BallLabel,
+    pub global_transform: GlobalTransform,
+    pub locked_axes:LockedAxes,
+    pub last_npc:LastNPC,
     pub transform: Transform,
     pub velocity: Velocity,
     pub rigid_body:RigidBody,
-    pub locked_axes:LockedAxes,
-    pub last_npc:LastNPC,
 }
 #[derive(Clone,Debug,Serialize,Deserialize)]
 struct BallBundleS {
@@ -47,7 +48,8 @@ impl<'de> Deserialize<'de> for BallBundle {
         Ok(BallBundle{
             ball_id:bs.ball_id,
             ball_label:bs.ball_label,
-            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,0.0),
+            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0),
+            global_transform:GlobalTransform::identity(),
             velocity:Velocity { linvel: [bs.velocity.x,bs.velocity.y].into(), ..Default::default() },
             rigid_body:RigidBody::Dynamic,
             locked_axes:LockedAxes::ROTATION_LOCKED,
@@ -92,7 +94,7 @@ impl<'de> Deserialize<'de> for NPCBundle {
         let bs =NPCBundleS::deserialize(deserializer)?;
         Ok(NPCBundle{
             npc_id:bs.npc_id,
-            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,0.0),
+            transform: Transform::from_xyz(bs.transform.x,bs.transform.y,3.0),
             velocity:Velocity { linvel: [bs.velocity.x,bs.velocity.y].into(), ..Default::default() },
             rigid_body:RigidBody::Dynamic,
             chase_target:bs.chase_target

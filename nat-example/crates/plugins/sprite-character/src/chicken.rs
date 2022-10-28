@@ -19,6 +19,7 @@ pub fn add_chicken_sprite_system(
       if ball_id.1==1{
         ta_handle = bear_handle.clone();
       }
+      info!("chicken transform{:?}",transform.clone());
       cmd.entity(entity).insert_bundle(SpriteSheetBundle {
         texture_atlas: ta_handle,
         transform:transform.clone(),

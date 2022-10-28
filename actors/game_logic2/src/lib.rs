@@ -50,7 +50,6 @@ impl Thread for GameLogicActor{
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
       .init_resource::<bevy_wasmcloud_time::Time>()
-      .init_resource::<bevy::reflect::TypeRegistryArc>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_plugin(QQSharedPlugin)

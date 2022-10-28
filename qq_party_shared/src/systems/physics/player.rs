@@ -37,36 +37,38 @@ time : Res<Time>) {
     }
   }
 }
-pub fn update_state_position_physics(mut query: Query<(&mut Position,&mut Transform)>) {
-  for (mut pos,rigid_pos) in query.iter_mut() {
-    pos.0.x = rigid_pos.translation.x;
-    pos.0.y = rigid_pos.translation.y;
-  }
-}
+// pub fn update_state_position_physics(mut query: Query<(&mut Position,&mut Transform)>) {
+//   for (mut pos,rigid_pos) in query.iter_mut() {
+//     pos_x = rigid_pos.translation.x;
+//     pos_y = rigid_pos.translation.y;
+//   }
+// }
 
-pub fn update_state_velocity_physics(mut query: Query<(&Position,&mut Transform,&mut Velocity)>) {
-  for (pos,mut transform,mut v) in query.iter_mut() {
+pub fn update_state_velocity_physics(mut query: Query<(&mut Transform,&mut Velocity)>) {
+  for (mut transform,mut v) in query.iter_mut() {
    // info!("qqvel {:?} pos {:?}",v.clone(),pos.clone());
     let mut x=0.0;
     let mut y=0.0;
-    if (pos.0.x<=20.0 && v.linvel.x >0.0) || (pos.0.x>=3820.0 && v.linvel.x <0.0) || (pos.0.x>=20.0 && pos.0.x <= 3820.0){
+    let pos_x = transform.translation.x;
+    let pos_y = transform.translation.y;
+    if (pos_x<=20.0 && v.linvel.x >0.0) || (pos_x>=3820.0 && v.linvel.x <0.0) || (pos_x>=20.0 && pos_x <= 3820.0){
       x = v.linvel.x;
     }
-    if (pos.0.y<=20.0 && v.linvel.y >0.0) || (pos.0.y>=3820.0 && v.linvel.y <0.0) || (pos.0.y>=20.0 && pos.0.y <= 3820.0){
+    if (pos_y<=20.0 && v.linvel.y >0.0) || (pos_y>=3820.0 && v.linvel.y <0.0) || (pos_y>=20.0 && pos_y <= 3820.0){
       y = v.linvel.y;
     }
     let move_delta = Vect::new(x, y);
     v.linvel = move_delta;
-    if pos.0.x>=3820.0{
+    if pos_x>=3820.0{
       transform.translation.x = 3819.0;
     }
-    if pos.0.x<=0.0{
+    if pos_x<=0.0{
       transform.translation.x = 1.0;
     }
-    if pos.0.y>=3820.0{
+    if pos_y>=3820.0{
       transform.translation.y = 3819.0;
     }
-    if pos.0.y<=0.0{
+    if pos_y<=0.0{
       transform.translation.y = 1.0;
     }
   }
