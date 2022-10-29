@@ -364,7 +364,7 @@ fn receive_events(mut cmd: Commands,
                             match state{
                               QQState::Stop=>{
                                 info!("reset_entities called");
-                                //msg_handler::reset_entities(&mut cmd,& query,& npc_query,&mut storm_query,&mut fire_query,&mut storm_timing_res,&mut to_despawn);
+                                msg_handler::state_change::_fn_stop(&mut cmd,&mut set,&mut to_despawn);
                                 for (_,mut v) in res_scoreboard.scores.iter_mut(){
                                   v.0=0;
                                 }
@@ -406,8 +406,10 @@ fn receive_events(mut cmd: Commands,
                         match server_message{
                           ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
                             info!("welcome_ ball_bundle {:?}",ball_bundle.clone());
+                            res_scoreboard.scores.insert(ball_bundle.ball_id.0.clone(),(0,ball_bundle.ball_label.clone()));
                             cmd.spawn_bundle(ball_bundle).insert(Dash(false,[0.0,0.0].into(),[0.0,0.0].into()));
                             audioable.0 = true;
+
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }
                           _=>{}

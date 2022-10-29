@@ -6,9 +6,9 @@ mut ball_query:Query<(Entity,&BallId,&Transform,&mut LastNPC)>,
 query_scoring:Query<(Entity,&QQParent,&NPCId),Without<BallId>>,
 mut res:ResMut<ScoreBoard>,
 mut to_despawn:ResMut<entity_to_remove::EntityToRemove>){    
-  for (ball_e,ball_id,pos,mut last_npc) in ball_query.iter_mut(){
+  for (ball_e,ball_id,t,mut last_npc) in ball_query.iter_mut(){
     let mut is_near_crate= false;
-    for (npc_e,npc_id,npc_pos) in npc_query.iter_mut(){
+    for (npc_e,npc_id,npc_t) in npc_query.iter_mut(){
       let mut is_crate = false;
       let speed:Option<u8> = match npc_id.sprite_enum{
         0=>{
@@ -26,12 +26,12 @@ mut to_despawn:ResMut<entity_to_remove::EntityToRemove>){
         }
       };
       if let Some(s) = speed{
-        if pos.0.distance(npc_pos.0)<50.0 && !last_npc.2{
+        if t.translation.distance(npc_t.translation)<50.0 && !last_npc.2{
           cmd.entity(npc_e).insert(ChaseTargetId2(ball_id.0,Some(ball_e),s));
         }
       }else if is_crate{
-        if let Some(last_npc_e) = last_npc.1{ 
-          if pos.0.distance(npc_pos.0)<25.0{
+        if let Some(last_npc_e) = last_npc.1{
+          if t.translation.distance(npc_t.translation)<25.0{
             crate::systems::scoring::score(&mut cmd,ball_id.0,last_npc_e,&query_scoring,&mut res,&mut to_despawn);
             *last_npc = LastNPC(0,None,true);
             is_near_crate = true;
@@ -48,10 +48,10 @@ mut to_despawn:ResMut<entity_to_remove::EntityToRemove>){
 }
 pub fn spawn_hierachy(
   mut cmd: Commands,
-  mut npc_query: Query<(Entity,&NPCId,&Position,&ChaseTargetId2),Changed<ChaseTargetId2>>,
+  mut npc_query: Query<(Entity,&NPCId,&ChaseTargetId2),Changed<ChaseTargetId2>>,
   mut ball_query:Query<(Entity,&BallId,&mut LastNPC)>
 ) {
-  for (npc_e,npc_id,_npc_pos, chase_target_id) in npc_query.iter_mut(){
+  for (npc_e,npc_id, chase_target_id) in npc_query.iter_mut(){
     if chase_target_id.0 !=0{
       for (ball_e,ball_id,mut last_npc) in ball_query.iter_mut(){
         if chase_target_id.0 == ball_id.0 && !last_npc.2{
@@ -70,16 +70,16 @@ pub fn spawn_hierachy(
   }
 }
 pub fn spawn_joint(
-  mut npc_query: Query<(Entity,&NPCId,&Position,&mut Velocity,&QQParent,&ChaseTargetId2)>,
-  position_query: Query<&Position>,
+  mut npc_query: Query<(Entity,&NPCId,&Transform,&mut Velocity,&QQParent,&ChaseTargetId2)>,
+  position_query: Query<&Transform,Or<(With<BallId>,With<NPCId>)>>,
   last_npc_query:Query<(Entity,&NPCId,&QQParent)>,
   mut ball_query:Query<(&BallId,&mut LastNPC)>,
   mut to_despawn: ResMut<entity_to_remove::EntityToRemove>,
 ){
-  for (npc_e,npc_id,npc_pos,mut v,parent,chase_target) in npc_query.iter_mut(){
-    if let Ok(pos) = position_query.get(parent.0) {
-      let unit_vec = (pos.0-npc_pos.0).normalize_or_zero();   
-      let dist =  pos.0.distance_squared(npc_pos.0);
+  for (npc_e,npc_id,npc_t,mut v,parent,chase_target) in npc_query.iter_mut(){
+    if let Ok(t) = position_query.get(parent.0) {
+      let unit_vec = (t.translation-npc_t.translation).normalize_or_zero();   
+      let dist =  t.translation.distance_squared(npc_t.translation);
       let mut factor = 70.0;
       if dist<300.0{
         factor =0.0;
