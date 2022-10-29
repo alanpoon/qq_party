@@ -7,6 +7,7 @@ pub mod disconnect;
 pub mod target_velocity;
 pub mod game_state;
 pub mod state_change;
+pub mod fire;
 pub fn spawn_or_update_ball_bundles(
   mut cmd: &mut Commands,
   v_query:&mut Query<(Entity, &BallId,&mut Transform,&mut Velocity),Without<NPCId>>,

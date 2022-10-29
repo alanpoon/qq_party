@@ -309,16 +309,7 @@ fn receive_events(mut cmd: Commands,
                            msg_handler::disconnect::_fn(&mut cmd,&mut set,ball_id,&mut to_despawn,&mut res_scoreboard);
                           }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  
-                            // for (_entity, qball_id,t,_vel) in v_query.iter_mut(){
-                            //   if ball_id ==*qball_id{
-                            //     let fire_bundle = FireBundle{
-                            //       fire_id:qq_party_shared::FireId(ball_id.0,ball_id.1,Some([t.translation.x,t.translation.y].into())),
-                            //       position:Position([t.translation.x,t.translation.y].into()),
-                            //       velocity:velocity,
-                            //     };
-                            //     msg_handler::spawn_fire_bundle(&mut cmd,fire_bundle);
-                            //   }
-                            // }                          
+                            msg_handler::fire::_fn(&mut cmd,&mut set,ball_id,velocity,sprite_enum);                          
                           }
                           ServerMessage::TargetVelocity{ball_id,target_velocity}=>{                            
                             //for (entity, qball_id,mut tv) in query.iter_mut(){
@@ -327,7 +318,6 @@ fn receive_events(mut cmd: Commands,
                           }
                           
                           ServerMessage::GameState{ball_bundles,npc_bundles,storm_timing,timestamp,..}=>{
-                            info!("game_state npc_bundles{:?}",npc_bundles.clone());
                             let utc: DateTime<Utc> = Utc::now();
                             let server_utc = Utc.timestamp((timestamp /1000) as i64, (timestamp % 1000) as u32 * 1000000);
                             let delta =  utc.signed_duration_since(server_utc).num_milliseconds() as f32 / 1000.0;

@@ -13,7 +13,7 @@ impl Plugin for QQSharedPlugin {
           .init_resource::<StateTransformer>()
           .add_system_to_stage(CoreStage::Last,entity_to_remove::remove_entity_system.label(MyLabel::Despawn))
           //fire
-          .add_system(physics::spawn_fire_collider)
+          //.add_system(physics::spawn_fire_collider)
           .add_system(physics::fire_collision)
           .add_system(physics::despawn_fire)
           //joint

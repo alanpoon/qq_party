@@ -1,4 +1,5 @@
 use qq_party_shared::*;
+use crate::info_::info_;
 use crate::messaging_::publish_;
 use crate::spawn_::spawn_fire;
 use crate::client_message_handlers::target_velocity_handler::sub_map_area;
@@ -28,6 +29,7 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
           let fire_bundle = FireBundle{fire_id:FireId(ball_id.0,ball_id.1,Some([t.translation.x,t.translation.y].into())),
             transform:Transform::from_xyz(t.translation.x, t.translation.y, 3.0),
             global_transform:GlobalTransform::identity(),
+            rigid_body:RigidBody::Dynamic,
             velocity:Velocity { linvel: vel.linvel *2.0, ..Default::default() },
           };
           
@@ -39,6 +41,7 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
       
       let sa = sub_map_area(fire_bundle.transform.translation.x,fire_bundle.transform.translation.y);
       spawn_fire(&mut app.world,fire_bundle.clone());
+      info_(format!("fire_bundle linvel {:?}",fire_bundle.velocity.linvel));
       let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:
         QQVelocity(Vec2::new(fire_bundle.velocity.linvel.x,fire_bundle.velocity.linvel.y)),
         sprite_enum};

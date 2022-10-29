@@ -109,5 +109,6 @@ pub struct FireBundle {
     pub transform: Transform,
     pub global_transform:GlobalTransform,
     pub velocity: Velocity,
+    pub rigid_body:RigidBody,
     //pub start: Time,
 }
