@@ -85,7 +85,7 @@ pub enum ServerMessage {
     Scores{scoreboard:Vec<(u32,i16,BallLabel)>},
     TargetVelocity{ball_id:BallId,target_velocity:TargetVelocity},
     TargetDestinations{npc:Vec<(NPCId,TargetDestination)>},
-    Welcome{ball_bundle:BallBundle,sub_map:String},
+    Welcome{ball_bundle:BallBundle,sub_map:String,qq_state:QQState},
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub enum ClientMessage {

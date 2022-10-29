@@ -14,7 +14,8 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
   npc_query: Query<(&NPCId,&Transform,&Velocity,&ChaseTargetId)>,
   storm_ring_query: Query<(Entity,&StormRingId)>,
   scoreboard:Res<ScoreBoard>,
-  mut storm_timing:ResMut<StormTiming>) {
+  mut storm_timing:ResMut<StormTiming>,
+  state_transform: Res<StateTransformer>) {
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if key =="scoreboard"{
       if *elapsed >3.0{
@@ -50,6 +51,14 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       continue;
     }
     if key == "storm_ring"{
+      // match (*state_transform).1{
+      //   QQState::Running|QQState::StopNotification=>{
+
+      //   }
+      //   _=>{
+      //     continue
+      //   }
+      // }
       let mut storm_rings = vec![];
       for (e,_storm_ring_id) in storm_ring_query.iter(){
         storm_rings.push(e);
@@ -58,7 +67,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         // for e in storm_rings{
         //   cmd.entity(e).despawn();
         // }
-        *elapsed =0.0;
+        *elapsed =0.0;        
         *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};
         match rmp_serde::to_vec(&channel_message_back){
@@ -74,7 +83,6 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
             info_(format!("m iter ....error{}",e));
           }
         }
-        
       } else if *elapsed >STORM_INTERVAL as f32 && *elapsed <= (STORM_INTERVAL+STORM_DURATION) as f32{
         if storm_rings.len()==0{
           let storm_ring_id = StormRingId(Vec2::new(3600.0,3500.0),90);

@@ -281,6 +281,7 @@ fn receive_events(mut cmd: Commands,
   mut audioable: ResMut<AudioAble>,
   mut to_despawn: ResMut<EntityToRemove>,
   mut res_scoreboard: ResMut<ScoreBoard>,
+  local_user_info: Res<LocalUserInfo>,
   asset_server: Res<AssetServer>
   ) {
     if let Some(ref mut client) = *client {
@@ -354,7 +355,7 @@ fn receive_events(mut cmd: Commands,
                             match state{
                               QQState::Stop=>{
                                 info!("reset_entities called");
-                                msg_handler::state_change::_fn_stop(&mut cmd,&mut set,&mut to_despawn);
+                                msg_handler::state_change::_fn_stop(&mut cmd,&mut set,&mut fire_query,&mut to_despawn);
                                 for (_,mut v) in res_scoreboard.scores.iter_mut(){
                                   v.0=0;
                                 }
@@ -394,12 +395,23 @@ fn receive_events(mut cmd: Commands,
                       }else if subject.contains("welcome"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
                         match server_message{
-                          ServerMessage::Welcome{ball_bundle,sub_map:_}=>{
-                            info!("welcome_ ball_bundle {:?}",ball_bundle.clone());
+                          ServerMessage::Welcome{ball_bundle,sub_map,qq_state}=>{
+                            info!("welcome_ ball_bundle {:?} qq_state {:?}",ball_bundle.clone(),qq_state);
                             res_scoreboard.scores.insert(ball_bundle.ball_id.0.clone(),(0,ball_bundle.ball_label.clone()));
-                            cmd.spawn_bundle(ball_bundle).insert(Dash(false,[0.0,0.0].into(),[0.0,0.0].into()));
+                            cmd.spawn_bundle(ball_bundle.clone()).insert(Dash(false,[0.0,0.0].into(),[0.0,0.0].into()));
                             audioable.0 = true;
-
+                            if ball_bundle.ball_id == (*local_user_info).0.ball_id{
+                              if let QQState::Stop= qq_state{
+                                match serde_json::to_string(&ServerMessage::Welcome{qq_state,ball_bundle,sub_map}){
+                                  Ok(j)=>{
+                                    push_web_bevy_events_fn2(&j);
+                                  }
+                                  Err(e)=>{
+                                    info!("push_web_bevy_events_fn2 error {:?}",e);
+                                  }
+                                }
+                              }
+                            }
                             //commands.commands.push(Command::Nats(String::from("default"),n))
                           }
                           _=>{}

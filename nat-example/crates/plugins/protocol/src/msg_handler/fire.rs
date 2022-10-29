@@ -25,7 +25,6 @@ pub fn _fn(mut cmd: &mut Commands,mut set: &mut ParamSet<(
                 rigid_body:RigidBody::Dynamic,
                 velocity:Velocity{linvel:[velocity.0.x,velocity.0.y].into(),angvel:0.5},
             };
-            info!("fire_bundle {:?}",fire_bundle.clone());
             cmd.spawn_bundle(fire_bundle);
         }
     }

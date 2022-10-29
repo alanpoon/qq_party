@@ -60,7 +60,7 @@ pub fn state_update(app:&mut App){
                 }
             }
             QQState::StopNotification=>{
-                let server_message = ServerMessage::StateNotification{countdown:12000,text:String::from("Game ending in ")};
+                let server_message = ServerMessage::StateNotification{countdown:10000,text:String::from("Game ending in ")};
                 match rmp_serde::to_vec(&server_message){
                     Ok(b)=>{
                         let p_msg = PubMessage{
@@ -140,7 +140,7 @@ pub fn state_update(app:&mut App){
                 }
             }
             QQState::RunNotification=>{
-                let server_message = ServerMessage::StateNotification{countdown:12000,text:String::from("New game starting in ")};
+                let server_message = ServerMessage::StateNotification{countdown:10000,text:String::from("New game starting in ")};
                 match rmp_serde::to_vec(&server_message){
                     Ok(b)=>{
                         let p_msg = PubMessage{
@@ -169,6 +169,9 @@ pub fn state_update(app:&mut App){
                     }
                     if let Some (elapsed) = timer_hashmap.elapsed.get_mut("C"){
                         *elapsed = 56.0;
+                    }
+                    if let Some (elapsed) = timer_hashmap.elapsed.get_mut("storm_ring"){
+                        *elapsed = 0.0;
                     }
                 }
             }

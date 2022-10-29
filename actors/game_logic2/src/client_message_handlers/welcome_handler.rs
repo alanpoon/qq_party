@@ -41,8 +41,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       
       spawn(&mut app.world,ball_bundle.clone());
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
-      init_score(ball_id.0,ball_label,&mut scoreboard.scores);      
-      let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone()};
+      init_score(ball_id.0,ball_label,&mut scoreboard.scores);
+      let qq_state = app.world.get_resource::<StateTransformer>().unwrap().1.clone();
+      let server_message = ServerMessage::Welcome{ball_bundle,sub_map:key.clone(),qq_state};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{
           let p_msg = PubMessage{
@@ -62,7 +63,6 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           QQState::Stop|QQState::RunNotification=>{
             if let Some(winners) = app.world.get_resource::<crate::Winners>(){
               let channel_message_back = ServerMessage::StateChange{state:QQState::Stop,scoreboard:winners.scores.clone()};
-              info_(format!("sending while stop"));
               match rmp_serde::to_vec(&channel_message_back){
                 Ok(b)=>{
                   let p_msg = PubMessage{

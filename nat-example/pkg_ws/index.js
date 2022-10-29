@@ -3,6 +3,19 @@ import { unpack, pack } from 'msgpackr';
 //var rand = require('rand');
 import rand from 'rand'
 import {init_chat} from './chat'
+function state_is_not_running(){
+  $(".alert_placeholder").html(
+    '<div class="alert alert-success alert-dismissable">'+
+        'Please wait, game has not started.' +      
+     '</div>');
+     var timeinterval;
+     timeinterval = setInterval(() => {
+    
+        $(".alert_placeholder").empty();
+        clearInterval(timeinterval);
+      
+    },2000);
+}
 export function init_pkg_ws(){
   window.web_bevy_events=[]
   window.web_bevy_events_fn = function(){
@@ -27,6 +40,7 @@ export function init_pkg_ws(){
     //  alert("Enter name than 5 characters")
       return
     }
+    
     window.user = name;
     var user_type = $("input:radio[name ='user']:checked").val();
     var ball_id_sprite_enum = 0
@@ -42,12 +56,14 @@ export function init_pkg_ws(){
         window.web_bevy_events.push(d_l)
         var modal = document.getElementById("myModal");
         modal.style.display = "none";
+        
       })
     }else{
       var d_l = ClientMessageWelcome(ball_id_sprite_enum,name)
       window.web_bevy_events.push(d_l)
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
+      
     }
   }
   init_chat()
@@ -80,10 +96,13 @@ export function init_pkg_ws(){
           case "Running":
             var x = document.getElementById("myWinners");
             x.style.display = "none";
+            window.qq_state = "Running";
             break
           case "Stop":
             var x = document.getElementById("myWinners");
             x.style.display = "block";
+            
+            window.qq_state = "Stop";
             break
           default:
             break
@@ -122,6 +141,13 @@ export function init_pkg_ws(){
               clearInterval(timeinterval);
             }
           },1000);
+      }
+    }else if (typeof event["Welcome"]!="undefined"){
+      //only if ball_id is same as local_user_info
+      if ( typeof event["Welcome"]["qq_state"]!="undefined"){
+        var x = document.getElementById("myWinners");
+        x.style.display = "block";
+        state_is_not_running();
       }
     }
   }
