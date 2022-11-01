@@ -3,21 +3,6 @@ use bevy::prelude::*;
 use bevy_rapier2d::math::Vect;
 use crate::*;
 
-pub fn spawn_player_collider(
-  mut cmd: Commands,
-  balls_without_rigid: Query<(Entity, &BallId,&BallLabel,&Position), Without<Transform>>,
-  mut scoreboard:ResMut<ScoreBoard>
-) {
-  for (entity, ball_id,ball_label,position) in balls_without_rigid.iter() {
-    cmd.entity(entity)
-    .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 3.0).with_scale(Vec3::splat(0.2))))
-    .insert(RigidBody::Dynamic)
-    .insert(LockedAxes::ROTATION_LOCKED)
-    .insert(LastNPC(0,None,false))
-    ;
-    scoreboard.scores.insert(ball_id.0,(0,ball_label.clone()));
-  }
-}
 pub fn add_ball_dash_physics(mut cmd:Commands,mut query: Query<(Entity,&mut Velocity,&Dash),Changed<Dash>>) {
   for (e,mut v,dash) in query.iter_mut() {
    if dash.0{
@@ -37,12 +22,6 @@ time : Res<Time>) {
     }
   }
 }
-// pub fn update_state_position_physics(mut query: Query<(&mut Position,&mut Transform)>) {
-//   for (mut pos,rigid_pos) in query.iter_mut() {
-//     pos_x = rigid_pos.translation.x;
-//     pos_y = rigid_pos.translation.y;
-//   }
-// }
 
 pub fn update_state_velocity_physics(mut query: Query<(&mut Transform,&mut Velocity)>) {
   for (mut transform,mut v) in query.iter_mut() {

@@ -42,7 +42,7 @@ pub fn spawn_or_update_ball_bundles(
     }
 }
 pub fn spawn_or_update_npc_bundles(
-  mut cmd: &mut Commands,
+  cmd: &mut Commands,
   v_query:&mut Query<(Entity, &NPCId,&mut Transform,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
   delta:f32,
   bundles:Vec<NPCBundle>
@@ -72,15 +72,15 @@ pub fn spawn_or_update_npc_bundles(
     }
 }
 pub fn spawn_fire_bundle(
-  mut cmd: &mut Commands,
+  cmd: &mut Commands,
   bundle:FireBundle
   ){
     cmd.spawn_bundle(bundle);
 }
 pub fn spawn_or_delete_storm_rings_bundles(
-  mut cmd: &mut Commands,
-  mut v_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
-  mut t_query:&mut Query<Entity,With<StormRingTextNode>>,
+  cmd: &mut Commands,
+  v_query:&mut Query<(Entity,&mut Transform),With<StormRingId>>,
+  t_query:&mut Query<Entity,With<StormRingTextNode>>,
   bundles:Vec<StormRingId>,
   to_despawn: &mut ResMut<EntityToRemove>,
   asset_server: &Res<AssetServer>
@@ -88,7 +88,7 @@ pub fn spawn_or_delete_storm_rings_bundles(
     info!("spawn_or_delete_storm_rings_bundles");
     let len = bundles.len();
     if len==0{
-      for (e,mut transform) in v_query.iter_mut(){
+      for (e, _) in v_query.iter_mut(){
         //cmd.entity(e).despawn();
         to_despawn.entities.insert(e);
         //cmd.entity(e).despawn_recursive();

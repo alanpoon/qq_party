@@ -42,9 +42,7 @@ const RAPIER_SCALE: f32 = 20.0;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         info!("build PhysicsPlugin");
-        app.add_plugin(RapierPhysicsPlugin::<NoUserData,>::default())
-            .add_system(debug_rigid.system())
-    
+        app.add_plugin(RapierPhysicsPlugin::<NoUserData,>::default())    
             .insert_resource(RapierConfiguration {
                 scale: 1.0,
                 gravity: Vector2::zeros(),
@@ -55,9 +53,4 @@ impl Plugin for PhysicsPlugin {
 }
 fn enable_physics_profiling(mut pipeline: ResMut<PhysicsPipeline>) {
   pipeline.counters.enable()
-}
-pub fn debug_rigid(mut query:Query<&spawn_player_collider> ){
-  for q in query.iter(){
-    info!("rigid{:?}",q.0);
-  }
 }

@@ -22,7 +22,7 @@ pub fn spawn_special_effect_collider(
     }
   }
 pub fn move_special_effect_closer_to_user_system(
-  mut cmd: Commands,
+  cmd: Commands,
   mut ball_query: Query<(&BallId,&Position)>,
   mut effects_query: Query<(Entity, &SpecialEffectId,&mut Transform)>,
   storm_rings_query: Query<(Entity, &StormRingId),Changed<StormRingId>>,

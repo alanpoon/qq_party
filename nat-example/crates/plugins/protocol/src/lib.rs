@@ -23,7 +23,10 @@ use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
 use bevy::utils::Duration;
 use chrono::prelude::*;
+use serde::{Deserialize,Serialize};
 pub struct ProtocolPlugin;
+
+
 #[wasm_bindgen]
 extern "C" {
     // Use `js_namespace` here to bind `console.log(..)` instead of just
@@ -54,7 +57,16 @@ use qq_party_shared::*;
 #[derive(Component,Clone,Debug)]
 pub struct PlayerHealthCheckTimer(pub Timer);
 #[derive(Component,Clone,Debug,Default)]
+pub struct SpamPreventTime(pub Time);
+#[derive(Component,Clone,Debug)]
+pub struct CoolDownTimer(pub Timer,pub String);//timer, id of cooldown
+#[derive(Component,Clone,Debug,Default)]
 pub struct LastAxis(pub Vec2);
+#[derive(Serialize, Deserialize,Clone,Debug)]
+pub enum CoolDownMessage{
+    DisplayUI(String),
+    HideUI(String)
+}
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -64,6 +76,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
             .init_resource::<LastAxis>()
+            .init_resource::<SpamPreventTime>()
             //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
@@ -100,16 +113,20 @@ fn add_client_state(
 }
 
 fn handle_events(
+    mut cmd: Commands,
+    balls: Query<(&BallId,&Velocity,Option<&Dash>)>,
+    cooldown_query: Query<&CoolDownTimer>,
     mut state: ResMut<Option<ClientStateDispatcher>>,
     mut commands: ResMut<protocol::Commands>,
     mut events: ResMut<protocol::Events>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut last_axes: ResMut<LastAxis>,
+    mut spam_prevent_time: ResMut<SpamPreventTime>,
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    balls: Query<(&BallId,&Velocity)>,
     axes: Res<Axis<GamepadAxis>>,
-    mut last_axes: ResMut<LastAxis>
+    time: Res<Time>
 ) {
     if let Some(ref mut state) = *state {
         let mut context = ClientContext {
@@ -171,14 +188,19 @@ fn handle_events(
         if keyboard_input.just_pressed(KeyCode::Space){
           let ball_id = (*local_user_info).0.ball_id;
           info!("space pressed-- fire");
-          let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
-          (*commands).push(c);
+          let c = c_::fire(ball_id,target_velocity_x,target_velocity_y,&mut cmd,&cooldown_query);
+          if let Some(c) = c{
+            (*commands).push(c);
+          }
         }
         if keyboard_input.just_pressed(KeyCode::LShift){
           let ball_id = (*local_user_info).0.ball_id;
           info!("shift pressed-- dash ");
-          let c = c_::dash(ball_id);
-          (*commands).push(c);
+          let c = c_::dash(ball_id,&mut cmd,&cooldown_query);
+          if let Some(c)=c{
+            (*commands).push(c);
+          }
+          
         }
         keyboard_input.clear();
         for gamepad in gamepads.iter().cloned() {
@@ -197,13 +219,17 @@ fn handle_events(
           } else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::West}) {
             let ball_id = (*local_user_info).0.ball_id;
             info!("space pressed-- fire");
-            let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
-            (*commands).push(c);
+            let c = c_::fire(ball_id,target_velocity_x,target_velocity_y,&mut cmd, &cooldown_query);
+            if let Some(c) = c{
+              (*commands).push(c);
+            }
           } else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::East}) {
             let ball_id = (*local_user_info).0.ball_id;
             info!("shift pressed-- dash ");
-            let c = c_::dash(ball_id);
-            (*commands).push(c);
+            let c = c_::dash(ball_id,&mut cmd, &cooldown_query);
+            if let Some(c)= c{
+              (*commands).push(c);
+            }
           }
           if !pressed{
             target_velocity_x = axes
@@ -225,7 +251,7 @@ fn handle_events(
         }  
         
         if pressed{
-          for (ball_id_ingame,v) in balls.iter(){
+          for (ball_id_ingame,v,_) in balls.iter(){
             let ball_id = (*local_user_info).0.ball_id;
             if ball_id_ingame==&ball_id{
               let mut send= false;
@@ -290,7 +316,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
 }
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
-  mut state: ResMut<Option<ClientStateDispatcher>>,
+  state: ResMut<Option<ClientStateDispatcher>>,
   mut events: ResMut<protocol::Events>,
   mut set: ParamSet<(
     Query<(Entity, &BallId,&mut Transform,&mut Velocity), With<BallId>>,
@@ -304,7 +330,7 @@ fn receive_events(mut cmd: Commands,
   // mut npc_query: Query<(Entity, &NPCId,&mut Transform,&mut Velocity,&mut ChaseTargetId),Without<BallId>>,
   // mut query: Query<(Entity, &BallId)>,
   // mut storm_query: Query<(Entity,&mut Transform),With<StormRingId>>,
-  mut storm_text_query: Query<Entity,With<StormRingTextNode>>,
+  storm_text_query: Query<Entity,With<StormRingTextNode>>,
   mut fire_query: Query<Entity,With<FireId>>,
   mut storm_timing_res: ResMut<StormTiming>,
   mut audioable: ResMut<AudioAble>,
