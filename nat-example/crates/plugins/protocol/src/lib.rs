@@ -53,7 +53,8 @@ extern "C" {
 use qq_party_shared::*;
 #[derive(Component,Clone,Debug)]
 pub struct PlayerHealthCheckTimer(pub Timer);
-
+#[derive(Component,Clone,Debug,Default)]
+pub struct LastAxis(pub Vec2);
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -62,7 +63,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<BoxClient>>()
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
-            
+            .init_resource::<LastAxis>()
             //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
@@ -107,7 +108,8 @@ fn handle_events(
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
     balls: Query<(&BallId,&Velocity)>,
-    
+    axes: Res<Axis<GamepadAxis>>,
+    mut last_axes: ResMut<LastAxis>
 ) {
     if let Some(ref mut state) = *state {
         let mut context = ClientContext {
@@ -180,19 +182,46 @@ fn handle_events(
         }
         keyboard_input.clear();
         for gamepad in gamepads.iter().cloned() {
-          if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::West})|| button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadLeft}) {
+          if  button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadLeft}) {
             target_velocity_x -= 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::East})|| button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadRight}) {
+          }else if  button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadRight}) {
             target_velocity_x += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::North}) || button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadUp}){
+          }else if  button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::DPadUp}){
             target_velocity_y += 1.0;
             pressed = true;
-          }else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::South})|| button_inputs.just_pressed(GamepadButton{gamepad,button_type: GamepadButtonType::DPadDown}) {
+          }else if button_inputs.just_pressed(GamepadButton{gamepad,button_type: GamepadButtonType::DPadDown}) {
             target_velocity_y -= 1.0;
             pressed = true;
+          } else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::West}) {
+            let ball_id = (*local_user_info).0.ball_id;
+            info!("space pressed-- fire");
+            let c = c_::fire(ball_id,target_velocity_x,target_velocity_y);
+            (*commands).push(c);
+          } else if button_inputs.just_pressed(GamepadButton{gamepad, button_type:GamepadButtonType::East}) {
+            let ball_id = (*local_user_info).0.ball_id;
+            info!("shift pressed-- dash ");
+            let c = c_::dash(ball_id);
+            (*commands).push(c);
           }
+          if !pressed{
+            target_velocity_x = axes
+            .get(GamepadAxis::new(gamepad, GamepadAxisType::LeftStickX))
+            .unwrap();
+            target_velocity_y = axes
+            .get(GamepadAxis::new(gamepad, GamepadAxisType::LeftStickY))
+            .unwrap();
+            let target_velocity_mag = target_velocity_x*target_velocity_x+target_velocity_y*target_velocity_y;
+            let last_axes_mag = last_axes.0.x*last_axes.0.x + last_axes.0.y*last_axes.0.y;
+            if  target_velocity_mag >0.0 && !(target_velocity_x ==last_axes.0.x && target_velocity_y==last_axes.0.y){
+              pressed = true;
+              info!("left_stick_x {:?} left_stick_y {:?}",target_velocity_x,target_velocity_x);
+              last_axes.0.x = target_velocity_x;
+              last_axes.0.y = target_velocity_y;
+            }
+          }
+         
         }  
         
         if pressed{

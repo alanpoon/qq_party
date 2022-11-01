@@ -48,7 +48,9 @@ export function init_pkg_ws(){
       $.get("https://api.github.com/repos/alanpoon/qq_party/stargazers",function(data){
        for(var i=0;i<=data.length;i++){
         if (data[i].login==name){
-          ball_id_sprite_enum =1
+          ball_id_sprite_enum =1;
+          $("#fire_img").attr('src','assets/2d/shadow/stick.png');
+          $("#fire_img").css("transform","scale(1.5)");
           break;
         }
        }
@@ -64,6 +66,16 @@ export function init_pkg_ws(){
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
       
+    }
+    var docElm = document.documentElement;
+    if (docElm.requestFullscreen) {
+      docElm.requestFullscreen();
+    } else if (docElm.msRequestFullscreen) {
+      docElm.msRequestFullscreen();
+    } else if (docElm.mozRequestFullScreen) {
+      docElm.mozRequestFullScreen();
+    } else if (docElm.webkitRequestFullScreen) {
+      docElm.webkitRequestFullScreen();
     }
   }
   init_chat()
@@ -100,7 +112,8 @@ export function init_pkg_ws(){
             break
           case "Stop":
             var x = document.getElementById("myWinners");
-            x.style.display = "block";
+            //commented out
+            //x.style.display = "block";
             
             window.qq_state = "Stop";
             break
@@ -146,7 +159,8 @@ export function init_pkg_ws(){
       //only if ball_id is same as local_user_info
       if ( typeof event["Welcome"]["qq_state"]!="undefined"){
         var x = document.getElementById("myWinners");
-        x.style.display = "block";
+        //commented out
+        //x.style.display = "block";
         state_is_not_running();
       }
     }

@@ -18,8 +18,8 @@ pub fn spawn_player_collider(
     scoreboard.scores.insert(ball_id.0,(0,ball_label.clone()));
   }
 }
-pub fn add_ball_dash_physics(mut cmd:Commands,mut query: Query<(Entity,&Position,&mut Velocity,&Dash),Changed<Dash>>) {
-  for (e,_pos,mut v,dash) in query.iter_mut() {
+pub fn add_ball_dash_physics(mut cmd:Commands,mut query: Query<(Entity,&mut Velocity,&Dash),Changed<Dash>>) {
+  for (e,mut v,dash) in query.iter_mut() {
    if dash.0{
     cmd.entity(e).insert(DashTimer(Timer::new(Duration::new(1,0),false)));
     v.linvel = dash.1.into();
@@ -29,9 +29,9 @@ pub fn add_ball_dash_physics(mut cmd:Commands,mut query: Query<(Entity,&Position
   }
 }
 use std::time::Duration;
-pub fn remove_ball_dash_physics(mut query: Query<(&Position,&mut Dash,&mut DashTimer)>,
+pub fn remove_ball_dash_physics(mut query: Query<(&mut Dash,&mut DashTimer)>,
 time : Res<Time>) {
-  for (_pos,mut dash,mut timer) in query.iter_mut() {
+  for (mut dash,mut timer) in query.iter_mut() {
     if timer.0.tick(Duration::from_millis((time.delta_seconds() as f32 * 1000.0) as u64)).just_finished() {
       dash.0 = false; 
     }

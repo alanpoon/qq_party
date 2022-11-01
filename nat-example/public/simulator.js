@@ -176,7 +176,7 @@ fill: fuchsia;
       });
       
       element.addEventListener("mouseleave", function (e) {
-        element.setAttribute("class", "amdfc-int");
+        //element.setAttribute("class", "amdfc-int");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));
           gamepadSimulator.fakeController.buttons[index].touched = false;
@@ -192,7 +192,7 @@ fill: fuchsia;
       });
 
       element.addEventListener("mousedown", function (e) {
-        element.setAttribute("class", "amdfc-int amdfc-active");
+        //element.setAttribute("class", "amdfc-int amdfc-active");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -202,12 +202,13 @@ fill: fuchsia;
           const dir = element.id[12];
           const value = ['u', 'l'].indexOf(dir) > -1 ? -1 : 1;
           const pos = ['u', 'd'].indexOf(dir) > -1 ? 1 : 0;
+          
           gamepadSimulator.fakeController.axes[axe * 2 + pos] = value;
           gamepadSimulator.fakeController.timestamp = Math.floor(Date.now() / 1000);
         }
       });
       element.addEventListener("touchstart", function (e) {
-        element.setAttribute("class", "amdfc-int amdfc-active");
+        //element.setAttribute("class", "amdfc-int amdfc-active");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -222,7 +223,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("mouseup", function (e) {
-        element.setAttribute("class", "amdfc-int");
+        //element.setAttribute("class", "amdfc-int");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;
@@ -236,7 +237,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("touchend", function (e) {
-        element.setAttribute("class", "amdfc-int");
+        //element.setAttribute("class", "amdfc-int");
         if (element.id.indexOf("amdfc-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;
@@ -261,7 +262,7 @@ fill: fuchsia;
       });
       
       element.addEventListener("mouseleave", function (e) {
-        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
+        //element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].touched = false;
@@ -277,7 +278,7 @@ fill: fuchsia;
       });
 
       element.addEventListener("mousedown", function (e) {
-        element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
+        //element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -292,7 +293,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("touchstart", function (e) {
-        element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
+        //element.setAttribute("class", "amdfc-simple amdfc-active btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = true;
@@ -307,7 +308,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("mouseup", function (e) {
-        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
+        //element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;
@@ -321,7 +322,7 @@ fill: fuchsia;
         }
       });
       element.addEventListener("touchend", function (e) {
-        element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
+        //element.setAttribute("class", "amdfc-simple btn btn-default btn-sm");
         if (element.id.indexOf("amdfc-simple-button") === 0) {
           const index = parseInt(element.id.replace("amdfc-simple-button-", ""));
           gamepadSimulator.fakeController.buttons[index].pressed = false;

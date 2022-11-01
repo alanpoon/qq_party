@@ -11,7 +11,6 @@ mod client_message_handlers;
 mod plugins;
 mod startup;
 mod util;
-use bevy::core::CorePlugin;
 use wasmbus_rpc::actor::prelude::*;
 use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
@@ -20,7 +19,6 @@ use messaging::*;
 use crate::thread::thread_handle_request;
 use lazy_static::lazy_static; // 1.4.0
 use bevy::prelude::*;
-use bevy::utils::Duration;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use serde::{Serialize,Deserialize};

@@ -211,19 +211,30 @@
         padding:0px !important;
         margin:0px !important;
       }
+      #joystick {
+        height: 100px;
+        width: 100px;
+        text-align: center;
+        font: 24px/300px Helvetica, Arial, sans-serif;
+        cursor: all-scroll;
+        user-select: none;
+        z-index: -100;
+      }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <link rel="stylesheet" href="/leaderboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/game_pad_2_button.css">
     <link rel="stylesheet" href="/awesome.css">
     <link rel="stylesheet" href="/assets/2d/flag32.css">
     <link rel="stylesheet" href="/chat.css">
     <link rel="stylesheet" href="/winner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="nipplejs.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.0/nipplejs.js"></script> -->
   </head>
   <script src="./simulator.js"></script>
   <script>
@@ -721,11 +732,14 @@
             </div>
         </div>
       </div>
-      <div class ='circleBase' id='rotateMode' style="position:absolute;bottom:0px">
-        <button id="amdfc-simple-button-14" class="amdfc-simple btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
-        <button id="amdfc-simple-button-15" class="amdfc-simple btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
-        <button id="amdfc-simple-button-12" class="amdfc-simple btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-up"></span></button>
-        <button id="amdfc-simple-button-13" class="amdfc-simple btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-down"></span></button>
+    
+      <div style="position:absolute;bottom:10px;left:10px">
+        <div id="joystick"></div>
+      </div>
+      <div style="position:absolute;bottom:10px;right:15vw">
+        <!-- <div><a class="large magenta awesome" onclick="chatFunction()" style="flex:0 2 auto;"></a></div> -->
+        <div class="large green awesome amdfc-simple" id="amdfc-simple-button-3"><img id="fire_img" src="assets/2d/shadow/egg.png" style="width:35px">Throw</div>
+        <div id="amdfc-simple-button-1" class="large yellow awesome amdfc-simple">Run</div>
       </div>
       <div id="chat" style="position: absolute;bottom:0px;right:0px;display:none;">
         <section class="chatbox">
@@ -745,37 +759,44 @@
   </body>
   <script src="./controller.js"></script>
   <script>
-    var fullscreen = {
-      request: function(elem){
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        } else if (elem.mozRequestFullScreen) {
-          elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        }
+   
+    var options = {
+      zone: document.getElementById('joystick'),    // active zone
+      position: {       // preset position for 'static' mode
+        top: '40%',
+        left: '50%'
       },
-      exit: function() {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
+      mode: "static",   // 'dynamic', 'static' or 'semi'
+      color: "green"
+    };
+
+    var joy = nipplejs.create(options);
+
+    joy.on('move dir start end', function (evt, data) {
+      
+      
+      if (typeof evt["type"]!="undefined"){
+        
+        if (evt["type"]=="end"){
+          gamepadSimulator.fakeController.axes[0] =0.0;
+          gamepadSimulator.fakeController.axes[1] = 0.0;
         }
       }
-    };
+      if (data.direction){
+        if (data.direction.x=="left"){
+          gamepadSimulator.fakeController.axes[0] = -1;
+        }else if (data.direction.x=="right"){
+          gamepadSimulator.fakeController.axes[0] = 1;
+        }
+        if (data.direction.y=="up"){
+          gamepadSimulator.fakeController.axes[1] = -1;
+        } else if (data.direction.y=="down"){
+          gamepadSimulator.fakeController.axes[1] = 1;
+        }
+      }
 
-    var changeLockOrientation = function(val) {
-      window.screen.orientation.lock(val);
-    };
-
-    fullscreen.request(document.documentElement);
-    changeLockOrientation("landscape");
+    });
+    
     function drawHexagon(ctx,x, y,r) {
       const a = 2 * Math.PI / 6;
       ctx.beginPath();
@@ -888,10 +909,6 @@
     var target = document.getElementById('myWinners');
     observer.observe(target, { attributes : true, attributeFilter : ['style'] });
     
-
-    for (let i=0; i<9; i++) { 
-        $(".Rays_container").append("<div key='"+i+"'></div>");
-    }
   </script>
   <!-- <script src="/leaderboard2.js"></script> -->
   <script src="/sound.js"></script>

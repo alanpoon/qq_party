@@ -61,7 +61,6 @@ impl Plugin for PhysicsPlugin {
             // .add_system(qq_party_shared::systems::physics::spawn_hierachy)
             // .add_system(qq_party_shared::systems::physics::spawn_joint)
             // //fire
-            // .add_system(qq_party_shared::systems::physics::spawn_fire_collider)
             // .add_system(qq_party_shared::systems::physics::fire_collision)
             // .add_system(qq_party_shared::systems::physics::despawn_fire)
             //special_effects
