@@ -28,9 +28,9 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
   // // 2d camera
   // .spawn()
   // .insert_bundle(UiCameraBundle::default());  
-      let font_handle = asset_server
-      .load("fonts/FiraSans-Bold.ttf");
-  commands.spawn_bundle(TextBundle {
+    let font_handle = asset_server
+    .load("fonts/FiraSans-Bold.ttf");
+    commands.spawn_bundle(TextBundle {
     style: Style {
         align_self: AlignSelf::FlexEnd,
         //position_type: PositionType::Absolute,
@@ -55,7 +55,6 @@ fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform),With<ScoreText>>, 
   query: Query<(&Camera, &Transform,&OrthographicProjection)>,
-  ball_query: Query<(&BallId,&Position)>,
   scoreboard:Res<ScoreBoard>,userinfo:Res<LocalUserInfo>,
   res:Res<bevy::prelude::Time>,
   storm_timing:Res<StormTiming>
@@ -77,8 +76,10 @@ fn score_display(mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransfor
     if &userinfo.0.ball_id.0==ball_id{
       for (_,_t,_o) in query.iter(){
         for (mut text,mut _s,mut _g)  in text_query.iter_mut() {
-          text.sections[0].value = format!(r#"Score:{:?}
+          if reverse_delta>0.0{
+            text.sections[0].value = format!(r#"Score:{:?}
           {:?} {:?}sec"#,score.0,storm_text,reverse_delta.floor());
+          }
         }
       }
     }
