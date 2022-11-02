@@ -56,8 +56,6 @@ extern "C" {
 use qq_party_shared::*;
 #[derive(Component,Clone,Debug)]
 pub struct PlayerHealthCheckTimer(pub Timer);
-#[derive(Component,Clone,Debug,Default)]
-pub struct SpamPreventTime(pub Time);
 #[derive(Component,Clone,Debug)]
 pub struct CoolDownTimer(pub Timer,pub String);//timer, id of cooldown
 #[derive(Component,Clone,Debug,Default)]
@@ -76,7 +74,6 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
             .init_resource::<LastAxis>()
-            .init_resource::<SpamPreventTime>()
             //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
             .init_resource::<timewrapper::TimeWrapper>()
@@ -89,6 +86,7 @@ impl Plugin for ProtocolPlugin {
                     .after(ProtocolSystem::ReceiveEvents)
                     .before(ProtocolSystem::SendCommands),
             )
+            .add_system(system::cooldown::hide_display_ui)
             .add_system(timewrapper::into_timewrapper)
             //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>)
             .add_system(system::camera::move_with_local_player)
@@ -121,12 +119,10 @@ fn handle_events(
     mut events: ResMut<protocol::Events>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut last_axes: ResMut<LastAxis>,
-    mut spam_prevent_time: ResMut<SpamPreventTime>,
     gamepads: Res<Gamepads>,
     button_inputs: Res<Input<GamepadButton>>,
     local_user_info: Res<LocalUserInfo>,
-    axes: Res<Axis<GamepadAxis>>,
-    time: Res<Time>
+    axes: Res<Axis<GamepadAxis>>
 ) {
     if let Some(ref mut state) = *state {
         let mut context = ClientContext {

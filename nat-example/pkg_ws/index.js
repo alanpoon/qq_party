@@ -163,6 +163,28 @@ export function init_pkg_ws(){
         //x.style.display = "block";
         state_is_not_running();
       }
+    }else if (typeof event["DisplayUI"]!="undefined"){
+      var to_show = event["DisplayUI"];
+      var elem;
+      if (to_show=="fire") {
+        elem = "amdfc-simple-button-3"
+      }else if (to_show=="dash"){
+        elem = "amdfc-simple-button-1"
+      }
+      var x = document.getElementById(elem);
+      x.style.display = "inline-block"
+      //x.style['pointer-events'] = "auto"
+    }else if (typeof event["HideUI"]!="undefined"){
+      var to_show = event["HideUI"];
+      var elem;
+      if (to_show=="fire") {
+        elem = "amdfc-simple-button-3"
+      }else if (to_show=="dash"){
+        elem = "amdfc-simple-button-1"
+      }
+      var x = document.getElementById(elem);
+      //x.style['pointer-events'] = "none"
+      x.style.display = "none"
     }
   }
 }
