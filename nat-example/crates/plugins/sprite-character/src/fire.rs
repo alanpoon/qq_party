@@ -8,7 +8,7 @@ pub fn add_fire_sprite_system(
 ) {
   for (entity, fire_id,t) in fires_without_mesh.iter() {
     
-    let (sprite_name,scale) = match fire_id.1{
+    let (sprite_name,_) = match fire_id.1{
       0=>{
         (String::from("egg"),0.08)
       }
@@ -27,13 +27,5 @@ pub fn add_fire_sprite_system(
     }else{
       info!("cannot find {:?}",sprite_name);
     }
-  }
-}
-pub fn debug_fire_sprite_system(
-  mut cmd: Commands,
-  fires_without_mesh: Query<(Entity, &FireId,&Position,&QQVelocity)>,
-) {
-  for (entity, fire_id,position,vel) in fires_without_mesh.iter() {
-    info!("fire vel {:?}",vel);
   }
 }

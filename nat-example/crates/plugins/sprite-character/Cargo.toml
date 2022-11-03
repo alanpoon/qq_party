@@ -12,6 +12,7 @@ bevy = { version = "0.8.1", default-features = false }
 anyhow = { version = "1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared" }
 serde = { version = "1.0.123", features = ["derive"]}
+serde-wasm-bindgen = "0.4.5"
 rand = "0.8.5"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]

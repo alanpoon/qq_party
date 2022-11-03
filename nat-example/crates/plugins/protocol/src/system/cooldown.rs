@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use bevy::utils::Duration;
 use qq_party_shared::*;
 use crate::*;
-use crate::c_;
 
 pub fn hide_display_ui(mut cooldown_timer:Query<(Entity,&mut CoolDownTimer)>,time:Res<Time>,mut to_despawn:ResMut<EntityToRemove>){
     for (e,mut cd) in cooldown_timer.iter_mut(){

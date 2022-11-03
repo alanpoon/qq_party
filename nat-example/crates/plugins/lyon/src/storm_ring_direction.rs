@@ -76,16 +76,16 @@ pub fn add_startup_system(
      
 }
 pub fn add_storm_ring_direction_system(
-    mut cmd: Commands,
-    ball_query: Query<(Entity, &BallId,&Position)>,
-    mut storm_rings_query: Query<(Entity,&StormRingText,&mut Transform)>,
+    _cmd: Commands,
+    ball_query: Query<(Entity, &BallId,&Transform),(With<BallId>,Without<StormRingText>)>,
+    mut storm_rings_query: Query<(Entity,&StormRingText,&mut Transform),(With<StormRingText>,Without<BallId>)>,
     local_user_info: Res<LocalUserInfo>,
 ){
-    for (ball_e,ball_id,pos) in ball_query.iter() {
+    for (_,ball_id,pos) in ball_query.iter() {
       if ball_id == &local_user_info.0.ball_id{
-        for (storm_ring_text_entity,storm_ring_text,mut transform) in storm_rings_query.iter_mut(){
-          if pos.0.distance(storm_ring_text.0)>100.0{
-            let mut unit_vec = (storm_ring_text.0-pos.0).normalize_or_zero();
+        for (_,storm_ring_text,mut transform) in storm_rings_query.iter_mut(){
+          if pos.translation.distance([storm_ring_text.0.x,storm_ring_text.0.y,3.0].into())>100.0{
+            let unit_vec = (Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0)-pos.translation).normalize_or_zero();
             // let dy:f32 = -0.5;
             // let dx:f32 =-0.5;
             //info!("unit_vec {:?}",unit_vec);
@@ -103,17 +103,17 @@ pub fn add_storm_ring_direction_system(
 }
 pub fn update_storm_ring_direction_system(
   mut cmd: Commands,
-  ball_query: Query<(Entity, &BallId,&Position)>,
+  ball_query: Query<(Entity, &BallId,&Transform)>,
   storm_rings_query: Query<(Entity,&StormRingText),With<Node>>,
   local_user_info: Res<LocalUserInfo>,
   font_handle: Res<Handle<Font>>,
   asset_server: Res<AssetServer>
 ){
-  for (ball_e,ball_id,pos) in ball_query.iter() {
+  for (_,ball_id,pos) in ball_query.iter() {
     if ball_id == &local_user_info.0.ball_id{
       for (_storm_ring_entity,storm_ring_text) in storm_rings_query.iter(){
-        if pos.0.distance(storm_ring_text.0)>100.0{
-          let mut unit_vec = (storm_ring_text.0-pos.0).normalize_or_zero();
+        if pos.translation.distance(Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0))>100.0{
+          let unit_vec = (Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0)-pos.translation).normalize_or_zero();
           // let dy:f32 = -0.5;
           // let dx:f32 =-0.5;
           //info!("unit_vec {:?}",unit_vec);

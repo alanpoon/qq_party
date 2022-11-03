@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use qq_party_shared::{Position,QQVelocity,NPCId,SpecialEffectBundle,SpecialEffectId,StormRingId,LocalUserInfo,BallId};
+use qq_party_shared::*;
 use std::collections::HashMap;
 use rand::Rng;
 use crate::AnimationTimer;
@@ -7,11 +7,10 @@ use crate::AnimationTimer;
 #[derive(Component,Clone,Debug)]
 pub struct MoveTimer(Timer);
 
-pub fn onstart(mut cmd: Commands){
+pub fn onstart(mut cmd: Commands,texture_hashmap:Res<HashMap<String,Handle<TextureAtlas>>>){
   let mut rng = rand::thread_rng();
-  let mut bundles = vec![];
 //  let special_effects = vec![String::from("storm")];
- let special_effects = vec![String::from("storm"),String::from("ice"),String::from("stone"),String::from("rattan")];
+  let special_effects = vec![String::from("storm"),String::from("ice"),String::from("stone"),String::from("rattan")];
 
   for _ in 0..8{
   //for _ in 0..1{
@@ -27,65 +26,48 @@ pub fn onstart(mut cmd: Commands){
       }else{
         -1.0 * b
       };
-      bundles.push(SpecialEffectBundle{
-        id:SpecialEffectId(s_e.clone()),
-        position: Position(Vec2::new(3600.0,3620.0)),
-        velocity: QQVelocity(Vec2::new(tv_x,tv_y)),
-      });
-    }
-  }
-  cmd.spawn_batch(bundles);
-}
-pub fn add_special_effect_sprite_system(
-  mut cmd: Commands,
-  mut effects_with_mesh: Query<(&SpecialEffectId,&TextureAtlasSprite,&mut Transform)>,
-  effects_without_mesh: Query<(Entity, &SpecialEffectId,&Transform), Without<TextureAtlasSprite>>,
-  storm_rings_query: Query<(Entity, &StormRingId)>,
-  texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
-) {
-  let mut found_storm_rings = false;
-  for (_,storm_ring) in storm_rings_query.iter(){
-    found_storm_rings= true;
-    break;
-  }
-  if found_storm_rings{
-    let mut close_proximity_count =0; //spawn closer to user
-    for (entity, effect_id,transform) in effects_without_mesh.iter() {
-      let sprite_name = effect_id.0.clone();
+      let sprite_name = s_e.clone();
       if let Some(t_handle)= texture_hashmap.get(&sprite_name){
-        cmd.entity(entity).insert_bundle(SpriteSheetBundle {
-          transform:transform.clone(),
+        cmd.spawn_bundle(SpecialEffectBundle{
+          id:SpecialEffectId(s_e.clone()),
+          transform: Transform::from_xyz(3600.0,3620.0,3.0),
+          global_transform: GlobalTransform::identity(),
+          //velocity: QQVelocity(Vec2::new(tv_x,tv_y)),
+          velocity: Velocity{
+            linvel:[tv_x,tv_y].into(),
+            ..Default::default()
+          },
+          rigid_body: RigidBody::Dynamic,
+          locked_axes: LockedAxes::ROTATION_LOCKED,
+          
+        })
+        .insert_bundle(SpriteSheetBundle {
+          transform:Transform::from_xyz(3600.0,3620.0,3.0),
           texture_atlas: t_handle.clone(),
           ..Default::default()
-        })
-        .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
-        .insert(MoveTimer(Timer::from_seconds(4.0,true)));
-      }else{
-        info!("cannot find {:?}",sprite_name);
+        }).insert(AnimationTimer(Timer::from_seconds(0.1, true)))
+        .insert(MoveTimer(Timer::from_seconds(4.0,true)))
+        .with_children(|parent|{
+          parent.spawn()
+          .insert(Collider::cuboid(20.0, 20.0));
+        });
       }
     }
-  }else{
-
-    for (effect_id,_,mut transform) in effects_with_mesh.iter_mut() {
-      transform.translation = [3900.0,3840.0,2.0].into();
-    }
   }
-  
 }
 use qq_party_shared::bevy_rapier2d::prelude::*;
 pub fn apply_special_effect_sprite_system(
-  mut cmd: Commands,
+  _cmd: Commands,
   mut query: Query<(
-    &SpecialEffectId,
     &mut Velocity,
     &mut AnimationTimer,
     &mut MoveTimer,
     &mut TextureAtlasSprite,
     &Handle<TextureAtlas>,
-  )>,texture_atlases: Res<Assets<TextureAtlas>>,
+  ),With<SpecialEffectId>>,texture_atlases: Res<Assets<TextureAtlas>>,
   time: Res<Time>,
 ){
-  for (effect_id,mut vel,mut timer,mut move_timer, mut sprite,texture_atlas_handle ) in query.iter_mut(){
+  for (mut vel,mut timer,mut move_timer, mut sprite,texture_atlas_handle ) in query.iter_mut(){
       (*timer).0.tick(time.delta());
       if (*timer).0.just_finished() {
           let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
@@ -99,4 +81,28 @@ pub fn apply_special_effect_sprite_system(
           vel.linvel.y = rng.gen_range(-50..50) as f32;
       }
   }
+}
+pub fn add_special_effect_sprite_system(
+  _cmd: Commands,
+  mut effects_with_mesh: Query<(&SpecialEffectId,&TextureAtlasSprite,&mut Transform)>,
+  storm_rings_query: Query<(Entity, &StormRingId)>,
+  texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
+) {
+  let mut found_storm_rings = false;
+  for (_,_storm_ring) in storm_rings_query.iter(){
+    found_storm_rings= true;
+    break;
+  }
+  if found_storm_rings{
+    for (effect_id,_,mut transform) in effects_with_mesh.iter_mut() {
+      //info!("effect_id {:?} hiding",effect_id);
+      transform.translation.z = 3.0;//show
+    }
+  }else{
+
+    for (_effect_id,_,mut transform) in effects_with_mesh.iter_mut() {
+      transform.translation.z = -1.0; //hide
+    }
+  }
+  
 }

@@ -2,7 +2,7 @@ use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event
 use crate::nats;
 use super::after_normal::AfterNormal;
 use qq_party_shared::*;
-use rand::Rng;
+// use rand::Rng;
 use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct Normal {

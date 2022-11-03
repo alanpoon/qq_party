@@ -1,5 +1,4 @@
 use crate::*;
-use bevy::prelude::*;
 use std::collections::HashSet;
 
 #[derive(Default,Debug,Clone)]
@@ -13,7 +12,6 @@ pub struct EntityToRemove{
 pub fn remove_entity_system(
   mut cmd: Commands,
   mut res: ResMut<EntityToRemove>,
-  time: Res<Time>
 ) {
   //remove_duplicate_elements_hashing(&mut res.entities);
   for e in (*res).entities.drain(){

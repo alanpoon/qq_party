@@ -6,7 +6,7 @@ pub struct SpriteInfos {
 	pub _2d_round: (Handle<Image>, Vec2),
 }
 
-pub fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+pub fn startup(_commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
   mut texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>) {
   let texture = asset_server.load("2d/round.png");
   let sprite_infos = sprite_sheet::SpriteInfos {

@@ -112,3 +112,12 @@ pub struct FireBundle {
     pub rigid_body:RigidBody,
     //pub start: Time,
 }
+#[derive(Component, Clone, Debug,Bundle)]
+pub struct SpecialEffectBundle{
+  pub id:SpecialEffectId,
+  pub transform:Transform,
+  pub global_transform:GlobalTransform,
+  pub velocity: Velocity,
+  pub rigid_body:RigidBody,
+  pub locked_axes: LockedAxes
+}

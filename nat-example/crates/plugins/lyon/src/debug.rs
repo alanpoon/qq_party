@@ -1,7 +1,7 @@
 use qq_party_shared::*;
 use bevy::prelude::*;
 
-pub fn debug_startup(mut cmd:Commands,font_handle: Res<Handle<Font>>,asset_server: Res<AssetServer>){
+pub fn debug_startup(mut cmd:Commands,asset_server: Res<AssetServer>){
     let font_handle = asset_server
     .load("fonts/FiraSans-Bold.ttf");
     let mut tb = TextBundle::from_section(

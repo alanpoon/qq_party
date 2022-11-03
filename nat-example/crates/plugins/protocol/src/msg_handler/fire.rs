@@ -1,14 +1,14 @@
 use bevy_rapier2d::prelude::*;
 use bevy::prelude::*;
 use qq_party_shared::*;
-pub fn _fn(mut cmd: &mut Commands,mut set: &mut ParamSet<(
+pub fn _fn(cmd: &mut Commands, set: &mut ParamSet<(
     Query<(Entity, &BallId,&mut Transform,&mut Velocity), With<BallId>>,
     Query<(Entity, &NPCId,&mut Transform,&mut Velocity,&mut ChaseTargetId), With<NPCId>>,
     Query<(Entity,&mut Transform),With<StormRingId>>,
     // also access the whole world ... why not
     //&World,
-  )>,ball_id:BallId,velocity:QQVelocity,sprite_enum:u32){
-    for (entity, qball_id,t,vel) in set.p0().iter_mut(){
+  )>,ball_id:BallId,velocity:QQVelocity,_sprite_enum:u32){
+    for (_entity, qball_id,t,_vel) in set.p0().iter_mut(){
         if ball_id ==*qball_id{
             let (_,scale) = match ball_id.1{
                 0=>{

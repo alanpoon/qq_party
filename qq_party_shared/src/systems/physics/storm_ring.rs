@@ -10,7 +10,7 @@ pub fn spawn_storm_ring(
   cmd.spawn().insert(StormRingId(Vec2::new(pos_x,pos_y),radius));
 }
 pub fn outside_storm_ring_damage(mut cmd:Commands,
-  ball_query: Query<(Entity, &BallId,&Position)>,
+  ball_query: Query<(Entity, &BallId,&Transform)>,
   storm_rings_query: Query<&StormRingId>,
   mut timer_query: Query<&mut DamageTimer>,
   time:Res<Time>,
@@ -23,7 +23,7 @@ pub fn outside_storm_ring_damage(mut cmd:Commands,
         let mut len_of_storms_ring = 0;
         for storm_ring_id in storm_rings_query.iter(){
           len_of_storms_ring+=1;
-          if pos.0.distance_squared(storm_ring_id.0) < (storm_ring_id.1*storm_ring_id.1) as f32{
+          if pos.translation.distance_squared(Vec3::new(storm_ring_id.0.x,storm_ring_id.0.y,3.0)) < (storm_ring_id.1*storm_ring_id.1) as f32{
             found_inside = true;
             break;
           }

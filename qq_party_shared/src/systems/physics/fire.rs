@@ -27,7 +27,6 @@ pub fn fire_collision(mut cmd:Commands,mut fire_query: Query<(Entity,&FireId,&Tr
   }
 }
 pub fn despawn_fire(
-  mut cmd: Commands,
   fire_query: Query<(Entity,&FireId),Changed<Hit>>,
   mut to_despawn:ResMut<EntityToRemove>
 ) {

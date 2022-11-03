@@ -17,7 +17,7 @@ lazy_static! {
 pub struct WebSocketClient<Tx> {
     client_name: ClientName,
     command_sender: Tx,
-    url:String,
+    pub url:String,
 }
 
 #[async_trait]

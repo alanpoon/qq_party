@@ -9,12 +9,17 @@ mod sprite_sheet;
 mod single_image;
 mod timewrapper;
 mod smoke;
-use qq_party_shared::*;
 use wasm_bindgen::prelude::*;
 pub struct SpriteCharacterPlugin;
 #[derive(Component,Debug, PartialEq, Default)]
 pub struct H{
   pub hash_map:HashMap<String,usize>
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(SystemLabel)]
+pub enum SpriteLabel {
+    /// everything that handles input
+    SpriteSheet,
 }
 impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
@@ -35,10 +40,10 @@ impl Plugin for SpriteCharacterPlugin {
       .add_system(special_effects::add_special_effect_sprite_system)
       .add_system(special_effects::apply_special_effect_sprite_system)
       .add_system(smoke::apply_smoke_animation_system)
-      .add_startup_system(sprite_sheet::startup)
+      .add_startup_system(sprite_sheet::startup.label(SpriteLabel::SpriteSheet))
       .add_startup_system(single_image::startup)
-      .add_startup_system(startup)
-      .add_startup_system(special_effects::onstart);
+      .add_startup_system(country_flag_startup)
+      .add_startup_system(special_effects::onstart.after(SpriteLabel::SpriteSheet));
   }
 }
 use js_sys::{Array};
@@ -55,13 +60,17 @@ pub struct Obj{
   pub index: usize,
 }
 //f32_country_array
-fn startup(mut commands: Commands, asset_server: Res<AssetServer>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+fn country_flag_startup(mut commands: Commands, asset_server: Res<AssetServer>,
   mut flag_usize_map:ResMut<H>,
   mut font_handle: ResMut<Handle<Font>>) {
   let texture = asset_server.load("2d/round.png");
   //f32_flags_array()
   for j in f32_flags_array().iter(){
-    if let Ok(j2) = j.into_serde::<Obj>(){
+    // if let Ok(j2) = j.into_serde::<Obj>(){
+    //   (*flag_usize_map).hash_map.insert(j2.key,j2.index);
+    // }
+    let j2:Result<Obj,_> = serde_wasm_bindgen::from_value(j);
+    if let Ok(j2) = j2{
       (*flag_usize_map).hash_map.insert(j2.key,j2.index);
     }
   }

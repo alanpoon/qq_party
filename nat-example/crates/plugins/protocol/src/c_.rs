@@ -4,7 +4,6 @@ use chrono::prelude::*;
 use bevy::prelude::*;
 use bevy::utils::Duration;
 use crate::*;
-use bevy_rapier2d::prelude::*;
 use bevy::math::Vec2;
 pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f32)->Command{
   let tv = ClientMessage::TargetVelocity{

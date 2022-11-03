@@ -1,6 +1,5 @@
 extern crate wasmcloud_interface_messaging as messaging;
 use wasmbus_rpc::actor::prelude::*;
-use wasmcloud_interface_logging::{info,error};
 use wasmcloud_interface_messaging::{MessageSubscriber,SubMessage};
 use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,ThreadReceiver,ThreadSender};
 use lazy_static::lazy_static; // 1.4.0
@@ -24,7 +23,7 @@ lazy_static! {
 struct PlayerHealthCheckActor {}
 #[async_trait]
 impl MessageSubscriber for PlayerHealthCheckActor{
-  async fn handle_message(&self, ctx: &Context, req: &SubMessage) -> RpcResult<()> {
+  async fn handle_message(&self, _ctx: &Context, req: &SubMessage) -> RpcResult<()> {
     if req.subject.contains("player_health_check_handler"){
       let client_message:Result<ClientMessage,_>= rmp_serde::from_slice(&req.body);
       match client_message{
@@ -37,7 +36,7 @@ impl MessageSubscriber for PlayerHealthCheckActor{
             m.insert(ball_id_secret,timestamp);
           }
         },
-        Ok(ClientMessage::Disconnect{ball_id_secret})=>{
+        Ok(ClientMessage::Disconnect{ball_id_secret:_})=>{
 
         },
         Err(e)=>{
@@ -59,7 +58,6 @@ impl Thread for PlayerHealthCheckActor{
         )
         .await
     {
-        error!("sending reply: {}",e.to_string());
     }
     Ok(StartThreadResponse{})
   }

@@ -1,5 +1,5 @@
 pub struct Options{
-  servers: Vec<String>,
+  pub servers: Vec<String>,
 }
 impl Default for Options{
   fn default()->Self{

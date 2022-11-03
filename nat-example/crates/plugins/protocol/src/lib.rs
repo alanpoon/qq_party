@@ -17,7 +17,6 @@ use core::ProtocolSystem;
 use futures::prelude::*;
 use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher};
 use protocol::{Command,Event,nats};
-use protocol::ClientStateDispatcher::{ChickenDinner,Normal};
 //use crate::ClientStateDispatcher::ChickenDinner;
 use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -235,7 +234,6 @@ fn handle_events(
             .get(GamepadAxis::new(gamepad, GamepadAxisType::LeftStickY))
             .unwrap();
             let target_velocity_mag = target_velocity_x*target_velocity_x+target_velocity_y*target_velocity_y;
-            let last_axes_mag = last_axes.0.x*last_axes.0.x + last_axes.0.y*last_axes.0.y;
             if  target_velocity_mag >0.0 && !(target_velocity_x ==last_axes.0.x && target_velocity_y==last_axes.0.y){
               pressed = true;
               info!("left_stick_x {:?} left_stick_y {:?}",target_velocity_x,target_velocity_x);
@@ -312,7 +310,6 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
 }
 fn receive_events(mut cmd: Commands,
   mut client: ResMut<Option<BoxClient>>, 
-  state: ResMut<Option<ClientStateDispatcher>>,
   mut events: ResMut<protocol::Events>,
   mut set: ParamSet<(
     Query<(Entity, &BallId,&mut Transform,&mut Velocity), With<BallId>>,
@@ -349,16 +346,10 @@ fn receive_events(mut cmd: Commands,
                         match server_message{
                           
                           ServerMessage::Dash{ball_id}=>{
-                            msg_handler::dash::_fn(&mut cmd,&mut set,ball_id);
-                            // for (entity, qball_id,pos,vel) in v_query.iter_mut(){
-                            //   if ball_id ==*qball_id{
-                            //     cmd.entity(entity).insert(Dash(true,vel.linvel*2.0,vel.linvel));
-                            //   }
-                            // }                          
+                            msg_handler::dash::_fn(&mut cmd,&mut set,ball_id);                      
                           }
                           ServerMessage::Disconnect{ball_id,..}=>{
-                           // msg_handler::disconnect_ball_id(&mut cmd,&mut query,ball_id,&mut to_despawn,&mut res_scoreboard);
-                           msg_handler::disconnect::_fn(&mut cmd,&mut set,ball_id,&mut to_despawn,&mut res_scoreboard);
+                            msg_handler::disconnect::_fn(&mut cmd,&mut set,ball_id,&mut to_despawn,&mut res_scoreboard);
                           }
                           ServerMessage::Fire{ball_id,velocity,sprite_enum}=>{  
                             msg_handler::fire::_fn(&mut cmd,&mut set,ball_id,velocity,sprite_enum);                          
@@ -389,7 +380,7 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
-                            //msg_handler::spawn_or_delete_storm_rings_bundles(&mut cmd,&mut storm_query,&mut storm_text_query,storm_rings.clone(),&mut to_despawn,&asset_server);
+                            msg_handler::storm_rings::_fn_spawn_or_delete(&mut cmd,&mut set,&storm_text_query,storm_rings.clone(),&mut to_despawn,&asset_server);
                             if let Some(storm_timing) = next_storm_timing.clone(){
                               *storm_timing_res = storm_timing;
                             }
@@ -405,7 +396,6 @@ fn receive_events(mut cmd: Commands,
                           ServerMessage::StateChange{state,scoreboard}=>{                            
                             match state{
                               QQState::Stop=>{
-                                info!("reset_entities called");
                                 msg_handler::state_change::_fn_stop(&mut cmd,&mut set,&mut fire_query,&mut to_despawn);
                                 for (_,mut v) in res_scoreboard.scores.iter_mut(){
                                   v.0=0;

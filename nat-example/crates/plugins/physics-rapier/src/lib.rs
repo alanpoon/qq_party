@@ -45,7 +45,7 @@ impl Plugin for PhysicsPlugin {
             .init_resource::<DamageCountdown>()
          
             //special_effects
-            .add_system(special_effects::spawn_special_effect_collider)
+            //.add_system(special_effects::spawn_special_effect_collider)
             .add_system(special_effects::move_special_effect_closer_to_user_system)
             //storm_ring
             .add_system(storm_ring::spawn_storm_ring_collider)

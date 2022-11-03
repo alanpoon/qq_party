@@ -18,7 +18,7 @@ pub fn move_with_local_player(
 ) {
   
   for ( ball_id,t) in ball_query.iter(){
-    for (mut transform, mut _ortho,c) in query.iter_mut(){
+    for (mut transform, mut _ortho,_c) in query.iter_mut(){
       // if let Some(ci) = ci{
       //   if ci.show_ui{
           if ball_id == &local_user_info.0.ball_id{

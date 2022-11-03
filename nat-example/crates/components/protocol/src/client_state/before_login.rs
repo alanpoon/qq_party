@@ -1,5 +1,3 @@
-use tracing::error;
-
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher, Event,Command};
 use crate::nats;
 use super::normal::Normal;

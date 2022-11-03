@@ -3,12 +3,10 @@ use qq_party_shared::*;
 use std::collections::HashMap;
 use crate::H;
 use crate::AnimationTimer;
-use bevy::utils::Duration;
 pub fn add_chicken_sprite_system(
   mut cmd: Commands,
   balls_without_mesh: Query<(Entity, &BallId,&BallLabel,&Transform), Without<TextureAtlasSprite>>,
   texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
-  asset_server: Res<AssetServer>,
   flag_usize_map:Res<H>,
   font_handle: Res<Handle<Font>>
 ) {
@@ -35,7 +33,7 @@ pub fn add_chicken_sprite_system(
             font_size: 30.0,
             color: Color::BLACK,
           };
-          let text_alignment = TextAlignment {
+          let _text_alignment = TextAlignment {
             vertical: VerticalAlign::Center,
             horizontal: HorizontalAlign::Center,
           };
@@ -86,7 +84,7 @@ pub fn hit_chicken_sprite_system(
     //   vertical: VerticalAlign::Center,
     //   horizontal: HorizontalAlign::Center,
     // };
-    for (entity, ball_id,mut sprite) in balls_with_hit.iter_mut() {
+    for (entity, _ball_id,mut sprite) in balls_with_hit.iter_mut() {
       if let Some(instant_)= (*time).last_update(){
         cmd.entity(entity).insert(ChickenHit(instant_));
         cmd.entity(entity).with_children(|parent| {
@@ -144,13 +142,13 @@ pub struct DashSmokeAsChild();
 pub struct DashAsChildTimer(pub Timer);
 pub fn add_dash_chicken_sprite_system(
   mut cmd: Commands,
-  mut balls_with_dash: Query<(Entity, &BallId,&Dash,&mut TextureAtlasSprite), Changed<Dash>>,
+  balls_with_dash: Query<(Entity, &BallId,&Dash), Changed<Dash>>,
   time: Res<bevy::prelude::Time>,
   texture_hashmap:Res<HashMap<String,Handle<TextureAtlas>>>
 ){
-    for (entity, ball_id,dash,mut sprite) in balls_with_dash.iter_mut() {
+    for (entity, _ball_id,dash) in balls_with_dash.iter() {
       if let Some(t_handle)= texture_hashmap.get("smoke"){
-        if let Some(instant_)= (*time).last_update(){
+        if let Some(_instant_)= (*time).last_update(){
           let transform = dash.1*(-0.5);
           let transform = Transform::from_xyz(transform.x,transform.y,3.0).with_scale(Vec3::splat(4.0));
           cmd.entity(entity).with_children(|parent| {
@@ -168,7 +166,6 @@ pub fn add_dash_chicken_sprite_system(
     }
 }
 pub fn remove_dash_chicken_sprite_system(
-  mut cmd: Commands,
   mut balls_with_dash: Query<(Entity,&mut DashAsChildTimer)>,
   mut to_despawn:ResMut<EntityToRemove>,
   time:Res<Time>
@@ -176,7 +173,6 @@ pub fn remove_dash_chicken_sprite_system(
     for (e, mut timer) in balls_with_dash.iter_mut() {
       (*timer).0.tick(time.delta());
       if (*timer).0.just_finished() {
-        //cmd.entity(e).despawn();
         to_despawn.entities.insert(e);
       }
      

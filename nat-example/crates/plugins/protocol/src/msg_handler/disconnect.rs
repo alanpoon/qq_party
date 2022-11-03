@@ -1,7 +1,7 @@
 use bevy_rapier2d::prelude::*;
 use bevy::prelude::*;
 use qq_party_shared::*;
-pub fn _fn(mut cmd: &mut Commands,mut set: &mut ParamSet<(
+pub fn _fn(_cmd: &mut Commands,set: &mut ParamSet<(
     Query<(Entity, &BallId,&mut Transform,&mut Velocity), With<BallId>>,
     Query<(Entity, &NPCId,&mut Transform,&mut Velocity,&mut ChaseTargetId), With<NPCId>>,
     Query<(Entity,&mut Transform),With<StormRingId>>,

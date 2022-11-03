@@ -60,12 +60,7 @@ pub struct LastNPC(pub u32,pub Option<Entity>,pub bool); //bool: is new_crate
 #[derive(Component, Clone, Debug)]
 pub struct SpecialEffectId(pub String);// special effect texture
 
-#[derive(Component, Clone, Debug,Bundle)]
-pub struct SpecialEffectBundle{
-  pub id:SpecialEffectId,
-  pub position:Position,
-  pub velocity: QQVelocity,
-}
+
 #[derive(Component,Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct QQParent(Entity);
 #[derive(Serialize, Deserialize, Default,Clone,Debug)]

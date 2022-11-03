@@ -108,13 +108,16 @@ export function init_pkg_ws(){
           case "Running":
             var x = document.getElementById("myWinners");
             x.style.display = "none";
+            var close = document.getElementById("myWinners_close");
+            close.style.display = "block"
             window.qq_state = "Running";
             break
           case "Stop":
             var x = document.getElementById("myWinners");
             //commented out
-            //x.style.display = "block";
-            
+            x.style.display = "block";
+            var close = document.getElementById("myWinners_close");
+            close.style.display = "none"
             window.qq_state = "Stop";
             break
           default:

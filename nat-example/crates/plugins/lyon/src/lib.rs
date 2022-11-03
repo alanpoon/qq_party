@@ -12,8 +12,8 @@ impl Plugin for LyonPlugin {
       app.add_plugin(ShapePlugin)
       .add_system(add_storm_ring_sprite_system)
       .add_system(add_storm_ring_direction_system)
-      .add_startup_system(debug_startup)
-      .add_system(debug_system)
+      //.add_startup_system(debug_startup)
+      //.add_system(debug_system)
       ;
   }
 }

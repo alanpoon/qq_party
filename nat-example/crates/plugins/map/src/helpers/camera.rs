@@ -5,7 +5,7 @@ pub fn movement(
     time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&mut Transform, &mut OrthographicProjection,&mut Camera)>,
-    mut text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
+    _text_query: Query<(&mut Text,&mut Style,&mut GlobalTransform)>, 
 ) {
     for (mut transform, mut ortho, _c) in query.iter_mut() {
         // if let Some(ui_c) = ui_c{

@@ -37,8 +37,6 @@ macro_rules! console_log {
   // `bare_bones`
   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
-const DEFAULT_CLIENT: ClientName =
-    ClientName(Cow::Borrowed("desk-plugin-protocol: default client"));
 
 lazy_static! {
     static ref CLIENTS: Mutex<HashMap<ClientName, BoxClient2>> = Mutex::new(HashMap::new());
@@ -133,13 +131,9 @@ pub fn listen_web_bevy_events(
   let web_events:Array = web_bevy_events_fn();
   // Nats(String,nats::proto::ServerOp),//server_name
   for j in web_events.iter(){
-    match j.into_serde::<serde_json::Value>(){
-      Ok(j2)=>{
-        (*events).push(protocol::Event::BevyWeb(j2));
-      }
-      Err(e)=>{
-        info!("--- BevyWeb err{:?}",e);
-      }
+    let j2:Result<serde_json::Value,_> = serde_wasm_bindgen::from_value(j);
+    if let Ok(j2) = j2{
+      (*events).push(protocol::Event::BevyWeb(j2));
     }
   }
 }
