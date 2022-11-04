@@ -15,6 +15,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
   storm_ring_query: Query<(Entity,&StormRingId)>,
   scoreboard:Res<ScoreBoard>,
   mut storm_timing:ResMut<StormTiming>,
+  mut to_despawn:ResMut<EntityToRemove>,
   state_transform: Res<StateTransformer>) {
   for (key,elapsed) in (*elapsed_time).elapsed.iter_mut(){
     if key =="scoreboard"{
@@ -64,9 +65,10 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         storm_rings.push(e);
       }
       if *elapsed >(STORM_INTERVAL+STORM_DURATION) as f32{
-        // for e in storm_rings{
-        //   cmd.entity(e).despawn();
-        // }
+        for e in storm_rings{
+          //cmd.entity(e).despawn();
+          to_despawn.entities.insert(e);
+        }
         *elapsed =0.0;        
         *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};

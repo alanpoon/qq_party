@@ -13,7 +13,6 @@ pub fn _fn_spawn_or_delete( cmd: &mut Commands, set: &mut ParamSet<(
   bundles:Vec<StormRingId>,
   to_despawn: &mut ResMut<EntityToRemove>,
   asset_server: &Res<AssetServer>){
-    info!("spawn_or_delete_storm_rings_bundles{:?}",bundles);
     let len = bundles.len();
     if len==0{
       for (e, _) in set.p2().iter_mut(){

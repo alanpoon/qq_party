@@ -41,7 +41,7 @@ impl Thread for GameLogicActor{
       let mut m = map.lock().unwrap();
       
       m.world.spawn_batch(npc_bundles);
-      m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
+      //m.world.spawn().insert(startup::storm_ring::spawn_storm_ring(3400.0,3400.0,80));
       //m.world.spawn().insert(startup::StateTransformer(Timer::new(Duration::from_secs(20),false),State::Running));
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()

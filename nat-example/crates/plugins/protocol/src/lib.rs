@@ -380,6 +380,7 @@ fn receive_events(mut cmd: Commands,
                             
                           }
                           ServerMessage::StormRings{storm_rings,next_storm_timing,..}=>{
+                            info!("storm_rings {:?} next_storm_timing{:?}",storm_rings.clone(),next_storm_timing);
                             msg_handler::storm_rings::_fn_spawn_or_delete(&mut cmd,&mut set,&storm_text_query,storm_rings.clone(),&mut to_despawn,&asset_server);
                             if let Some(storm_timing) = next_storm_timing.clone(){
                               *storm_timing_res = storm_timing;

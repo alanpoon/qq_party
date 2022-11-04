@@ -16,9 +16,9 @@ pub fn _fn_stop( _cmd: &mut Commands, set: &mut ParamSet<(
     for (e,_,_,_,_) in set.p1().iter(){ //npc
         to_despawn.entities.insert(e);
     }
-    for (e,_) in set.p2().iter(){ //storm
-        to_despawn.entities.insert(e);
-    }
+    // for (e,_) in set.p2().iter(){ //storm
+    //     to_despawn.entities.insert(e);
+    // }
     for e in fire_query.iter(){ //fire
         to_despawn.entities.insert(e);
     } 

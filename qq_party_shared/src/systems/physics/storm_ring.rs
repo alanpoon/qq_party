@@ -1,14 +1,7 @@
 use bevy::prelude::*;
 use std::time::Duration;
 use crate::*;
-pub fn spawn_storm_ring(
-  mut cmd: Commands,
-  pos_x: f32,
-  pos_y: f32,
-  radius:i16
-) {
-  cmd.spawn().insert(StormRingId(Vec2::new(pos_x,pos_y),radius));
-}
+
 pub fn outside_storm_ring_damage(mut cmd:Commands,
   ball_query: Query<(Entity, &BallId,&Transform)>,
   storm_rings_query: Query<&StormRingId>,

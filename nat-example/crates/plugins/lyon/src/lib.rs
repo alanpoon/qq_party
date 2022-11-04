@@ -39,10 +39,3 @@ pub fn add_storm_ring_sprite_system(
         cmd.entity(e).insert_bundle(shape);
     }
 }
-pub fn spawn_storm_ring(
-  pos_x: f32,
-  pos_y: f32,
-  radius:i16
-) -> StormRingId{
-  StormRingId(Vec2::new(pos_x,pos_y),radius)
-}

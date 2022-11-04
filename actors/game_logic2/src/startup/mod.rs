@@ -44,8 +44,9 @@ pub fn state_update(app:&mut App){
         info_(format!("new_state {:?}",new_state));
         match new_state{
             QQState::Running=>{
-                app.world.spawn()
-                .insert(storm_ring::spawn_storm_ring(3400.0,3400.0,80));  
+                // app.world.spawn()
+                // .insert(storm_ring::spawn_storm_ring(3400.0,3400.0,80));  
+                // info_(format!("inserted storm_ring"));
                 let server_message = ServerMessage::StateChange{state:QQState::Running,scoreboard:vec![]};
                 match rmp_serde::to_vec(&server_message){
                     Ok(b)=>{
@@ -91,11 +92,11 @@ pub fn state_update(app:&mut App){
                     //app.world.despawn(e);
                     to_despawn.insert(e);
                 }
-                let mut query = app.world.query::<(Entity, &StormRingId)>();
-                for (e,_) in query.iter(&app.world){
-                    //app.world.despawn(e);
-                    to_despawn.insert(e);
-                }
+                // let mut query = app.world.query::<(Entity, &StormRingId)>();
+                // for (e,_) in query.iter(&app.world){
+                //     //app.world.despawn(e);
+                //     to_despawn.insert(e);
+                // }
                 let mut query = app.world.query::<(Entity, &FireId)>();
                 for (e,_) in query.iter(&app.world){
                     //app.world.despawn(e);
@@ -167,12 +168,10 @@ pub fn state_update(app:&mut App){
                     if let Some (elapsed) = timer_hashmap.elapsed.get_mut("C"){
                         *elapsed = 57.0;
                     }
-                    if let Some (elapsed) = timer_hashmap.elapsed.get_mut("C"){
+                    if let Some (elapsed) = timer_hashmap.elapsed.get_mut("D"){
                         *elapsed = 56.0;
                     }
-                    if let Some (elapsed) = timer_hashmap.elapsed.get_mut("storm_ring"){
-                        *elapsed = 0.0;
-                    }
+                   
                 }
             }
         }
