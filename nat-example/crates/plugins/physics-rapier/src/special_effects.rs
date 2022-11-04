@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
 use qq_party_shared::*;
 use rand::Rng;
 

@@ -27,30 +27,12 @@ pub struct ProtocolPlugin;
 
 #[wasm_bindgen]
 extern "C" {
-    // Use `js_namespace` here to bind `console.log(..)` instead of just
-    // `log(..)`
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-
-    // The `console.log` is quite polymorphic, so we can bind it with multiple
-    // signatures. Note that we need to use `js_name` to ensure we always call
-    // `log` in JS.
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_u32(a: u32);
-
-    // Multiple arguments too!
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_many(a: &str, b: &str);
     #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn)]
     fn push_web_bevy_events_fn(msg: &str,msg_ago:&str,user:&str);
     #[wasm_bindgen(js_namespace = window, js_name = push_web_bevy_events_fn2)]
     fn push_web_bevy_events_fn2(msg: &str);
 }
-// macro_rules! console_log {
-//   // Note that this is using the `log` function imported above during
-//   // `bare_bones`
-//   ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-// }
+
 use qq_party_shared::*;
 #[derive(Component,Clone,Debug)]
 pub struct PlayerHealthCheckTimer(pub Timer);
@@ -83,11 +65,9 @@ impl Plugin for ProtocolPlugin {
                     .before(ProtocolSystem::SendCommands),
             )
             .add_system(system::cooldown::hide_display_ui)
-            //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>)
             .add_system(system::camera::move_with_local_player)
             .add_system(system::health_check::player_health_check)
             .add_system(send_commands.label(ProtocolSystem::SendCommands).after(ProtocolSystem::ReceiveEvents));
-            //.add_system(send_commands);
         app.add_startup_system(connect_websocket);
         #[cfg(target_arch = "wasm32")]
         app.add_system(set_client);
