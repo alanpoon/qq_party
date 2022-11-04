@@ -7,7 +7,6 @@ mod fire;
 mod special_effects;
 mod sprite_sheet;
 mod single_image;
-mod timewrapper;
 mod smoke;
 use wasm_bindgen::prelude::*;
 pub struct SpriteCharacterPlugin;
@@ -25,10 +24,8 @@ impl Plugin for SpriteCharacterPlugin {
   fn build(&self, app: &mut bevy::app::App) {
       app
       .init_resource::<HashMap<String,Handle<TextureAtlas>>>()
-      .init_resource::<timewrapper::TimeWrapper>()
       .init_resource::<H>()
       .init_resource::<Handle<Font>>()
-      .add_system(timewrapper::into_timewrapper)
       .add_system(chicken::add_chicken_sprite_system)
       .add_system(chicken::hit_chicken_sprite_system)
       .add_system(chicken::remove_hit_chicken_sprite_system)

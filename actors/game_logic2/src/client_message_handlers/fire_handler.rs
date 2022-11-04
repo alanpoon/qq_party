@@ -41,7 +41,6 @@ pub fn _fn (map:Arc<Mutex<App>>,ball_id:BallId,_velocity:QQVelocity,sprite_enum:
       
       let sa = sub_map_area(fire_bundle.transform.translation.x,fire_bundle.transform.translation.y);
       spawn_fire(&mut app.world,fire_bundle.clone());
-      info_(format!("fire_bundle linvel {:?}",fire_bundle.velocity.linvel));
       let server_message = ServerMessage::Fire{ball_id:ball_id.clone(),velocity:
         QQVelocity(Vec2::new(fire_bundle.velocity.linvel.x,fire_bundle.velocity.linvel.y)),
         sprite_enum};

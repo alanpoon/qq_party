@@ -4,7 +4,6 @@ mod info_;
 mod numbergen_;
 mod systems;
 mod thread;
-mod bevy_wasmcloud_time;
 mod messaging_;
 mod spawn_;
 mod client_message_handlers;
@@ -45,7 +44,6 @@ impl Thread for GameLogicActor{
       //m.world.spawn().insert(startup::StateTransformer(Timer::new(Duration::from_secs(20),false),State::Running));
       m.init_resource::<Time>()
       .init_resource::<StormTiming>()
-      .init_resource::<bevy_wasmcloud_time::Time>()
       .add_plugin(TransformPlugin::default())
       .add_plugin(PhysicsPlugin)
       .add_plugin(QQSharedPlugin)
@@ -129,16 +127,6 @@ pub struct A{
 pub struct BallBundle {
     pub a: A,
 }
-#[derive(Debug, PartialEq, Default,Component)]
-pub struct QQTime{pub elapsed:f32}
-// impl Time{
-//   pub fn update(&mut self,t:f32){
-//     self.elapsed = t;
-//   }
-//   pub fn elapsed(&self)->f32{
-//     self.elapsed
-//   }
-// }
 #[derive(Debug, PartialEq, Default)]
 pub struct TimeV2{pub elapsed:HashMap<String,f32>}
 impl TimeV2{

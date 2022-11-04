@@ -84,8 +84,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       }
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
-      let bevy_wasmcloud_time_val = app.world.get_resource::<crate::bevy_wasmcloud_time::Time>().unwrap();
-      let bevy_wasmcloud_time_val_clone = bevy_wasmcloud_time_val.clone();
+      let time = app.world.get_resource::<Time>().unwrap();
+      let time_clone = time.clone();
       let mut query = app.world.query::<(&BallId,&BallLabel,&Transform, &Velocity,&LastNPC)>();
       //let mut query = app.world.query::<(&BallBundle)>();
       for (gball_id,ball_label,transform,velocity,last_npc) in query.iter(&app.world){
@@ -117,7 +117,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
           bb = ball_bundles.clone();
         }
         let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
-          storm_timing:storm_timing.clone(),timestamp:bevy_wasmcloud_time_val_clone.timestamp};
+          storm_timing:storm_timing.clone(),timestamp:time_clone.timestamp};
         match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
             let p_msg = PubMessage{

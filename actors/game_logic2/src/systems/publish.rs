@@ -5,11 +5,10 @@ use bevy::math::Vec2;
 use qq_party_shared::*;
 use crate::info_::info_;
 use crate::{TimeV2};
-use crate::bevy_wasmcloud_time;
 use crate::messaging_::publish_;
 use qq_party_shared::sub_map::sub_map_area;
 
-pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMut<TimeV2>,bevy_wasmcloud_time_val:Res<bevy_wasmcloud_time::Time>,
+pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMut<TimeV2>,time:Res<Time>,
   query: Query<(&BallId,&BallLabel,&Transform,&Velocity,&LastNPC)>,
   npc_query: Query<(&NPCId,&Transform,&Velocity,&ChaseTargetId)>,
   storm_ring_query: Query<(Entity,&StormRingId)>,
@@ -47,7 +46,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         }
         
       }else{
-        *elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
+        *elapsed += (*time).delta_seconds;
       }
       continue;
     }
@@ -70,7 +69,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
           to_despawn.entities.insert(e);
         }
         *elapsed =0.0;        
-        *storm_timing = StormTiming(bevy_wasmcloud_time_val.timestamp+STORM_INTERVAL,STORM_DURATION);
+        *storm_timing = StormTiming(time.timestamp+STORM_INTERVAL,STORM_DURATION);
         let channel_message_back = ServerMessage::StormRings{storm_rings:vec![],next_storm_timing:Some(storm_timing.clone())};
         match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
@@ -106,10 +105,10 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         }
       }
       if storm_timing.0==0{
-        let next_storm_timing = bevy_wasmcloud_time_val.timestamp - *elapsed as u64 + STORM_INTERVAL;
+        let next_storm_timing = time.timestamp - *elapsed as u64 + STORM_INTERVAL;
         *storm_timing = StormTiming(next_storm_timing,STORM_DURATION);
       }
-      *elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
+      *elapsed += (*time).delta_seconds;
       
       continue;
     }
@@ -146,7 +145,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
         }
         let channel_message_back = ServerMessage::GameState{ball_bundles:bb,npc_bundles:npc_chunck.to_vec(),
           storm_timing:storm_timing.clone(),
-          timestamp:(*bevy_wasmcloud_time_val).timestamp};
+          timestamp:(*time).timestamp};
         match rmp_serde::to_vec(&channel_message_back){
           Ok(b)=>{
             let p_msg = PubMessage{
@@ -163,7 +162,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       }
       
     }else{
-      *elapsed += (*bevy_wasmcloud_time_val).delta_seconds;
+      *elapsed += (*time).delta_seconds;
     }
   }
 }

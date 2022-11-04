@@ -5,8 +5,6 @@ use qq_party_shared::*;
 pub struct PhysicsPlugin;
 #[path = "../src_debug_ui/mod.rs"]
 mod ui;
-// mod timewrapper;
-// mod timewrapper_qq;
 mod special_effects;
 mod storm_ring;
 use wasm_bindgen::prelude::*;

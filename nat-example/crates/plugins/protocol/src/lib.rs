@@ -6,7 +6,6 @@ use wasm::*;
 #[cfg(not(target_arch = "wasm32"))]
 mod native;
 mod c_;
-mod timewrapper;
 mod system;
 mod msg_handler;
 #[cfg(not(target_arch = "wasm32"))]
@@ -73,9 +72,7 @@ impl Plugin for ProtocolPlugin {
             .init_resource::<Option<ClientStateDispatcher>>()
             .init_resource::<LocalUserInfo>()
             .init_resource::<LastAxis>()
-            //.init_resource::<qq_party_shared::Time>()
             .init_resource::<qq_party_shared::StormTiming>()
-            .init_resource::<timewrapper::TimeWrapper>()
             .add_system(add_client_state)
             .add_system(receive_events.label(ProtocolSystem::ReceiveEvents))
             .add_system(
@@ -86,7 +83,6 @@ impl Plugin for ProtocolPlugin {
                     .before(ProtocolSystem::SendCommands),
             )
             .add_system(system::cooldown::hide_display_ui)
-            .add_system(timewrapper::into_timewrapper)
             //.add_system(qq_party_shared::systems::auto_target_velocity::<timewrapper::TimeWrapper>)
             .add_system(system::camera::move_with_local_player)
             .add_system(system::health_check::player_health_check)
