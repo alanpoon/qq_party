@@ -2,24 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use qq_party_shared::*;
 use rand::Rng;
-pub fn spawn_special_effect_collider(
-    mut cmd: Commands,
-    without_rigid: Query<(Entity, &Position), (With<SpecialEffectId>,Without<Transform>)>
-  ) {
-    for (entity, position) in without_rigid.iter() {
-      //info!("spawn_special_effect_collider position {:?}",position.clone());
-      cmd.entity(entity)
-      .insert_bundle(TransformBundle::from(Transform::from_xyz(position.0.x, position.0.y, 2.0)))
-      .insert(RigidBody::Dynamic)
-      .insert(LockedAxes::ROTATION_LOCKED)
-      //.insert(Collider::cuboid(20.0, 20.0))
-      .with_children(|parent|{
-        parent.spawn()
-        .insert(Collider::cuboid(20.0, 20.0));
-      })
-      ;
-    }
-  }
+
 pub fn move_special_effect_closer_to_user_system(
   ball_query: Query<(&BallId,&Transform),Without<SpecialEffectId>>,
   mut effects_query: Query<(Entity, &SpecialEffectId,&mut Transform),Without<BallId>>,

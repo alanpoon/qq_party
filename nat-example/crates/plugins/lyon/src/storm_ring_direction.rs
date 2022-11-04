@@ -86,14 +86,8 @@ pub fn add_storm_ring_direction_system(
         for (_,storm_ring_text,mut transform) in storm_rings_query.iter_mut(){
           if pos.translation.distance([storm_ring_text.0.x,storm_ring_text.0.y,3.0].into())>100.0{
             let unit_vec = (Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0)-pos.translation).normalize_or_zero();
-            // let dy:f32 = -0.5;
-            // let dx:f32 =-0.5;
-            //info!("unit_vec {:?}",unit_vec);
             let angle = unit_vec.x.atan2(unit_vec.y);
-            //let quat= Quat::from_rotation_z((-PI/2.0)+angle);
             let quat= Quat::from_rotation_z(PI/2.0 - angle);
-            // let transform= Transform::from_rotation(quat).with_scale(Vec3::splat(0.7));
-            // cmd.entity(storm_ring_text_entity).insert(transform);
             *transform = Transform::from_rotation(quat).with_scale(Vec3::splat(0.7));
           }
         }
@@ -114,26 +108,16 @@ pub fn update_storm_ring_direction_system(
       for (_storm_ring_entity,storm_ring_text) in storm_rings_query.iter(){
         if pos.translation.distance(Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0))>100.0{
           let unit_vec = (Vec3::new(storm_ring_text.0.x,storm_ring_text.0.y,3.0)-pos.translation).normalize_or_zero();
-          // let dy:f32 = -0.5;
-          // let dx:f32 =-0.5;
-          //info!("unit_vec {:?}",unit_vec);
           let angle = unit_vec.x.atan2(unit_vec.y);
-          //let quat= Quat::from_rotation_z((-PI/2.0)+angle);
           let quat= Quat::from_rotation_z(PI/2.0 - angle);
-         // let quat= Quat::from_scaled_axis([unit_vec.x,unit_vec.y,0.0].into());
-          //info!("angle {:?}", quat.clone().to_axis_angle());
-          //unit_vec= unit_vec*3.0;
           let arrow = asset_server.load("2d/arrow.png");
           let hexagon = asset_server.load("2d/hexagon.png");
           cmd.spawn_bundle(NodeBundle {
             style: Style {
-                //align_self: AlignSelf::FlexEnd,
-                // This will center the current node
                 position_type: PositionType::Absolute,
                 size: Size::new(Val::Px(120.0), Val::Px(100.0)),
                 position: UiRect {
-                      bottom: Val::Px(100.0),
-                      //right: Val::Px(15.0),
+                      top: Val::Px(100.0),
                       right: Val::Px(100.0),
                       ..default()
                 },
