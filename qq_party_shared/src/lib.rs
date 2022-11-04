@@ -14,7 +14,6 @@ pub mod systems;
 pub use systems::*;
 pub use bundle::*;
 pub mod time_interface;
-//pub use time_interface::Timer;
 pub mod scoreboard;
 pub mod sub_map;
 pub mod plugin;
