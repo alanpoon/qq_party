@@ -10,7 +10,6 @@ core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared"}
 bevy = { version = "0.8.1", default-features = false }
 bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e" }
-#bevy = { path = ".../../../../../../bevy2", default-features = false }
 client-websocket = { package = "desk-client-websocket", path = "../../adapters/client-websocket", version = "0.1.0" }
 futures = "0.3.16"
 eyre = "0.6.5"

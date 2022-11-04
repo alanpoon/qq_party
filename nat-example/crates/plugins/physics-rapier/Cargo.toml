@@ -10,11 +10,6 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
 bevy = { version = "0.8.1", default-features = false }
-#bevy = { path = ".../../../../../../bevy2", default-features = false }
-#bevy_rapier2d = { path = ".../../../../../../bevy_rapier/bevy_rapier2d" , features = ["wasm-bindgen", "render"] }
-#bevy_rapier2d = { git = "https://github.com/dimforge/bevy_rapier" , rev = "bd97b0b219b56f4f1e04535e503fa104e01bfb58", features = ["wasm-bindgen", "render"] }
-#bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "61eefc3339c1e4cc7419ed7676fb9f0f6e386583" }
-#bevy_rapier2d = { path = "/home/alanpoon/Documents/rust/bevy_stuff/bevy_rapier2/bevy_rapier2d",features = ["dim2"] }
 bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e" }
 qq_party_shared = { path = "../../../../qq_party_shared" }
 wasm-bindgen = "=0.2.83"

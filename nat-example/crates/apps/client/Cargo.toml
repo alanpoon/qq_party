@@ -28,9 +28,6 @@ plugin-map = { package = "desk-plugin-map", path = "../../plugins/map", version 
 plugin-sprite-character = { package = "desk-plugin-sprite-character", path = "../../plugins/sprite-character", version = "0.1.0" }
 plugin-audio = { package = "desk-plugin-audio", path = "../../plugins/audio", version = "0.1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared" }
-
-
-#bevy = { path = ".../../../../../../bevy2", default-features = false }
 bevy = { version = "0.8.1" ,features =[]}
 tracing-subscriber = "0.2.19"
 console_log = { version = "0.2"}
