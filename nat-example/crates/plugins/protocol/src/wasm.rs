@@ -6,13 +6,16 @@ use futures::future::ready;
 use futures::prelude::*;
 use futures::future::{join_all};
 use lazy_static::lazy_static;
-use protocol::{BoxClient, BoxClient2,ClientName,nats,Client};
+use client_websocket::ClientName;
+use protocol::{BoxClient, BoxClient2,nats,Client};
+use client_websocket::Client2;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::{Mutex};
 use tracing::error;
 use wasm_bindgen_futures::spawn_local;
 use js_sys::{Array};
+use crate::closure::*;
 #[wasm_bindgen]
 extern "C" {
     // Use `js_namespace` here to bind `console.log(..)` instead of just
@@ -78,7 +81,11 @@ pub fn connect_websocket() {
     spawn_local(join_);
 }
 async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
-  connect(c.clone(),s.0.clone()).then(|cz|{
+
+  connect(c.clone(),s.0.clone(),
+  command_closure,
+  event_closure
+  ).then(|cz|{
     //let s_clone = s.clone();
     ready(cz
     .map(|(client,mut meta)| {
@@ -87,9 +94,12 @@ async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
        
         spawn_local( async move{
           console_log!("try auth{:?}",s.1.clone());
-          tx.send(nats::proto::ClientOp::Connect(s.1.clone())).await.unwrap_or_else(|err| {
-            console_log!("err{}", err);
-          });
+          // tx.send(nats::proto::ClientOp::Connect(s.1.clone())).await.unwrap_or_else(|err| {
+          //   console_log!("err{}", err);
+          // });
+          tx.send(RC{}).await.unwrap_or_else(|err| {
+              console_log!("err{}", err);
+            });
           // tx.send(nats::proto::ClientOp::Ping).await.unwrap_or_else(|err| {
           //   console_log!("err{}", err);
           // });

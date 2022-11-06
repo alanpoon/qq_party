@@ -1,0 +1,25 @@
+[package]
+name = "desk-client-websocket2"
+version = "0.1.0"
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+async-trait = "0.1.51"
+futures = "0.3.16"
+eyre = "0.6.5"
+serde_cbor = "0.11.1"
+tracing = "0.1.26"
+cross-websocket = { package = "cross-websocket", path = "../../libs/cross-websocket", version = "0.1.0" }
+futures-lite = "1.12.0"
+pharos = "0.5.2"
+ws_stream_wasm = { version = "0.7.3" }
+log ="0.4"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.9.0", features = ["full"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4.33"
+lazy_static = "1.4.0"
+wasm-bindgen = "=0.2.83"

@@ -708,6 +708,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_nats"
+version = "0.1.0"
+
+[[package]]
 name = "bevy_pbr"
 version = "0.8.1"
 source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d#b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d"
@@ -1835,6 +1839,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "desk-client-websocket2"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "cross-websocket",
+ "eyre",
+ "futures 0.3.24",
+ "futures-lite",
+ "lazy_static",
+ "log",
+ "pharos",
+ "serde_cbor",
+ "tokio",
+ "tracing",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "ws_stream_wasm",
+]
+
+[[package]]
 name = "desk-plugin-audio"
 version = "0.1.0"
 dependencies = [
@@ -1893,7 +1917,7 @@ dependencies = [
  "bevy",
  "bevy_rapier2d",
  "chrono",
- "desk-client-websocket",
+ "desk-client-websocket2",
  "desk-plugin-core",
  "desk-protocol",
  "eyre",

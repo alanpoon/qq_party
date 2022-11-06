@@ -8,6 +8,7 @@ mod native;
 mod c_;
 mod system;
 mod msg_handler;
+mod closure;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
