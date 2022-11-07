@@ -6,16 +6,22 @@ use futures::future::ready;
 use futures::prelude::*;
 use futures::future::{join_all};
 use lazy_static::lazy_static;
-use client_websocket::ClientName;
-use protocol::{BoxClient, BoxClient2,nats,Client};
-use client_websocket::Client2;
+use client_websocket::{RC,RE,ClientName};
+use protocol::{nats,Client};
+use protocol::{handle_client_op,handle_server_op};
+
+use client_websocket::{Client2,Client3,Client4};
+const BUF_CAPACITY: usize = 128 * 1024;
+
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::{Mutex};
 use tracing::error;
 use wasm_bindgen_futures::spawn_local;
 use js_sys::{Array};
+use std::sync::Arc;
 use crate::closure::*;
+use crate::*;
 #[wasm_bindgen]
 extern "C" {
     // Use `js_namespace` here to bind `console.log(..)` instead of just
@@ -80,11 +86,34 @@ pub fn connect_websocket() {
     });
     spawn_local(join_);
 }
+// pub fn handle_server_op(msg:Vec<u8>)->io::Result<nats::proto::ServerOp>{
+//   let mut reader = BufReader::with_capacity(BUF_CAPACITY, &*msg);
+//   let server_op:Option<nats::proto::ServerOp> = nats::proto::decode(&mut reader)?;
+//   server_op.ok_or(std::io::Error::from(std::io::ErrorKind::InvalidData))
+// }
+// pub fn handle_client_op(client_op:nats::proto::ClientOp)->io::Result<Vec<u8>>{
+//   let mut bytes:Vec<u8> = vec![];
+//   let mut writer = BufWriter::with_capacity(BUF_CAPACITY,&mut *bytes);
+//   nats::proto::encode(&mut writer,client_op.clone())?;
+//   if let Ok(_)= writer.flush(){
+    
+//   }
+//   //info!("flush {:?}",client_op);
+//   Ok(writer.buffer().to_vec())
+// }
 async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
-
+  //let command_closure =  Arc<dyn Fn(Vec<u8>) -> Ready<Result<Vec<u8>, String>>+ Send + Sync>,
+  //let eve = Arc<dyn Fn(Result<Vec<u8>,Report>) -> Result<Vec<u8>>>
+  let command_closure2 = Arc::new(|x|{
+    ready(Ok(x))
+  }); //tx
+  let event_closure2 = Arc::new(|x|{
+    // let s_op = handle_server_op(x.unwrap());
+    // info!("event_closure {:?} s_op{:?}",x,s_op);
+    x}); //rx
   connect(c.clone(),s.0.clone(),
-  command_closure,
-  event_closure
+  command_closure2, 
+  event_closure2 
   ).then(|cz|{
     //let s_clone = s.clone();
     ready(cz
@@ -97,7 +126,9 @@ async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
           // tx.send(nats::proto::ClientOp::Connect(s.1.clone())).await.unwrap_or_else(|err| {
           //   console_log!("err{}", err);
           // });
-          tx.send(RC{}).await.unwrap_or_else(|err| {
+          let c = nats::proto::ClientOp::Connect(s.1.clone());
+          let c = handle_client_op(c).unwrap();
+          tx.send(c).await.unwrap_or_else(|err| {
               console_log!("err{}", err);
             });
           // tx.send(nats::proto::ClientOp::Ping).await.unwrap_or_else(|err| {

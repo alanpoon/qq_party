@@ -15,8 +15,8 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use core::ProtocolSystem;
 use futures::prelude::*;
-use protocol::{BoxClient, ClientContext, ClientInput, ClientState, ClientStateDispatcher};
-use protocol::{Command,Event,nats};
+use protocol::{ClientContext, ClientInput, ClientState, ClientStateDispatcher};
+use protocol::{Command,Event,nats,handle_client_op,handle_server_op};
 //use crate::ClientStateDispatcher::ChickenDinner;
 use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -46,6 +46,22 @@ pub enum CoolDownMessage{
     DisplayUI(String),
     HideUI(String)
 }
+use client_websocket::{RC,RE,ClientName};
+use client_websocket::{Client4};
+pub struct BoxClient{
+  pub clients: Vec<Box<dyn Client4 + Send + Sync + 'static>>,
+  pub options: nats::Options,
+}
+impl Default for BoxClient{
+  fn default()->Self{
+    BoxClient{
+      clients:vec![],
+      options: nats::Options::default()
+    }
+  }
+}
+pub type BoxClient2 = Box<dyn Client4 + Send + Sync + 'static>;
+
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
         let app = app
@@ -253,6 +269,7 @@ fn handle_events(
         
     }
 }
+
 use futures::future::ready;
 fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut commands: ResMut<protocol::Commands>,mut _events: ResMut<protocol::Events>) {
     if let Some(ref mut client) = *client {
@@ -265,7 +282,7 @@ fn send_commands(mut cmd: Commands,mut client:  ResMut<Option<BoxClient>>, mut c
               Command::Nats(_,b)=>{
                 let b_clone = b.clone();
                 block_on(async move {
-                  sender.send(b.clone()).await.unwrap_or_else(|err| {
+                  sender.send(handle_client_op(b.clone()).unwrap()).await.unwrap_or_else(|err| {
                       error!("{}", err);
                   });
                   //save_sub(b.subject,ClientName(Cow::Borrowed("default")));
@@ -314,9 +331,14 @@ fn receive_events(mut cmd: Commands,
         let _rand_int = get_random_int(0,len as i32);
         if let Some(vec) = client.clients.get_mut(0).unwrap().poll_once() {
             for event in vec {
-                if let Event::Nats(_client_name,s_op)=event.clone(){
-                  match s_op{
+                //if let Event::Nats(_client_name,s_op)=handle_server_op(event.clone()).unwrap(){
+              let s_op = handle_server_op(event);
+              match s_op{
+                Ok(t)=>{
+                  
+                  match t.clone(){
                     nats::proto::ServerOp::Msg{subject,sid:_,reply_to:_,payload}=>{
+                  
                       if subject.contains("game_logic"){
                       //if subject == String::from("game_logic"){
                         let server_message: ServerMessage = rmp_serde::from_slice(&payload).unwrap();
@@ -445,13 +467,20 @@ fn receive_events(mut cmd: Commands,
                           _=>{}
                         }
                       }
-                    }
+                    },
                     _=>{
-                      
+
                     }
-                  } 
+                  }
+                  let event =Event::Nats(String::from("some_client"), t);
+                  events.push(event);
                 }
-                events.push(event);
+                Err(e)=>{
+                  info!("protocol e {:?}",e);
+                }
+              
+              }
+               
             }
         }
     }

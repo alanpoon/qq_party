@@ -44,6 +44,31 @@ fn command_sender<RC:Send + Sync +'static>(
         closure(command)
     })
 }
+fn event_receiver2(
+    rx: impl Stream<Item = Result<Vec<u8>>> + Send + Sync + 'static + Unpin,
+    closure: Arc<dyn Fn(Result<Vec<u8>,Report>) -> Result<Vec<u8>>>
+) -> impl Stream<Item = Vec<u8>>  + 'static + Unpin {
+    rx.map(move|bytes| -> Result<Vec<u8>> { closure(bytes)})
+        .filter_map(|item|
+            ready(match item {
+                Ok(ok) => Some(ok),
+                Err(err) => {
+                    error!("{}", err);
+                    None
+                }
+            })
+        )
+}
+
+fn command_sender2(
+    tx: impl Sink<Vec<u8>, Error = String> + Clone + Send + Sync + 'static + Unpin,
+    closure: Arc<dyn Fn(Vec<u8>) -> Ready<Result<Vec<u8>, String>>+ Send + Sync>
+) -> impl Sink<Vec<u8>, Error = String> + Clone + Send + Sync + 'static + Unpin {
+    tx.with(move|command: Vec<u8>| -> Ready<Result<Vec<u8>, String>> {
+        closure(command)
+    })
+}
+
 const BUF_CAPACITY: usize = 128 * 1024;
 use std::io;
 // pub fn handle_server_op(msg:Vec<u8>)->io::Result<nats::proto::ServerOp>{
@@ -61,4 +86,16 @@ pub trait RE {
 pub trait Client2<RC> {
     fn sender(&self) -> Box<dyn Sink<RC, Error = String> + Send + Sync + Unpin + 'static>;
     fn poll_once(&mut self) -> Option<Vec<Arc<dyn RE + Send + Sync>>>;
+}
+pub trait RC {
+
+}
+pub trait Client3 {
+    fn sender(&self) -> Arc<dyn Sink<Arc<dyn RC+ Send + Sync>, Error = String> + Send + Sync + Unpin + 'static>;
+    fn poll_once(&mut self) -> Option<Vec<Arc<dyn RE + Send + Sync>>>;
+}
+
+pub trait Client4 {
+    fn sender(&self) -> Box<dyn Sink<Vec<u8>, Error = String> + Send + Sync + Unpin + 'static>;
+    fn poll_once(&mut self) -> Option<Vec<Vec<u8>>>;
 }
