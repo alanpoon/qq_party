@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::nats;
+use nats_lite::nats;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 //#[serde(tag = "c")] // stands for code
@@ -12,7 +12,6 @@ pub enum Event {
     #[serde(other)]
     Unknown,
 }
-pub type RawEvent = nats::proto::ServerOp;
 
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct Events(Vec<Event>);

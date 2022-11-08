@@ -1,13 +1,13 @@
 use std::pin::Pin;
 use std::task::Poll;
 
-use protocol::futures::StreamExt;
-use protocol::futures::{prelude::*, Stream};
-use protocol::Event;
+use futures::StreamExt;
+use futures::{prelude::*, Stream};
+
 
 pub struct NextVec<'a, T>(pub &'a mut T);
 
-impl<'a, T: Stream<Item = Event> + Unpin> Future for NextVec<'a, T> {
+impl<'a, T: Stream<Item = Event> + Unpin,Event> Future for NextVec<'a, T> {
     type Output = Option<Vec<Event>>;
 
     fn poll(mut self: Pin<&mut Self>, cx: &mut std::task::Context<'_>) -> Poll<Self::Output> {

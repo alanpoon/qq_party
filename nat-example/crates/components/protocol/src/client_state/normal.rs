@@ -1,9 +1,7 @@
 use crate::{ClientContext, ClientInput, ClientState, ClientStateDispatcher,Event,Command};
-use crate::nats;
+use nats_lite::nats;
 use super::after_normal::AfterNormal;
 use qq_party_shared::*;
-// use rand::Rng;
-use log::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct Normal {
   //user_id
@@ -43,7 +41,6 @@ impl ClientState for Normal {
                       ball_id:ball_id.clone(),
                       ball_label:ball_label,
                     };
-                    info!("--- Welcome");
                     let tv_= rmp_serde::to_vec(&tv).unwrap();
                     let n = nats::proto::ClientOp::Pub{
                       subject: String::from("client_handler.hello"),
@@ -72,7 +69,6 @@ impl ClientState for Normal {
                   }
                   
                   Err(e)=>{
-                    info!("---ClientMessage de err{:?}",e);
                   }
                   _=>{
 

@@ -1,17 +1,19 @@
-use crate::{command_sender, event_receiver};
+use crate::{event_receiver};
 use async_trait::async_trait;
-use eyre::Result;
+use eyre::{Result};
 use lazy_static::lazy_static;
-use protocol::futures::channel::mpsc::channel;
-use protocol::futures::future::ready;
-use protocol::futures::prelude::*;
-use protocol::{Client, ClientName, RawCommand,Event};
-use std::collections::HashMap;
+use futures::channel::mpsc::channel;
+use futures::future::{ready};
+use futures::prelude::*;
+use crate::{Client};
+use std::borrow::Cow;
 use std::sync::Mutex;
+use std::collections::HashMap;
+#[derive(Clone, Hash, Eq, PartialEq)]
+pub struct ClientName(pub Cow<'static, str>);
 use log::*;
 lazy_static! {
-    static ref EVENTS: Mutex<HashMap<ClientName, Vec<Event>>> = Mutex::new(HashMap::default());
-    static ref EVENTS_CALLBACK: Mutex<HashMap<ClientName, Vec<Event>>> = Mutex::new(HashMap::default());
+    static ref EVENTS: Mutex<HashMap<ClientName, Vec<Vec<u8>>>> = Mutex::new(HashMap::default());
 }
 
 pub struct WebSocketClient<Tx> {
@@ -23,13 +25,13 @@ pub struct WebSocketClient<Tx> {
 #[async_trait]
 impl<Tx> Client for WebSocketClient<Tx>
 where
-    Tx: Sink<RawCommand, Error = String> + Clone + Send + Sync + Unpin + 'static,
+    Tx: Sink<Vec<u8>, Error = String> + Clone + Send + Sync + Unpin + 'static,
 {
-    fn sender(&self) -> Box<dyn Sink<RawCommand, Error = String> + Send + Sync + Unpin + 'static> {
+    fn sender(&self) -> Box<dyn Sink<Vec<u8>, Error = String> + Send + Sync + Unpin + 'static> {
         Box::new(self.command_sender.clone())
     }
 
-    fn poll_once(&mut self) -> Option<Vec<Event>> {
+    fn poll_once(&mut self) -> Option<Vec<Vec<u8>>> {
         let mut map = EVENTS.lock().unwrap();
         let events = map.get_mut(&self.client_name).unwrap();
         let result = events.clone();
@@ -38,12 +40,11 @@ where
         return Some(result);
     }
 }
-
 pub async fn connect(
     client_name: ClientName,
     url: String,
 ) -> Result<(
-    WebSocketClient<impl Sink<RawCommand, Error = String> + Clone + Send + Sync + Unpin + 'static
+    WebSocketClient<impl Sink<Vec<u8>, Error = String> + Clone + Send + Sync + Unpin + 'static
     >,pharos::Events<ws_stream_wasm::WsEvent>),
 > {
     let mut meta = cross_websocket::connect(url.clone()).await?;
@@ -57,7 +58,7 @@ pub async fn connect(
     let event_receiver = event_receiver(rx);
     let result = Ok((WebSocketClient {
         client_name: client_name.clone(),
-        command_sender: command_sender(tx_clone.sink_map_err(|err| err.to_string())),
+        command_sender: tx_clone.sink_map_err(|err| err.to_string()),
         url:url,
     },evt));
     EVENTS
@@ -72,26 +73,10 @@ pub async fn connect(
                 .unwrap()
                 .get_mut(&client_name)
                 .unwrap()
-                .push(Event::Nats(client_name.0.to_string(),event)),
+                .push(event)
+                //.push(Event::Nats(client_name.0.to_string(),event)),
           )
       }).await;
     });
     result
-}
-
-pub fn save_sub(subject:String,client_name:ClientName){
-    EVENTS
-        .lock()
-        .unwrap()
-        .get_mut(&client_name)
-        .unwrap()
-        .push(Event::NatSubOk(subject));
-}
-pub fn save_pub(subject:String,client_name:ClientName){
-  EVENTS
-      .lock()
-      .unwrap()
-      .get_mut(&client_name)
-      .unwrap()
-      .push(Event::NatPubOk(subject));
 }

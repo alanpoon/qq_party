@@ -708,10 +708,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_nats"
-version = "0.1.0"
-
-[[package]]
 name = "bevy_pbr"
 version = "0.8.1"
 source = "git+https://github.com/bevyengine/bevy?rev=b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d#b995b4662a9481e8d6fd984b2d2fd02e1c2d1a5d"
@@ -1323,12 +1319,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c0358e41e90e443c69b2b2811f6ec9892c228b93620634cf4344fe89967fa9f"
 
 [[package]]
-name = "convert_case"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
-
-[[package]]
 name = "copyless"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1751,17 +1741,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "derive-new"
-version = "0.5.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3418329ca0ad70234b9735dc4ceed10af4df60eff9c8e7b06cb5e520d92c3535"
-dependencies = [
- "proc-macro2 1.0.46",
- "quote 1.0.21",
- "syn 1.0.102",
-]
-
-[[package]]
 name = "derive_builder"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1787,19 +1766,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "derive_more"
-version = "0.99.17"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fb810d30a7c1953f91334de7244731fc3f3c10d7fe163338a35b9f640960321"
-dependencies = [
- "convert_case",
- "proc-macro2 1.0.46",
- "quote 1.0.21",
- "rustc_version",
- "syn 1.0.102",
-]
-
-[[package]]
 name = "desk-client"
 version = "0.1.0"
 dependencies = [
@@ -1820,26 +1786,6 @@ dependencies = [
 
 [[package]]
 name = "desk-client-websocket"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "cross-websocket",
- "desk-protocol",
- "eyre",
- "futures-lite",
- "lazy_static",
- "log",
- "pharos",
- "serde_cbor",
- "tokio",
- "tracing",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "ws_stream_wasm",
-]
-
-[[package]]
-name = "desk-client-websocket2"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -1917,9 +1863,9 @@ dependencies = [
  "bevy",
  "bevy_rapier2d",
  "chrono",
- "desk-client-websocket2",
+ "desk-client-websocket",
  "desk-plugin-core",
- "desk-protocol2",
+ "desk-protocol",
  "eyre",
  "futures 0.3.24",
  "futures-lite",
@@ -1958,35 +1904,6 @@ dependencies = [
 
 [[package]]
 name = "desk-protocol"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "derive-new",
- "derive_more",
- "enum_dispatch",
- "fastrand",
- "futures 0.3.24",
- "itoa 0.4.8",
- "json",
- "log",
- "mock-it",
- "pharos",
- "qq_party_shared",
- "rand 0.8.5",
- "rmp-serde 1.1.1",
- "serde",
- "serde_bytes",
- "serde_cbor",
- "serde_json",
- "tokio",
- "tracing",
- "uuid 0.8.2",
- "wasm-bindgen",
- "ws_stream_wasm",
-]
-
-[[package]]
-name = "desk-protocol2"
 version = "0.1.0"
 dependencies = [
  "enum_dispatch",
@@ -3343,26 +3260,6 @@ dependencies = [
  "log",
  "wasi 0.11.0+wasi-snapshot-preview1",
  "windows-sys",
-]
-
-[[package]]
-name = "mock-it"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b7b1a2c2b0b7f5d3c0324fe23c5c0663e2a0fb1722b8f0ba4ea537398168f48"
-dependencies = [
- "mock-it_codegen",
-]
-
-[[package]]
-name = "mock-it_codegen"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a90ee8c81fb14e718d94686e3c091aaaf1397df62cc63f88b4e04595e0455870"
-dependencies = [
- "proc-macro2 1.0.46",
- "quote 1.0.21",
- "syn 1.0.102",
 ]
 
 [[package]]

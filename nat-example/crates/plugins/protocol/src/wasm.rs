@@ -6,11 +6,11 @@ use futures::future::ready;
 use futures::prelude::*;
 use futures::future::{join_all};
 use lazy_static::lazy_static;
-use client_websocket::{RC,RE,ClientName};
+use client_websocket::{ClientName};
 use nats_lite::{nats};
 use protocol::{handle_client_op,handle_server_op};
 
-use client_websocket::{Client2,Client3,Client4};
+use client_websocket::{Client};
 const BUF_CAPACITY: usize = 128 * 1024;
 
 use std::borrow::Cow;
@@ -103,16 +103,14 @@ pub fn connect_websocket() {
 async fn local_connect(c:ClientName,s:(String,nats::ConnectInfo))->(){
   //let command_closure =  Arc<dyn Fn(Vec<u8>) -> Ready<Result<Vec<u8>, String>>+ Send + Sync>,
   //let eve = Arc<dyn Fn(Result<Vec<u8>,Report>) -> Result<Vec<u8>>>
-  let command_closure2 = Arc::new(|x|{
-    ready(Ok(x))
-  }); //tx
-  let event_closure2 = Arc::new(|x|{
-    // let s_op = handle_server_op(x.unwrap());
-    // info!("event_closure {:?} s_op{:?}",x,s_op);
-    x}); //rx
+  // let command_closure2 = Arc::new(|x|{
+  //   ready(Ok(x))
+  // }); //tx
+  // let event_closure2 = Arc::new(|x|{
+  //   // let s_op = handle_server_op(x.unwrap());
+  //   // info!("event_closure {:?} s_op{:?}",x,s_op);
+  //   x}); //rx
   connect(c.clone(),s.0.clone(),
-  command_closure2, 
-  event_closure2 
   ).then(|cz|{
     //let s_clone = s.clone();
     ready(cz

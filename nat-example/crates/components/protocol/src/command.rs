@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::nats;
+use nats_lite::nats;
 use qq_party_shared::UserInfo;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
@@ -10,11 +10,6 @@ pub enum Command {
     #[serde(other)]
     Unknown,
 }
-#[cfg(test)]
-mod test {
-    use super::*;
-}
-pub type RawCommand = nats::proto::ClientOp;
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct Commands(Vec<Command>);
 impl Commands {

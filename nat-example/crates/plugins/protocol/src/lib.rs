@@ -46,10 +46,10 @@ pub enum CoolDownMessage{
     DisplayUI(String),
     HideUI(String)
 }
-use client_websocket::{RC,RE,ClientName};
-use client_websocket::{Client4};
+use client_websocket::{ClientName};
+use client_websocket::{Client};
 pub struct BoxClient{
-  pub clients: Vec<Box<dyn Client4 + Send + Sync + 'static>>,
+  pub clients: Vec<Box<dyn Client + Send + Sync + 'static>>,
   pub options: nats::Options,
 }
 impl Default for BoxClient{
@@ -60,7 +60,7 @@ impl Default for BoxClient{
     }
   }
 }
-pub type BoxClient2 = Box<dyn Client4 + Send + Sync + 'static>;
+pub type BoxClient2 = Box<dyn Client + Send + Sync + 'static>;
 
 impl Plugin for ProtocolPlugin {
     fn build(&self, app: &mut bevy::app::App) {
