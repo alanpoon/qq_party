@@ -1919,13 +1919,14 @@ dependencies = [
  "chrono",
  "desk-client-websocket2",
  "desk-plugin-core",
- "desk-protocol",
+ "desk-protocol2",
  "eyre",
  "futures 0.3.24",
  "futures-lite",
  "js-sys",
  "lazy_static",
  "log",
+ "nats-lite",
  "qq_party_shared",
  "rmp-serde 1.1.1",
  "serde",
@@ -1982,6 +1983,19 @@ dependencies = [
  "uuid 0.8.2",
  "wasm-bindgen",
  "ws_stream_wasm",
+]
+
+[[package]]
+name = "desk-protocol2"
+version = "0.1.0"
+dependencies = [
+ "enum_dispatch",
+ "log",
+ "nats-lite",
+ "qq_party_shared",
+ "rmp-serde 1.1.1",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -3453,6 +3467,16 @@ dependencies = [
  "serde_json",
  "webpki 0.21.4",
  "winapi",
+]
+
+[[package]]
+name = "nats-lite"
+version = "0.1.0"
+dependencies = [
+ "fastrand",
+ "itoa 0.4.8",
+ "json",
+ "serde",
 ]
 
 [[package]]

@@ -1,6 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "Cargo.toml",
+        
 "nat-example/Cargo.toml"
     ]
 }

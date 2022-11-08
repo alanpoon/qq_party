@@ -1,12 +1,12 @@
 use async_trait::async_trait;
 
-use eyre::{Report,Result};
-use futures::future::{ready, Ready};
+use eyre::Result;
 use futures::channel::mpsc::channel;
-use crate::Client;
 use futures::{prelude::*, Sink, Stream};
-use std::sync::Arc;
-use crate::{command_sender, event_receiver, NextVec,RC,RE};
+use crate::{Client4};
+
+
+use crate::{command_sender2, event_receiver2, NextVec};
 
 pub struct WebSocketClient<Tx, Rx> {
     command_sender: Tx,
@@ -14,28 +14,26 @@ pub struct WebSocketClient<Tx, Rx> {
 }
 
 #[async_trait]
-impl<Tx, Rx,RC,Event> Client<RC,Event> for WebSocketClient<Tx, Rx>
+impl<Tx, Rx> Client4 for WebSocketClient<Tx, Rx>
 where
-    Tx: Sink<RC, Error = String> + Clone + Send + Sync + Unpin + 'static,
-    Rx: Stream<Item = Event> + Send + Sync + Unpin + 'static,
+    Tx: Sink<Vec<u8>, Error = String> + Clone + Send + Sync + Unpin + 'static,
+    Rx: Stream<Item = Vec<u8>> + Send + Sync + Unpin + 'static,
 {
-    fn sender(&self) -> Box<dyn Sink<RC, Error = String> + Send + Sync + Unpin + 'static> {
+    fn sender(&self) -> Box<dyn Sink<Vec<u8>, Error = String> + Send + Sync + Unpin + 'static> {
         Box::new(self.command_sender.clone())
     }
 
-    fn poll_once(&mut self) -> Option<Vec<Event>> {
+    fn poll_once(&mut self) -> Option<Vec<Vec<u8>>> {
         futures_lite::future::block_on(NextVec(&mut self.event_receiver))
     }
 }
 
-pub async fn connect<RC:Send + Sync +'static,RE:Send + Sync +'static>(
+pub async fn connect(
     url: String,
-    command_closure: Arc<dyn Fn(RC) -> Ready<Result<Vec<u8>, String>>+ Send + Sync>,
-    event_closure:Arc<dyn Fn(Result<Vec<u8>,Report>) -> Result<RE>+Send+Sync>
 ) -> Result<
     WebSocketClient<
-        impl Sink<RC, Error = String> + Clone + Send + Sync + Unpin + 'static,
-        impl Stream<Item = RE> + Send + Sync + Unpin + 'static,
+        impl Sink<Vec<u8>, Error = String> + Clone + Send + Sync + Unpin + 'static,
+        impl Stream<Item = Vec<u8>> + Send + Sync + Unpin + 'static,
     >,
 > {
     let (tx, rx) = cross_websocket::connect(url).await?.split();
@@ -43,7 +41,7 @@ pub async fn connect<RC:Send + Sync +'static,RE:Send + Sync +'static>(
     tokio::spawn(rx_clone.map(Ok).forward(tx));
 
     Ok(WebSocketClient {
-        command_sender: command_sender(tx_clone.sink_map_err(|err| err.to_string()),command_closure),
-        event_receiver: event_receiver(rx,event_closure),
+        command_sender: command_sender(tx_clone.sink_map_err(|err| err.to_string())),
+        event_receiver: event_receiver(rx),
     })
 }

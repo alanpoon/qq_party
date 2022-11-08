@@ -1,5 +1,6 @@
 use qq_party_shared::*;
-use protocol::{Command,nats};
+use nats_lite::nats;
+use protocol::{Command};
 use chrono::prelude::*;
 use bevy::prelude::*;
 use bevy::utils::Duration;

@@ -7,7 +7,7 @@ use futures::prelude::*;
 use futures::future::{join_all};
 use lazy_static::lazy_static;
 use client_websocket::{RC,RE,ClientName};
-use protocol::{nats,Client};
+use nats_lite::{nats};
 use protocol::{handle_client_op,handle_server_op};
 
 use client_websocket::{Client2,Client3,Client4};
@@ -20,7 +20,6 @@ use tracing::error;
 use wasm_bindgen_futures::spawn_local;
 use js_sys::{Array};
 use std::sync::Arc;
-use crate::closure::*;
 use crate::*;
 #[wasm_bindgen]
 extern "C" {

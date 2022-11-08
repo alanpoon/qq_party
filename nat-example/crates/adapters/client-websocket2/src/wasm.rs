@@ -1,11 +1,11 @@
-use crate::{command_sender, event_receiver,event_receiver2,command_sender2};
+use crate::{event_receiver2,command_sender2};
 use async_trait::async_trait;
 use eyre::{Result,Report};
 use lazy_static::lazy_static;
 use futures::channel::mpsc::channel;
 use futures::future::{Ready,ready};
 use futures::prelude::*;
-use crate::{RE,Client2,Client3,Client4};
+use crate::{Client4};
 use std::borrow::Cow;
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub struct ClientName(pub Cow<'static, str>);
@@ -17,52 +17,6 @@ lazy_static! {
     static ref EVENTS2: Mutex<HashMap<ClientName, Vec<Vec<u8>>>> = Mutex::new(HashMap::default());
 }
 
-pub struct WebSocketClient<Tx> {
-    client_name: ClientName,
-    command_sender: Tx,
-    pub url:String,
-}
-
-#[async_trait]
-impl<Tx,RC> Client2<RC> for WebSocketClient<Tx>
-where
-    Tx: Sink<RC, Error = String> + Clone + Send + Sync + Unpin + 'static,
-{
-    fn sender(&self) -> Box<dyn Sink<RC, Error = String> + Send + Sync + Unpin + 'static> {
-        Box::new(self.command_sender.clone())
-    }
-
-    fn poll_once(&mut self) -> Option<Vec<Arc<dyn RE+Send+Sync>>> {
-        let mut map = EVENTS.lock().unwrap();
-        let events = map.get_mut(&self.client_name).unwrap();
-        let result = events.clone();
-        events.clear();
-        events.truncate(10);
-        return Some(result);
-    }
-}
-
-pub struct WebSocketClient3{
-    client_name: ClientName,
-    command_sender: Arc<dyn Sink<Arc<dyn RC+ Send + Sync>, Error = String> + Send + Sync + Unpin + 'static>,
-    pub url:String,
-}
-use crate::RC;
-impl Client3 for WebSocketClient3
-{
-    fn sender(&self) -> Arc<dyn Sink<Arc<dyn RC+ Send + Sync>, Error = String> + Send + Sync + Unpin + 'static> {
-        self.command_sender.clone()
-    }
-
-    fn poll_once(&mut self) -> Option<Vec<Arc<dyn RE+Send+Sync>>> {
-        let mut map = EVENTS.lock().unwrap();
-        let events = map.get_mut(&self.client_name).unwrap();
-        let result = events.clone();
-        events.clear();
-        events.truncate(10);
-        return Some(result);
-    }
-}
 pub struct WebSocketClient4<Tx> {
     client_name: ClientName,
     command_sender: Tx,

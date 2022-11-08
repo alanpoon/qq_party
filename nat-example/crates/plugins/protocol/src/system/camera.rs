@@ -1,6 +1,7 @@
 use bevy::{ prelude::*, render::camera::Camera};
 use qq_party_shared::*;
-use protocol::{Command,nats};
+use nats_lite::nats;
+use protocol::{Command};
 use serde_json::json;
 use crate::c_;
 use wasm_bindgen::prelude::wasm_bindgen;

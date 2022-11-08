@@ -5,13 +5,14 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-protocol = { package = "desk-protocol", path = "../../components/protocol", version = "0.1.0" }
+protocol = { package = "desk-protocol2", path = "../../components/protocol2", version = "0.1.0" }
 core = { package = "desk-plugin-core", path = "../core", version = "0.1.0" }
 qq_party_shared = { path = "../../../../qq_party_shared"}
 bevy = { version = "0.8.1", default-features = false }
 bevy_rapier2d = { git = "https://github.com/alanpoon/bevy_rapier", rev = "777ed4f493d2f15ddf8f025e25ae81c7b33f6f5e" }
 #client-websocket = { package = "desk-client-websocket", path = "../../adapters/client-websocket", version = "0.1.0" }
 client-websocket = { package = "desk-client-websocket2", path = "../../adapters/client-websocket2", version = "0.1.0" }
+nats-lite = {path = "../../libs/nats_lite"}
 futures = "0.3.16"
 eyre = "0.6.5"
 futures-lite = "1.12.0"

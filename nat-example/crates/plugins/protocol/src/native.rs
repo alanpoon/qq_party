@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use client_websocket::connect;
 use futures::Future;
 use futures_lite::future;
-use protocol::BoxClient;
+use crate::BoxClient;
 
 pub fn connect_websocket(mut client_res: ResMut<Option<BoxClient>>) {
     use std::mem::forget;

@@ -8,15 +8,15 @@ mod native;
 mod c_;
 mod system;
 mod msg_handler;
-mod closure;
 #[cfg(not(target_arch = "wasm32"))]
 use native::*;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use core::ProtocolSystem;
 use futures::prelude::*;
+use nats_lite::nats;
 use protocol::{ClientContext, ClientInput, ClientState, ClientStateDispatcher};
-use protocol::{Command,Event,nats,handle_client_op,handle_server_op};
+use protocol::{Command,Event,handle_client_op,handle_server_op};
 //use crate::ClientStateDispatcher::ChickenDinner;
 use tracing::error;
 use wasm_bindgen::prelude::wasm_bindgen;
