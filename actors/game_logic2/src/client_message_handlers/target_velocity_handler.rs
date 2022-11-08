@@ -23,6 +23,8 @@ pub fn _fn (map:Arc<Mutex<App>>,_game_id:String,ball_id:BallId,target_velocity:T
     if gball_id.0 ==ball_id.0{
       let sa = sub_map_area(transform.translation.x,transform.translation.y);
       update::target_velocity::velocity(&mut velocity, target_velocity.clone());
+      info_(format!("pos x: {:?} y:{:?} vel {:?}",transform.translation.x,transform.translation.y,velocity.linvel));
+
       let server_message = ServerMessage::TargetVelocity{ball_id,target_velocity};
       match rmp_serde::to_vec(&server_message){
         Ok(b)=>{

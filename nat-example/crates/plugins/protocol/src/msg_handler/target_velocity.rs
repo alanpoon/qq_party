@@ -10,13 +10,15 @@ pub fn _fn(_cmd: &mut Commands, set: &mut ParamSet<(
   )>,ball_id:BallId,tv:TargetVelocity){
     for (_entity, qball_id,_t,mut v) in set.p0().iter_mut(){
         if ball_id ==*qball_id{
-            let f = if tv.0.x * tv.0.x+tv.0.y * tv.0.y>=2.0{
-                1.0
-            } else{
-                std::f32::consts::SQRT_2
-            };
-            v.linvel.x = tv.0.x *50.0 * f;
-            v.linvel.y = tv.0.y * 50.0 * f;
+            // let f = if tv.0.x * tv.0.x+tv.0.y * tv.0.y>=2.0{
+            //     1.0
+            // } else{
+            //     std::f32::consts::SQRT_2
+            // };
+            // v.linvel.x = tv.0.x *50.0 * f;
+            // v.linvel.y = tv.0.y * 50.0 * f;
+            update::target_velocity::velocity(&mut v, tv.clone());
+
         }
     }  
 }

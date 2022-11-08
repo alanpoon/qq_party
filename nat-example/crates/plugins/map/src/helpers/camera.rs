@@ -13,41 +13,41 @@ pub fn movement(
         //         info!("ui_c  show_ui{:?}" ,ui_c.show_ui);
         //     }
         // }
-                let mut direction = Vec3::ZERO;
+        let mut direction = Vec3::ZERO;
 
-                if keyboard_input.pressed(KeyCode::A) {
-                    direction -= Vec3::new(1.0, 0.0, 0.0);
-                }
+        if keyboard_input.pressed(KeyCode::A) {
+            direction -= Vec3::new(1.0, 0.0, 0.0);
+        }
 
-                if keyboard_input.pressed(KeyCode::D) {
-                    direction += Vec3::new(1.0, 0.0, 0.0);
-                }
+        if keyboard_input.pressed(KeyCode::D) {
+            direction += Vec3::new(1.0, 0.0, 0.0);
+        }
 
-                if keyboard_input.pressed(KeyCode::W) {
-                    direction += Vec3::new(0.0, 1.0, 0.0);
-                }
+        if keyboard_input.pressed(KeyCode::W) {
+            direction += Vec3::new(0.0, 1.0, 0.0);
+        }
 
-                if keyboard_input.pressed(KeyCode::S) {
-                    direction -= Vec3::new(0.0, 1.0, 0.0);
-                }
+        if keyboard_input.pressed(KeyCode::S) {
+            direction -= Vec3::new(0.0, 1.0, 0.0);
+        }
 
-                if keyboard_input.pressed(KeyCode::Z) {
-                    ortho.scale += 0.1;
-                }
+        if keyboard_input.pressed(KeyCode::Z) {
+            ortho.scale += 0.1;
+        }
 
-                if keyboard_input.pressed(KeyCode::X) {
-                    ortho.scale -= 0.1;
-                }
+        if keyboard_input.pressed(KeyCode::X) {
+            ortho.scale -= 0.1;
+        }
 
-                if ortho.scale < 0.2 {
-                    ortho.scale = 0.2;
-                }
+        if ortho.scale < 0.2 {
+            ortho.scale = 0.2;
+        }
 
-                let z = transform.translation.z;
-                transform.translation += time.delta_seconds() * direction * 500.;
-                // Important! We need to restore the Z values when moving the camera around.
-                // Bevy has a specific camera setup and this can mess with how our layers are shown.
-                transform.translation.z = z;
+        let z = transform.translation.z;
+        transform.translation += time.delta_seconds() * direction * 500.;
+        // Important! We need to restore the Z values when moving the camera around.
+        // Bevy has a specific camera setup and this can mess with how our layers are shown.
+        transform.translation.z = z;
         //     }
         // }
         // for (mut text,mut _s,mut _g)  in text_query.iter_mut() {

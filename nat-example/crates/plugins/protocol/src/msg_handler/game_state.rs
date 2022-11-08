@@ -21,6 +21,10 @@ pub fn _fn_spawn_or_update_ball_bundles(
           let ball_bundle = ball_bundles.get(i).unwrap();
           if ball_bundle.ball_id.0 == ball_id.0{
             *v = ball_bundle.velocity;
+            let pre_t = t.clone();
+            let diff = pre_t.translation.distance_squared(ball_bundle.transform.translation);
+            let diff_unit_vec = (ball_bundle.transform.translation-pre_t.translation).normalize_or_zero();
+            info!("diff ball_id{:?} diff {:?} diff_unit_vec{:?}",ball_id,diff,diff_unit_vec);
             *t = ball_bundle.transform;
             founds.push(i);
             //found = true;

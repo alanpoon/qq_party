@@ -28,13 +28,13 @@ pub fn debug_startup(mut cmd:Commands,asset_server: Res<AssetServer>){
     cmd.spawn_bundle(tb).insert(DebugText());
 }
 
-pub fn debug_system(ball_query: Query<(Entity, &BallId,&Position)>,local_user_info: Res<LocalUserInfo>,
+pub fn debug_system(ball_query: Query<(Entity, &BallId,&Transform)>,local_user_info: Res<LocalUserInfo>,
     mut debug_query:Query<&mut Text,With<DebugText>>){
     for mut text  in debug_query.iter_mut() {
         for (_,ball_id,pos) in ball_query.iter(){
             if local_user_info.0.ball_id.0 ==ball_id.0{
                 text.sections[0].value = format!(r#"ballid:{:?}
-                {:?}"#,ball_id,pos);
+                 x:{:?},y:{:?}"#,ball_id,pos.translation.x,pos.translation.y);
             }
         }
     }

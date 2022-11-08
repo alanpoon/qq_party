@@ -8,8 +8,10 @@ impl Plugin for PhysicsPlugin {
       app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
           .insert_resource(RapierConfiguration {
             gravity: Vect::ZERO,
-            timestep_mode: TimestepMode::Interpolated{
-              dt:1.0/60.0,
+            //timestep_mode: TimestepMode::Interpolated{
+            timestep_mode:TimestepMode::Variable{
+              //dt:1.0/60.0,
+              max_dt:1.0/60.0,
               time_scale:1.0,
               substeps:1,
             },
