@@ -9,7 +9,7 @@ impl ClientState for AfterNormal {
       //info!("LZ afternormal{:?}",event);
       match event {
         ClientInput::Event(e) => {
-          if let Event::Nats(_client_name,s_op)=e{
+          if let Event::Nats(_client_name,_s_op)=e{
             
             
           }

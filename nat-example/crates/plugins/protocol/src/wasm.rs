@@ -8,7 +8,7 @@ use futures::future::{join_all};
 use lazy_static::lazy_static;
 use client_websocket::{ClientName};
 use nats_lite::{nats};
-use protocol::{handle_client_op,handle_server_op};
+use protocol::{handle_client_op};
 
 use client_websocket::{Client};
 const BUF_CAPACITY: usize = 128 * 1024;
@@ -19,7 +19,6 @@ use std::sync::{Mutex};
 use tracing::error;
 use wasm_bindgen_futures::spawn_local;
 use js_sys::{Array};
-use std::sync::Arc;
 use crate::*;
 #[wasm_bindgen]
 extern "C" {

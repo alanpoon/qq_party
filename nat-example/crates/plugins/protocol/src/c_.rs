@@ -102,6 +102,7 @@ pub fn dash(ball_id:BallId,cmd: &mut Commands,cooldown_query:&Query<&CoolDownTim
       payload: tv_,
     };
     Some(Command::Nats(String::from("default"),n))
+    
   }else{
     None
   }

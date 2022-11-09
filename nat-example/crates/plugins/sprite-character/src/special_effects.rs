@@ -86,7 +86,7 @@ pub fn add_special_effect_sprite_system(
   _cmd: Commands,
   mut effects_with_mesh: Query<(&SpecialEffectId,&TextureAtlasSprite,&mut Transform)>,
   storm_rings_query: Query<(Entity, &StormRingId)>,
-  texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
+  _texture_hashmap:ResMut<HashMap<String,Handle<TextureAtlas>>>,
 ) {
   let mut found_storm_rings = false;
   for (_,_storm_ring) in storm_rings_query.iter(){
@@ -94,7 +94,7 @@ pub fn add_special_effect_sprite_system(
     break;
   }
   if found_storm_rings{
-    for (effect_id,_,mut transform) in effects_with_mesh.iter_mut() {
+    for (_effect_id,_,mut transform) in effects_with_mesh.iter_mut() {
       //info!("effect_id {:?} hiding",effect_id);
       transform.translation.z = 3.0;//show
     }

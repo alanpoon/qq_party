@@ -46,7 +46,6 @@ pub enum CoolDownMessage{
     DisplayUI(String),
     HideUI(String)
 }
-use client_websocket::{ClientName};
 use client_websocket::{Client};
 pub struct BoxClient{
   pub clients: Vec<Box<dyn Client + Send + Sync + 'static>>,
