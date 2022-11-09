@@ -18,7 +18,7 @@ pub fn _fn(_cmd: &mut Commands, set: &mut ParamSet<(
             // v.linvel.x = tv.0.x *50.0 * f;
             // v.linvel.y = tv.0.y * 50.0 * f;
             update::target_velocity::velocity(&mut v, tv.clone());
-
+            break;
         }
     }  
 }

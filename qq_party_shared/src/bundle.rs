@@ -3,6 +3,7 @@
 // #[cfg(feature = "actor")]
 // use bevy_ecs_wasm::prelude::{Query, Res,ResMut,Entity,Bundle};
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use crate::*;
 use serde::ser::{Serialize, Serializer};
 use serde::de::{Deserialize, Deserializer};
@@ -17,6 +18,7 @@ pub struct BallBundle {
     pub transform: Transform,
     pub velocity: Velocity,
     pub rigid_body:RigidBody,
+    pub interpolated: TransformInterpolation
 }
 #[derive(Clone,Debug,Serialize,Deserialize)]
 struct BallBundleS {
@@ -53,7 +55,8 @@ impl<'de> Deserialize<'de> for BallBundle {
             velocity:Velocity { linvel: [bs.velocity.x,bs.velocity.y].into(), ..Default::default() },
             rigid_body:RigidBody::Dynamic,
             locked_axes:LockedAxes::ROTATION_LOCKED,
-            last_npc:LastNPC(0, None, false)
+            last_npc:LastNPC(0, None, false),
+            interpolated: TransformInterpolation::default()
         })
     }
 }

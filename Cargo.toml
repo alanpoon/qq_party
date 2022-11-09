@@ -25,9 +25,13 @@ debug = true
 wasmbus-rpc= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
 wasmbus-macros= {git ="https://github.com/wasmCloud/weld", rev="8a056a18cd3f80df05de5d13d31e9a5878ceb3a5"}
 getrandom = {git ="https://github.com/alanpoon/bevy_wasmcloud_patches"}
+#tracing-wasm = {path="wasmcloud_patches/tracing-wasm"}
 
 [patch."https://github.com/bevyengine/bevy"]
 bevy_app = {git ="https://github.com/alanpoon/bevy_wasmcloud_patches"}
 bevy_internal = {git ="https://github.com/alanpoon/bevy_wasmcloud_patches"}
 bevy_render = {git ="https://github.com/alanpoon/bevy_wasmcloud_patches"}
 bevy_time = {git ="https://github.com/alanpoon/bevy_wasmcloud_patches"}
+
+#[patch."https://github.com/alanpoon/bevy_rapier"]
+#bevy_rapier2d = {path="../bevy_stuff/bevy_rapier2/bevy_rapier2d"}

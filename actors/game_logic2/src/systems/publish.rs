@@ -112,7 +112,7 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
       
       continue;
     }
-    if *elapsed >30.0{
+    if *elapsed >60.0{
       *elapsed = 0.0; 
       let mut ball_bundles =vec![];
       let mut npc_bundles = vec![];
@@ -124,7 +124,8 @@ pub fn sys_publish_game_state_by_sub_map(mut cmd:Commands,mut elapsed_time:ResMu
             global_transform:GlobalTransform::identity(),
             velocity:velocity.clone(),
             rigid_body:RigidBody::Dynamic,
-            locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone()
+            locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone(),
+            interpolated:TransformInterpolation::default()
           });
         }
         

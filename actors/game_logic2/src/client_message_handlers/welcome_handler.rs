@@ -23,7 +23,8 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       velocity:Velocity::zero(),
       rigid_body:RigidBody::Dynamic,
       locked_axes:LockedAxes::ROTATION_LOCKED,
-      last_npc:LastNPC(0, None, false)
+      last_npc:LastNPC(0, None, false),
+      interpolated:TransformInterpolation::default()
     };
     {
       let guard = match map.lock() {
@@ -92,7 +93,11 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         if gball_id.0!=ball_id.0{//don't send yourself
           let sa = sub_map_area(transform.translation.x,transform.translation.y);
           if sa ==key{
-            ball_bundles.push(BallBundle{ball_id:gball_id.clone(),ball_label:ball_label.clone(),transform:transform.clone(),global_transform:GlobalTransform::identity(),velocity:velocity.clone(),rigid_body:RigidBody::Dynamic,locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone()});
+            ball_bundles.push(BallBundle{ball_id:gball_id.clone(),ball_label:ball_label.clone(),
+              transform:transform.clone(),global_transform:GlobalTransform::identity(),
+              velocity:velocity.clone(),rigid_body:RigidBody::Dynamic,
+              locked_axes:LockedAxes::ROTATION_LOCKED,last_npc:last_npc.clone(),
+              interpolated:TransformInterpolation::default()});
           }
         }
       }

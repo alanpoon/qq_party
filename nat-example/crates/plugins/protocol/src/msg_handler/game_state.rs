@@ -23,9 +23,18 @@ pub fn _fn_spawn_or_update_ball_bundles(
             *v = ball_bundle.velocity;
             let pre_t = t.clone();
             let diff = pre_t.translation.distance_squared(ball_bundle.transform.translation);
-            let diff_unit_vec = (ball_bundle.transform.translation-pre_t.translation).normalize_or_zero();
-            info!("diff ball_id{:?} diff {:?} diff_unit_vec{:?}",ball_id,diff,diff_unit_vec);
-            *t = ball_bundle.transform;
+            // let diff_unit_vec = (ball_bundle.transform.translation-pre_t.translation).normalize_or_zero();
+            // info!("diff ball_id{:?} diff {:?} diff_unit_vec{:?}",ball_id,diff,diff_unit_vec);
+            if diff>1000.0{
+              *t = ball_bundle.transform;
+              if _delta>0.0{
+                t.translation.x += _delta *v.linvel.x;
+                t.translation.y += _delta *v.linvel.y;
+              }
+            }
+            
+         
+            //info!("game_state _delta {:?} linvel: {:?}",_delta,v.linvel);
             founds.push(i);
             //found = true;
             break;
