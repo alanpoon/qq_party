@@ -3,23 +3,36 @@ use nats_lite::nats;
 use protocol::{Command};
 use chrono::prelude::*;
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use bevy::utils::Duration;
 use crate::*;
 use bevy::math::Vec2;
-pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f32)->Command{
+pub fn target_velocity(ball_id:BallId,target_velocity_x:f32,target_velocity_y:f32,sa:String,vel:&mut Velocity)->Vec<Command>{
+  let t_v= TargetVelocity(Vec2::new(target_velocity_x,target_velocity_y));
   let tv = ClientMessage::TargetVelocity{
     game_id:String::from("hello"),
     ball_id:ball_id,
-    target_velocity:TargetVelocity(Vec2::new(target_velocity_x,target_velocity_y)),
+    target_velocity:t_v.clone(),
   };
-  
+ 
   let tv_= rmp_serde::to_vec(&tv).unwrap();
-  let n = nats::proto::ClientOp::Pub{
+  let n1 = nats::proto::ClientOp::Pub{
     subject: String::from("client_handler.hello"),
     reply_to: None,
     payload: tv_,
   };
-  Command::Nats(String::from("default"),n)
+  let tv = ServerMessage::TargetVelocity{
+    ball_id:ball_id,
+    target_velocity:t_v.clone(),
+  };
+  let tv_= rmp_serde::to_vec(&tv).unwrap();
+  let n2 = nats::proto::ClientOp::Pub{
+    subject: format!("game_logic.peer.{}",sa),
+    reply_to: None,
+    payload: tv_,
+  };
+  update::target_velocity::velocity(vel, t_v.clone());
+  vec![Command::Nats(String::from("default"),n1),Command::Nats(String::from("default"),n2)]
 }
 pub fn change_sub_map(ball_id:BallId,position:Position)->Command{
   let tv = ClientMessage::ChangeSubMap{

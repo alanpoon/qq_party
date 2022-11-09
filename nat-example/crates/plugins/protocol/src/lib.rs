@@ -103,7 +103,7 @@ fn add_client_state(
 
 fn handle_events(
     mut cmd: Commands,
-    balls: Query<(&BallId,&Velocity,Option<&Dash>)>,
+    mut balls: Query<(&BallId,&Transform,&mut Velocity,Option<&Dash>)>,
     cooldown_query: Query<&CoolDownTimer>,
     mut state: ResMut<Option<ClientStateDispatcher>>,
     mut commands: ResMut<protocol::Commands>,
@@ -237,9 +237,10 @@ fn handle_events(
         }  
         
         if pressed{
-          for (ball_id_ingame,v,_) in balls.iter(){
+          for (ball_id_ingame,t,mut v,_) in balls.iter_mut(){
             let ball_id = (*local_user_info).0.ball_id;
             if ball_id_ingame==&ball_id{
+              let sa = sub_map::sub_map_area(t.translation.x,t.translation.y);
               let mut send= false;
               if target_velocity_x!=0.0{
                 if v.linvel.x / target_velocity_x <0.0{
@@ -257,8 +258,11 @@ fn handle_events(
               }
               if send{
                 info!("send target_velocity {:?} {:?}",target_velocity_x,target_velocity_y);
-                let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y);
-                (*commands).push(c);
+                let c = c_::target_velocity(ball_id,target_velocity_x,target_velocity_y,sa,&mut v);
+                for c in c{
+                  (*commands).push(c);
+                }
+                
               }
             
               break;
