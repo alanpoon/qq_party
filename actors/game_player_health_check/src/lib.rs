@@ -61,12 +61,12 @@ impl Thread for PlayerHealthCheckActor{
     }
     Ok(StartThreadResponse{})
   }
-  async fn handle_request(&self, _ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
+  async fn tick(&self, _ctx: &Context, timestamp: &u64) -> RpcResult<u32> {
     let map = MAP.clone();
     
     let mut m = map.lock().unwrap();
     m.retain(|k,v|{
-      if start_thread_request.timestamp as u32 - *v*1000 >70000{
+      if timestamp.clone() as u32 - *v*1000 >70000{
         let cm = ClientMessage::Disconnect{
           ball_id_secret:k.clone()
         };
@@ -82,10 +82,7 @@ impl Thread for PlayerHealthCheckActor{
       }
     });
     
-    Ok(StartThreadResponse{})
-  }
-  async fn now(&self,_ctx:&Context,_: &StartThreadRequest)  -> RpcResult<u64>{
-    Ok(2)
+    Ok(0)
   }
 }
 

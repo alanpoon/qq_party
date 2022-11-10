@@ -64,14 +64,9 @@ impl Thread for GameLogicActor{
     info!("end_thread----");
     Ok(StartThreadResponse{})
   }
-  async fn handle_request(&self, _ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    //info!("handle_request----");
+  async fn tick(&self, _ctx: &Context, start_thread_request: &u64) -> RpcResult<u32> {
     let map = APP.clone();
-    //Ok(StartThreadResponse{})
     thread_handle_request(map,start_thread_request).await
-  }
-  async fn now(&self,ctx:&Context,start_thread_request: &StartThreadRequest)  -> RpcResult<u64>{
-    Ok(2)
   }
 }
 #[async_trait]

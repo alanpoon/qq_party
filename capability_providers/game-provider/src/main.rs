@@ -107,21 +107,12 @@ impl Thread for ThreadProvider {
             }
             let utc: DateTime<Utc> = Utc::now();
             let time_stamp = utc.timestamp_millis() as u64;
-            //eprintln!("time_stamp {:?} game_id {:?}",time_stamp,start_thread_request_c.game_id.clone());
-            let m = StartThreadRequest{
-              game_id: start_thread_request_c.game_id.clone(),
-              elapsed: start.elapsed().as_secs() as u32,
-              timestamp: time_stamp,
-              sleep_interval: start_thread_request_c.sleep_interval,
-              subject: start_thread_request_c.subject.clone(),
-            };
-            // let time_c = TIME.clone();
-            // time_update(time_c,start_thread_request_c.game_id.clone(),time_stamp);
+            
             if let Some(bridge) = bridge_guard{
               let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
               let ctx = Context::default();
               let actor = ThreadSender::via(tx);
-              match actor.handle_request(&ctx, &m).await {
+              match actor.tick(&ctx, &time_stamp).await {
                 Err(RpcError::Timeout(_)) => {
                   info!(
                         "actor {} req  timed out: returning 503",
@@ -146,22 +137,8 @@ impl Thread for ThreadProvider {
       });
       Ok(StartThreadResponse{})
     }
-    async fn handle_request(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse>{
-      Ok(StartThreadResponse{})
-    }
-    async fn now(&self, ctx: &Context, request: &StartThreadRequest) -> RpcResult<u64>{
-      let time_c = TIME.clone();
-      let mut guard = match time_c.lock() {
-        Ok(guard) => guard,
-        Err(poisoned) => {
-          poisoned.into_inner()
-        },
-      };
-      let mut b =0;
-      if let Some(t)= guard.get(&request.game_id){
-        b = *t;
-      }
-      Ok(b)
+    async fn tick(&self, ctx: &Context, start_thread_request: &u64) -> RpcResult<u32>{
+      Ok(0)
     }
 }
 

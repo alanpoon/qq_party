@@ -19,45 +19,29 @@ use org.wasmcloud.model#U64
     providerReceive: true )
 service Thread {
   version: "0.1",
-  operations: [ StartThread,HandleRequest,Now ]
+  operations: [ StartThread,Tick ]
 }
-operation Now{
-  input: StartThreadRequest,
-  output: U64,
-}
+
 operation StartThread {
     input: StartThreadRequest,
     output: StartThreadResponse,
 }
-operation HandleRequest{
-    input: StartThreadRequest,
-    output: StartThreadResponse,
+operation Tick{
+    //timestamp
+    input: U64,
+    output: U32,
 }
-/// Parameters sent for AuthorizePayment
+/// Parameters sent for StartThreadRequest
 structure StartThreadRequest {
-    /// Amount of transaction, in cents.
+    
     @required
     @n(0)
     game_id: String,
-
-    /// Amount of tax applied to this transaction, in cents
+    /// sleep_interval in millisecond
     @required
     @n(1)
-    timestamp: U64,
-
-    /// Token of the payment method to be used
-    @required
-    @n(2)
-    elapsed: U32,
-
-    @required
-    @n(3)
     sleep_interval: U32,
-
-    @n(4)
-    subject: String,
 }
-
 
 /// Response to AuthorizePayment
 structure StartThreadResponse {

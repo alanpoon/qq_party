@@ -6,7 +6,7 @@ use crate::{TimeV2};
 use crate::info_::info_;
 use crate::startup;
 use bevy::prelude::*;
-pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &StartThreadRequest)->RpcResult<StartThreadResponse>{
+pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &u64)->RpcResult<u32>{
   {
     let guard = match map.try_lock() {
       Ok(guard) => Ok(guard),
@@ -15,12 +15,12 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
       },
     };
     if let Err(_)= guard{
-      return Ok(StartThreadResponse{});
+      return Ok(0);
     } 
-    if start_thread_request.subject.is_none(){
+    // if start_thread_request.subject.is_none(){
         let mut app = guard.unwrap();
         if let Some(mut t) = app.world.get_resource_mut::<Time>(){
-          t.update_with_timestamp(start_thread_request.timestamp)
+          t.update_with_timestamp(start_thread_request.clone())
         }else{
           app.world.insert_resource(Time::default());
         }
@@ -28,20 +28,20 @@ pub async fn thread_handle_request(map:Arc<Mutex<App>>,start_thread_request: &St
           //t.update(start_thread_request.elapsed as f32);
         }else{
           app.world.insert_resource(TimeV2{elapsed:HashMap::from([
-            (String::from("A"),start_thread_request.elapsed as f32),
-            (String::from("B"),(start_thread_request.elapsed + 1000) as f32),
-            (String::from("C"),(start_thread_request.elapsed + 2000) as f32),
-            (String::from("D"),(start_thread_request.elapsed + 3000) as f32),
-            (String::from("scoreboard"),(start_thread_request.elapsed + 100) as f32),
-            (String::from("storm_ring"),(start_thread_request.elapsed + 300) as f32),
+            (String::from("A"),0.0),
+            (String::from("B"),1000.0),
+            (String::from("C"),2000.0),
+            (String::from("D"),3000.0),
+            (String::from("scoreboard"),100.0),
+            (String::from("storm_ring"),300.0),
           ])});
         }
 
          startup::state_update(&mut app);
          app.update();
-    }
+    //}
     
   }
   //info!("{}",n);
-  Ok(StartThreadResponse{})
+  Ok(0)
 }
