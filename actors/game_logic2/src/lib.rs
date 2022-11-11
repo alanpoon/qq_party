@@ -24,6 +24,8 @@ use qq_party_shared::*;
 use crate::plugins::physics::PhysicsPlugin;
 lazy_static! {
   static ref APP: Arc<Mutex<App>> = Arc::new(Mutex::new(App::new()));
+  static ref TEST_DC: Arc<Mutex<u32>> = Arc::new(Mutex::new(0));
+  //static ref TEST_DC: u32= 0;
 }
 
 #[derive(Debug, Default, Actor, HealthResponder)]
@@ -66,6 +68,12 @@ impl Thread for GameLogicActor{
   }
   async fn tick(&self, _ctx: &Context, start_thread_request: &u64) -> RpcResult<u32> {
     let map = APP.clone();
+    if let Ok(mut dc) = TEST_DC.clone().lock(){
+      *dc+=1;
+      if *dc>5{
+        panic!();
+      }
+    }   
     thread_handle_request(map,start_thread_request).await
   }
 }

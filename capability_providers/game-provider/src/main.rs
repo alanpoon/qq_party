@@ -43,12 +43,13 @@ impl ProviderHandler for ThreadProvider {
     Ok(true)
   }
 }
+
 struct Inner {
   bridge: &'static HostBridge,
 }
 struct ThreadPool{
   linkdefs: LinkDefinition,
-  threads: HashMap<String,(bool,u64)>,//bool:run or not, u64: last_update
+  threads: HashMap<String,(bool,u64,Vec<u64>)>,//bool:run or not, u64: last_update,Vec<u64>: vec of failure timestamp.
   inner: Arc<RwLock<Inner>>,
 }
 impl ThreadPool{
@@ -60,9 +61,6 @@ impl ThreadPool{
       inner:Arc::new(RwLock::new(Inner{bridge})),
     }
   }
-}
-lazy_static! {
-  static ref TIME: Arc<Mutex<HashMap<String,u64>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 
 #[async_trait]
@@ -79,7 +77,7 @@ impl Thread for ThreadProvider {
           let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
           let utc: DateTime<Utc> = Utc::now();
           let time_stamp = utc.timestamp_millis() as u64;
-          thread_pool.threads.insert(start_thread_request_c.game_id.clone(),(true,time_stamp));
+          thread_pool.threads.insert(start_thread_request_c.game_id.clone(),(true,time_stamp,vec![]));
           let ld = thread_pool.linkdefs.clone();
           let inner = thread_pool.inner.clone();
           drop(thread_actor);
@@ -91,12 +89,14 @@ impl Thread for ThreadProvider {
               bridge_guard = Some(read_guard.bridge);
               let mut thread_actor = actors.write().await;
               let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
-              if let Some((v,last_update)) = thread_pool.threads.get_mut(&start_thread_request_c.game_id.clone()){
+              if let Some((v,last_update,_conseq_failures)) = thread_pool.threads.get_mut(&start_thread_request_c.game_id.clone()){
                 if *v{
                   sleep_interval_cal = Some(start_thread_request_c.sleep_interval as u64);
                 }else{
                   drop(thread_actor);
                   break;
+                  //wash ctl stop actor_id
+                  //wash ctl start actor_id
                 }
               }
             }
@@ -114,7 +114,7 @@ impl Thread for ThreadProvider {
               let actor = ThreadSender::via(tx);
               match actor.tick(&ctx, &time_stamp).await {
                 Err(RpcError::Timeout(_)) => {
-                  info!(
+                  eprintln!(
                         "actor {} req  timed out: returning 503",
                         &ld.actor_id,
                     );
@@ -122,7 +122,23 @@ impl Thread for ThreadProvider {
                 Ok(resp) => {
                 }
                 Err(e) => {
-                  info!(
+                  let mut thread_actor = actors.write().await;
+                  let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
+                  if let Some((_,_,conseq_failures)) = thread_pool.threads.get_mut(&start_thread_request_c.game_id.clone()){
+                    let mut within_range =0;
+                    for c in conseq_failures.iter(){
+                      if time_stamp - c <7000{
+                        within_range+=1;
+                      }
+                    }
+                    if within_range>4{
+                      eprintln!("@@@@breaking");
+                      break;
+                    }else{
+                      conseq_failures.push(time_stamp.clone());
+                    }
+                  }
+                  eprintln!(
                         "actor {} responded with error {}",
                         &ld.actor_id,
                         e.to_string()
