@@ -122,14 +122,7 @@ impl MessageSubscriber for GameLogicActor{
 //   //logging::default().write_log("LOGGING_ACTORINFO", "info", "Stop thread")?;
 //   game_engine::stop_thread(req)
 // }
-#[derive(Component,Debug, Eq, PartialEq, Default,Serialize, Deserialize,Clone)]
-pub struct A{
-  position: i32,
-}
-#[derive(Bundle,Serialize, Deserialize,Clone,Debug)]
-pub struct BallBundle {
-    pub a: A,
-}
+
 #[derive(Debug, PartialEq, Default)]
 pub struct TimeV2{pub elapsed:HashMap<String,f32>}
 impl TimeV2{
