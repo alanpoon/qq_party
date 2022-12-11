@@ -10,12 +10,15 @@ bash ops/compile.sh ws_gateway,ws_server,wasm_user
 
 
 nats-account-server -c ops/nas_not.conf
+docker run -d -p 5000:5000 --restart always --name registry registry:2.7
 nats-server -c ops/websocket_lite.conf -js -V -D
 
 WASMCLOUD_HOST_SEED=SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y WASMCLOUD_OCI_ALLOWED_INSECURE=localhost:5000 WASMCLOUD_CLUSTER_SEED=SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E wasmcloud_host start
 sudo systemctl start docker
 
 docker run -d -p 5000:5000 --restart always --name registry registry
+
+docker run -d -p 6379:6379 --restart always --name redis redis:6.2
 
 https://opengameart.org/content/wooden-stick
 

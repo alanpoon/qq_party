@@ -5,6 +5,7 @@ use wasmcloud_interface_thread::{StartThreadRequest, StartThreadResponse,Thread,
 use wasmbus_rpc::provider::prelude::*;
 use wasmbus_rpc::provider::ProviderTransport;
 use wasmbus_rpc::actor::prelude::Context;
+use wasmbus_rpc::core::{HealthCheckRequest,ActorSender,Actor};
 use std::thread::sleep;
 use std::{collections::HashMap, time::Duration, time::Instant};
 use std::sync::{Arc, Mutex};
@@ -40,6 +41,116 @@ impl ProviderHandler for ThreadProvider {
     let thread_pool = ThreadPool::new(ld.clone(),get_host_bridge());
     let mut update_map = self.actors.write().await;
     update_map.insert(ld.actor_id.to_string(), thread_pool);
+    if let Some(sleep_interval) = &ld.values.get("SLEEP_INTERVAL") {
+      let start = Instant::now();
+      //let MAP = Arc::new(Mutex::new(HashMap::new()));
+      let mut actors = self.actors.clone();
+      let actor_id = ld.actor_id.clone();
+      if let Ok(sleep_interval) = sleep_interval.parse::<u64>(){
+        tokio::spawn(async move{
+          
+          let mut thread_actor = actors.write().await;    
+          let mut thread_pool = (*thread_actor).get_mut(&actor_id).unwrap();
+          let utc: DateTime<Utc> = Utc::now();
+          let time_stamp = utc.timestamp_millis() as u64;
+          thread_pool.threads.insert(actor_id.clone(),(true,time_stamp,vec![]));
+          let ld = thread_pool.linkdefs.clone();
+          let inner = thread_pool.inner.clone();
+          drop(thread_actor);
+          loop{
+            let mut bridge_guard = None;
+            {
+              let read_guard = inner.read().await;
+              bridge_guard = Some(read_guard.bridge);
+            }
+            if let Some(bridge) = bridge_guard{
+              sleep(Duration::from_millis(3000));
+              let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
+              let ctx = Context::default();
+              let actor = ActorSender::via(tx);
+              match actor.health_request(&ctx, &HealthCheckRequest{}).await {
+                Ok(res)=>{
+                  if res.healthy{
+                    break;
+                  }
+                },
+                Err(er)=>{}
+              }
+            }
+          }
+          loop{
+            let mut sleep_interval_cal = None;
+            let mut bridge_guard = None;
+            {
+              let read_guard = inner.read().await;
+              bridge_guard = Some(read_guard.bridge);
+              let mut thread_actor = actors.write().await;
+              let mut thread_pool = (*thread_actor).get_mut(&actor_id).unwrap();
+              if let Some((v,last_update,_conseq_failures)) = thread_pool.threads.get_mut(&actor_id){
+                if *v{
+                  sleep_interval_cal = Some(sleep_interval);
+                }else{
+                  drop(thread_actor);
+                  break;
+                  //wash ctl stop actor_id
+                  //wash ctl start actor_id
+                }
+              }
+            }
+            if let Some(sleep_interval) = sleep_interval_cal{
+              //eprintln!("sleep_interval {:?} game_id {:?} sleep_interval_req {:?}",sleep_interval,start_thread_request_c.game_id.clone(),start_thread_request_c.sleep_interval);
+              sleep(Duration::from_millis(sleep_interval));
+              //continue
+            }
+            let utc: DateTime<Utc> = Utc::now();
+            let time_stamp = utc.timestamp_millis() as u64;
+            
+            if let Some(bridge) = bridge_guard{
+              let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
+              let ctx = Context::default();
+              let actor = ThreadSender::via(tx);
+              match actor.tick(&ctx, &time_stamp).await {
+                Err(RpcError::Timeout(_)) => {
+                  eprintln!(
+                        "actor {} req  timed out: returning 503",
+                        &ld.actor_id,
+                    );
+                }
+                Ok(resp) => {
+                }
+                Err(e) => {
+                  let mut thread_actor = actors.write().await;
+                  let mut thread_pool = (*thread_actor).get_mut(&actor_id).unwrap();
+                  if let Some((_,_,conseq_failures)) = thread_pool.threads.get_mut(&actor_id){
+                    let mut within_range =0;
+                    for c in conseq_failures.iter(){
+                      if time_stamp - c <7000{
+                        within_range+=1;
+                      }
+                    }
+                    if within_range>4{
+                      eprintln!("@@@@breaking");
+                      break;
+                    }else{
+                      conseq_failures.push(time_stamp.clone());
+                    }
+                  }
+                  eprintln!(
+                        "actor {} responded with error {}",
+                        &ld.actor_id,
+                        e.to_string()
+                    );
+                }
+              }
+            }else{
+            }
+          }
+        });
+      }
+      
+    }
+ 
+    
     Ok(true)
   }
 }
