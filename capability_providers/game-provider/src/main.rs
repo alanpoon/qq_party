@@ -57,12 +57,13 @@ impl ProviderHandler for ThreadProvider {
           let ld = thread_pool.linkdefs.clone();
           let inner = thread_pool.inner.clone();
           drop(thread_actor);
+          let mut bridge_guard = None;
+          {
+            let read_guard = inner.read().await;
+            bridge_guard = Some(read_guard.bridge);
+          }
           loop{
-            let mut bridge_guard = None;
-            {
-              let read_guard = inner.read().await;
-              bridge_guard = Some(read_guard.bridge);
-            }
+            
             if let Some(bridge) = bridge_guard{
               sleep(Duration::from_millis(3000));
               let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
@@ -78,6 +79,24 @@ impl ProviderHandler for ThreadProvider {
               }
             }
           }
+          eprintln!("pre bridge_guard ");
+          if let Some(bridge) = bridge_guard{
+            let tx = ProviderTransport::new_with_timeout(&ld, Some(bridge), Some(std::time::Duration::new(2,0)));
+            let ctx = Context::default();
+            let actor = ThreadSender::via(tx);
+            eprintln!("pre start_thread ");
+
+            match actor.start_thread(&ctx, &StartThreadRequest{
+              game_id:String::from(""),
+              sleep_interval:0
+            }).await {
+              Ok(res)=>{
+                eprintln!("calling start_thread {:?}",res);
+              },
+              Err(er)=>{}
+            }
+          }
+          
           loop{
             let mut sleep_interval_cal = None;
             let mut bridge_guard = None;
