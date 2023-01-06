@@ -95,6 +95,7 @@ impl ProviderHandler for ThreadProvider {
               },
               Err(er)=>{}
             }
+            sleep(Duration::from_millis(3000));
           }
           
           loop{
@@ -143,7 +144,7 @@ impl ProviderHandler for ThreadProvider {
                   if let Some((_,_,conseq_failures)) = thread_pool.threads.get_mut(&actor_id){
                     let mut within_range =0;
                     for c in conseq_failures.iter(){
-                      if time_stamp - c <7000{
+                      if time_stamp - c <13000{
                         within_range+=1;
                       }
                     }

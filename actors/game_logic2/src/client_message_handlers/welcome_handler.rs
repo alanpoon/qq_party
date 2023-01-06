@@ -38,8 +38,9 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
       if let Some(st) = app.world.get_resource::<StateTransformer>(){
         state_from_transform = Some(st.1.clone());
       }
-      
+      info_(format!("before spawn"));
       spawn(&mut app.world,ball_bundle.clone());
+      info_(format!("before spawn"));
       let mut scoreboard = app.world.get_resource_mut::<ScoreBoard>().unwrap();
       init_score(ball_id.0,ball_label,&mut scoreboard.scores);
       let qq_state = app.world.get_resource::<StateTransformer>().unwrap().1.clone();
@@ -55,6 +56,7 @@ pub async fn _fn (map:Arc<Mutex<App>>,game_id:String,ball_id:BallId,ball_label:B
         }
         _=>{}
       }
+      info_(format!("after publish"));
       if let Some(st) = state_from_transform{
         match st{
           QQState::Running|QQState::StopNotification=>{

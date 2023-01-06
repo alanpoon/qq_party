@@ -34,7 +34,7 @@ struct GameLogicActor {}
 #[async_trait]
 impl Thread for GameLogicActor{
   async fn start_thread(&self, ctx: &Context, start_thread_request: &StartThreadRequest) -> RpcResult<StartThreadResponse> {
-    info!("start_thread----");
+    //info_::info_(format!("start_thread----"));
     let npc_bundles = startup::npc::spawn_npc_bundles().await?;
 
     {
@@ -53,17 +53,7 @@ impl Thread for GameLogicActor{
       ;
       
     }
-    let provider = ThreadSender::new();
-    if let Err(e) = provider
-        .start_thread(
-            ctx,
-            start_thread_request,
-        )
-        .await
-    {
-        error!("sending reply: {}",e.to_string());
-    }
-    info!("end_thread----");
+    //info_::info_(format!("end start_thread----"));
     Ok(StartThreadResponse{})
   }
   async fn tick(&self, _ctx: &Context, start_thread_request: &u64) -> RpcResult<u32> {

@@ -6,15 +6,12 @@ build:
 	(cd actors/game_logic2 && make clean_wasm && make push)
 	(cd actors/game_player_health_check && make clean_wasm && make push)
 	wash ctl apply NDP4B6DPQICPNEA3UJ7FOG4KR66Y56JCKNASH6UXWZECNNYFTVYJ4ROS ops/manifest.yaml
-	sleep 8
-	(cd actors/game_logic2 && make start-thread)
-	sleep 4
-	(cd actors/game_player_health_check && make start-thread)
 build2:
 	(cd actors/game_logic2 && make start-thread)
 serve_ui:
-	(cd nat-example && cargo make wasm-bindgen)
-	(cd nat-example && nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &)
+	#(cd nat-example && cargo make wasm-bindgen)
+	#(cd nat-example && nohup basic-http-server public -a 127.0.0.1:4001 >> nohup.out 2>&1 &)
+	(cd nat-example && cargo make wasm-serve)
 build_aws_old:
 	(cd capability_providers_officials/nats && make push)
 	(cd actors/game_logic2 && make clean_wasm && make push)
