@@ -1,58 +1,40 @@
-# This docker-compose file loads 
-#   host.docker.internal with JetStream enabled
-#   a local OCI registry
-#   redis (for the kvredis capability provider)
-#   grafana + tempo for tracing
-#   wasmcloud_host
 
 version: "4"
 services:
-  # redis:
-  #   image: redis:6.2
-  #   ports:
-  #     - "6379:6379"
-  # registry:
-  #   image: registry:2.7
-  #   ports:
-  #     - "5000:5000"
-  # grafana:
-  #   image: grafana/grafana:8.1.2
-  #   ports:
-  #     - 5050:3000
-  #   volumes:
-  #     - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-  #   environment:
-  #     - GF_AUTH_ANONYMOUS_ENABLED=true
-  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-  #     - GF_AUTH_DISABLE_LOGIN_FORM=true
-  #   depends_on:
-  #     - tempo  
-  # tempo:
-  #   image: grafana/tempo:1.1.0
-  #   command: ["-config.file=/etc/tempo.yaml"]
-  #   volumes:
-  #     - ./tempo.yaml:/etc/tempo.yaml
-    # ports:
-    #   - 8000:8000 # tempo
-    #   - 55681:55681 # otlp http  
-
   wasmcloud:
-    image: wasmcloud/wasmcloud_host:latest
+    deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+    image: wasmcloud/wasmcloud_host:0.63.0
     environment:
       RUST_LOG: debug,hyper=info
-      WASMCLOUD_RPC_HOST: host.docker.internal
-      WASMCLOUD_CTL_HOST: host.docker.internal
-      WASMCLOUD_PROV_RPC_HOST: host.docker.internal
+      WASMCLOUD_RPC_HOST: 172.17.0.1
+      WASMCLOUD_CTL_HOST: 172.17.0.1
+      WASMCLOUD_PROV_RPC_HOST: 172.17.0.1
       WASMCLOUD_HOST_SEED: SNAKDMBLB7TPIL4K3YXDGLUDXYFEEB2UAUXSAJYFBUKAWXBT6VPSTSE34Y
       WASMCLOUD_CLUSTER_SEED: SCALV3N2M5JRUOCSLTRTAIQYJSBKNZ3XMGME2XI3L3OSR2RRSYUTMHAN7E
-      WASMCLOUD_OCI_ALLOWED_INSECURE: host.docker.internal:5000
+      WASMCLOUD_OCI_ALLOWED_INSECURE: 172.17.0.1:5000
 #      OTEL_TRACES_EXPORTER: otlp
 #      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:55681
     ports:
       - "4000:4000"
       - "8080-8089:8080-8089" # Allows exposing examples on ports 8080-8089
     #command: sh -c "curl -v -X GET http://host.docker.internal:5000/v2/_catalog"
-
+  nats:
+    image: nats:2.8.4-alpine
+    ports:
+      - "4222:4222"
+      - "7083:7083"
+    volumes:
+      - /home/ubuntu/qq_party/ops/websocket2new.conf:/etc/nats/nats-server.conf
+      - /home/ubuntu/certs_namespace/:/root/certs_namespace
+    command: [ "-js" ,"-c","/etc/nats/nats-server.conf"]
+    deploy:
+      resources:
+        limits:
+          cpus: '0.01'
+          memory: 50M
   # wadm:
   #   depends_on:
   #     - "redis"
