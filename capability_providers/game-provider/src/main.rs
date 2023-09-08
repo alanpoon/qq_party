@@ -40,6 +40,46 @@ impl ProviderHandler for ThreadProvider {
     let thread_pool = ThreadPool::new(ld.clone(),get_host_bridge());
     let mut update_map = self.actors.write().await;
     update_map.insert(ld.actor_id.to_string(), thread_pool);
+    if let Some(sleep_interval) = &ld.values.get("sleep_interval") {
+      let start = Instant::now();
+      //let MAP = Arc::new(Mutex::new(HashMap::new()));
+      let mut actors = self.actors.clone();
+      let actor_id = ld.actor_id.clone();
+      if let Ok(sleep_interval) = sleep_interval.parse::<u64>(){
+        tokio::spawn(async move{
+          let mut thread_actor = actors.write().await;
+          let thread_poolx = (*thread_actor).get_mut(&actor_id);
+          let mut thread_pool = (*thread_actor).get_mut(&actor_id).unwrap();
+          thread_pool.threads.insert(actor_id.clone(),true);
+          let ld = thread_pool.linkdefs.clone();
+          let inner = thread_pool.inner.clone();
+          drop(thread_actor);
+          loop{
+            let mut thread_actor = actors.read().await;
+            let mut thread_pool = (*thread_actor).get(&actor_id).unwrap();
+            if let Some(v) = thread_pool.threads.get(&actor_id.clone()){
+              if *v{
+                //drop(thread_pool);
+                sleep(Duration::from_millis(sleep_interval));
+                let utc: DateTime<Utc> = Utc::now();
+                let time_stamp = utc.timestamp_millis() as u64;
+                let time_c = TIME.clone();
+                time_update(time_c,actor_id.clone(),time_stamp);
+              }else{
+                drop(thread_actor);
+                break;
+              }
+            }else{
+              break;
+            }
+            eprintln!("running");
+          }
+        });
+      }
+      
+    }
+ 
+    
     Ok(true)
   }
 }
@@ -78,7 +118,6 @@ impl Thread for ThreadProvider {
 
       tokio::spawn(async move{
           let mut thread_actor = actors.write().await;
-          let v = ctxr.actor.clone();
           let thread_poolx = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap());
           
           let mut thread_pool = (*thread_actor).get_mut(&ctxr.actor.clone().unwrap()).unwrap();
